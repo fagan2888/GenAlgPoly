@@ -1,0 +1,1 @@
+R code for finding best polynomial regression using genetic algorithms
