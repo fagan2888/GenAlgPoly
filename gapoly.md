@@ -25,13 +25,13 @@ The chromosome coding will as follow:
 + each component is split into `n.vars` sets of `max.degree` size each (a variable)
 + for each variable, the number of 1s gives the variable's degree (this means that a given polynomial may have more than one possible representation)
 
-Eg (for the values in the previous code snippet):
+Eg: consider polynomial $x_1^2 \times x_3 + x_3^3 + x_1 \times x_2$
 
-Consider polynomial $x_1^2 \times x_3 + x_3^3 + x_1 \times x_2$
-
-One possible coding would be (the semicolons separate components, the commas seperate variables):
+One possible coding -- for the values in the previous code snippet -- would be:
 
 $$011,000,001;000,000,111;001,001,000;000,000,000$$
+
+(the semicolons separate components, the commas seperate variables)
 
 The next functions transform the binary vector into a polynomial formula that `lm()` understands:
 
@@ -89,20 +89,20 @@ make.formula(code.eg, n.vars, max.compts)
 ```
 
 
-Let's create a dataframe for testing:
+Let's create a dataframe for testing. Notice that the data frame columns name must be called $y$ for the output value, and $x_i$ for the input values:
 
 
 ```r
-set.seed(101)
+set.seed(102)
 x1 <- seq(0, 8 * pi, length.out = 201)/pi
 x2 <- sin(x1)^2
-x3 <- abs(cos(x2))
+x3 <- abs(cos(x1))
 y <- x1 * x2 - x1 * x3 + x3^3 + rnorm(201, 0, 0.15)  # a latent variable with some noise
 df <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)  # make data frame
 ```
 
 
-This binary coding is useful to use the binary GA rbga.bin() from package `genalg` (see below):
+This binary coding is useful to use the binary GA `rbga.bin()` from package `genalg` (see below):
 
 
 ```r
@@ -120,12 +120,14 @@ evalFuncFactory <- function(df, n.vars, max.compts) {
     function(chromosome) {
         formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.compts))
         model <- lm(formula, data = df)
-        return(sqrt(mean(residuals(model)^2)))  #rbga.bim tries to minimize
+        # rbga.bin() minimizes, so the rmse will be smaller as the interations
+        # advance
+        return(sqrt(mean(residuals(model)^2)))
     }
 }
 
-############################# Unleash the chromosomes of war!
-GAmodel <- rbga.bin(size = max.degree * n.vars * max.compts, popSize = 100, 
+################################# Unleash the chromosomes of war!
+GAmodel <- rbga.bin(size = max.degree * n.vars * max.compts, popSize = 150, 
     iters = 100, mutationChance = 0.01, elitism = TRUE, evalFunc = evalFuncFactory(df, 
         n.vars, max.compts))
 
@@ -135,7 +137,7 @@ cat(summary.rbga(GAmodel))
 ```
 ## GA Settings
 ##   Type                  = binary chromosome
-##   Population size       = 100
+##   Population size       = 150
 ##   Number of Generations = 100
 ##   Elitism               = TRUE
 ##   Mutation Chance       = 0.01
@@ -145,7 +147,7 @@ cat(summary.rbga(GAmodel))
 ##   Var 0 = [,]
 ## 
 ## GA Results
-##   Best Solution : 0 0 0 0 0 0 1 1 1 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0
+##   Best Solution : 0 0 0 0 0 1 0 0 0 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 1 0
 ```
 
 ```r
@@ -156,8 +158,8 @@ coef(model)
 ```
 
 ```
-## (Intercept)     I(x3^3)  I(x1 * x2)  I(x1 * x3)       I(x3) 
-##     -0.2002      0.9717      1.0156     -1.0073      0.2473
+## (Intercept)       I(x2)  I(x1 * x2)  I(x1 * x3)  I(x2 * x3) 
+##      0.9955     -0.8692      0.9860     -0.9962     -0.5044
 ```
 
 ```r
@@ -168,5 +170,4 @@ lines(x1, y1, col = "red")  # approx
 ```
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
-
 

@@ -23,13 +23,13 @@ The chromosome coding will as follow:
 + each component is split into `n.vars` sets of `max.degree` size each (a variable)
 + for each variable, the number of 1s gives the variable's degree (this means that a given polynomial may have more than one possible representation)
 
-Eg (for the values in the previous code snippet):
+Eg: consider polynomial $x_1^2 \times x_3 + x_3^3 + x_1 \times x_2$
 
-Consider polynomial $x_1^2 \times x_3 + x_3^3 + x_1 \times x_2$
-
-One possible coding would be (the semicolons separate components, the commas seperate variables):
+One possible coding -- for the values in the previous code snippet -- would be:
 
 $$011,000,001;000,000,111;001,001,000;000,000,000$$
+
+(the semicolons separate components, the commas seperate variables)
 
 The next functions transform the binary vector into a polynomial formula that `lm()` understands:
 
@@ -77,18 +77,18 @@ paste0(code.eg, collapse = "") # just to show as string
 make.formula(code.eg, n.vars, max.compts)
 ```
 
-Let's create a dataframe for testing:
+Let's create a dataframe for testing. Notice that the data frame columns name must be called $y$ for the output value, and $x_i$ for the input values:
 
 ```{r, fig.width=12}
-set.seed(101)
+set.seed(102)
 x1 <- seq(0, 8 * pi, length.out = 201)/pi
 x2 <- sin(x1)^2
-x3 <- abs(cos(x2))
+x3 <- abs(cos(x1))
 y  <- x1*x2 - x1*x3 + x3^3 + rnorm(201,0,.15) # a latent variable with some noise
 df <- data.frame(y=y,x1=x1,x2=x2,x3=x3) # make data frame
 ```
 
-This binary coding is useful to use the binary GA rbga.bin() from package `genalg` (see below):
+This binary coding is useful to use the binary GA `rbga.bin()` from package `genalg` (see below):
 
 ```{r}
 library(genalg)
@@ -105,14 +105,16 @@ evalFuncFactory <- function(df, n.vars, max.compts) {
   function(chromosome) {
     formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.compts))
     model <- lm(formula, data=df)
-    return( sqrt(mean(residuals(model)^2)) ) #rbga.bim tries to minimize
+    # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
+    return( sqrt(mean(residuals(model)^2)) ) 
   }
 }
 
-#############################
+#################################
 # Unleash the chromosomes of war!
+#################################
 GAmodel <- rbga.bin(size = max.degree*n.vars*max.compts, 
-                    popSize = 100, 
+                    popSize = 150, 
                     iters = 100, 
                     mutationChance = 0.01, 
                     elitism = TRUE, 
@@ -128,4 +130,3 @@ title(best.formula)
 y1<-predict(model,df[,-1])
 lines(x1,y1,col="red") # approx
 ```
-
