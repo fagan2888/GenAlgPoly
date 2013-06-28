@@ -1,0 +1,36 @@
+Learning Polynomial Regression with Genetic Algorithms
+======================================================
+
+Francisco Coelho |  | João Neto
+:---------------:|-----|:---------:
+[`fc@di.uevora.pt`](mailto://fc@di.uevora.pt)| |[`jpn@di.fc.ul.pt`](mailto://jpn@di.fc.ul.pt)
+
+Introduction
+------------
+
+_intro text_
+
+### State of the Art
+
+Em [1] vimos que...
+
+Section 1
+---------
+
+
+References
+----------
+
+1. Hofwing, Magnus, Niclas Strömberg, and Martin Tapankov. "Optimal Polynomial Regression Models by using a Genetic Algorithm." Proceedings of the Second International Conference on Soft ComputingTechnology in Civil, Structural and Environmental Engineering Conference,(Crete, Greece), 2011009. 2011.
+
+1. Wu, Chih-Hung, Gwo-Hshiung Tzeng, and Rong-Ho Lin. "A Novel hybrid genetic algorithm for kernel function and parameter optimization in support vector regression." Expert Systems with Applications 36.3 (2009): 4725-4735.
+
+1. Gálvez, Akemi, Andrés Iglesias, and Jaime Puig-Pey. "Iterative two-step genetic-algorithm-based method for efficient polynomial B-spline surface reconstruction." Information Sciences 182.1 (2012): 56-76.
+
+1. Ghai, Dhruva, Saraju P. Mohanty, and Garima Thakral. "Fast Analog Design Optimization using Regression based Modeling and Genetic Algorithm: A Nano-CMOS VCO Case Study." Proceedings of the 14th IEEE International Symposium on Quality Electronic Design (ISQED). 2013.
+
+1. Rezania, Mohammad, Akbar A. Javadi, and Orazio Giustolisi. "Evaluation of liquefaction potential based on CPT results using evolutionary polynomial regression." Computers and Geotechnics 37.1 (2010): 82-92.
+
+1. Zain, Azlan Mohd, Habibollah Haron, and Safian Sharif. "Genetic algorithm and simulated annealing to estimate optimal process parameters of the abrasive waterjet machining." Engineering with computers 27.3 (2011): 251-259.
+
+1. Garg, A., and K. Tai. "Comparison of regression analysis, artificial neural network and genetic programming in handling the multicollinearity problem." Modelling, Identification & Control (ICMIC), 2012 Proceedings of International Conference on. IEEE, 2012.
