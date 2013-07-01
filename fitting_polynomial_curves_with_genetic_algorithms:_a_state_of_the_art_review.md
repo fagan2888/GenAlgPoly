@@ -1,8 +1,17 @@
 #Fitting Polynomial Curves with Genetic Algorithms: A State of the Art Review
 
+## [Table of Contents](id:toc)
+1. [**Search Results**](#results)
+    1. [Google](#g1): `polynomial genetic (regression | fitting)`
+    2. [Google Scholar](#googlescholar) `polynomial genetic algorithm (regression | fitting)`
+    3. [arXiv](#arxiv1) `polynomial genetic (regression | fitting)`
+    4. [arXiv](#arxiv2) `algorithm genetic (regression | fitting)`
+2. [**Program documentations**](#documentation)
+    5. [R/CRAN/R-bloggers/...](#r)
+    6. [Others: octave/scipy/...](#others)
 
-## Search
-### Google: `polynomial genetic (regression OR fitting)`
+## [Search Results](id:results) [(TOC)](#toc)
+### [Google](id:g1): `polynomial genetic (regression OR fitting)`  [(TOC)](#toc)
 
 1. [Optimal Sampling of Genetic Algorithms on Polynomial Regression](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.152.7415) (2008)  
     > This paper investigates the utility of sampling as an evaluation-relaxation technique in genetic algorithms (GAs). In many real-world applications, sampling can be used to generate a less accurate, but computationally inexpensive fitness evaluator to speed GAs up. This paper focuses on the problem of polynomial regression as an example of problems with positive dependency among genes. Via statistical analysis of the noise introduced by sampling, this paper develops facet-wise models for the optimal sampling size, and these models are empirically verified. The results show that when the population is sized properly, small sampling sizes are preferred for most applications. When a fixed population size is adopted, which is usually the case in real-world applications, an optimal sampling size exists. If the sampling size is too small, the sampling noise increases, and GAs would perform poorly because of an insufficiently large population. If the sampling size is too large, the GA would spend too much time in fitness calculation and cannot perform well either within limited run duration. 
@@ -41,7 +50,7 @@ polynomial regression](http://www.iwaponline.com/jh/008/0207/0080207.pdf) (2006)
 02)
 
 
-### Google Scholar: `polynomial genetic algorithms (regression OR fitting) (2011 OR 2012 OR 2010 OR 2009)`
+### [Google Scholar](id:googlescholar): `polynomial genetic algorithms (regression OR fitting) (2011 OR 2012 OR 2010 OR 2009)`  [(TOC)](#toc)
 
 1. [Use of genetic algorithms with multivariate regression for determination of gelatine in historic papers based on FT-IR and NIR spectral data](http://discovery.ucl.ac.uk/459862/1/459862_Csefalvayova_2010_Talanta_EPS.pdf) (2010)
 > Quantitative non-destructive analysis of individual constituents of historic rag paper is crucial for its effective preservation. In this work, we examine the potentials of mid- and near-infrared spectroscopy, however, in order to fully utilise the selectivity inherent to spectroscopic multivariate measurements, genetic algorithms were used to select spectral data derived from information-rich FT-IR or UV–vis-NIR measurements to build multivariate calibration models based on partial least squares regression, relating spectra to gelatine content in paper. A selective but laborious chromatographic method for the quantification of hydroxyproline (HYP) has been developed to provide the reference data on gelatine content. We used 9-fluorenylmethyl chloroformate (FMOC) to derivatise HYP, which was subsequently determined using reverse-phase liquid chromatographic separation and fluorimetric detection. In this process, the sample is consumed, which is why the method can only be used as a reference method.
@@ -75,7 +84,7 @@ polynomial regression](http://www.iwaponline.com/jh/008/0207/0080207.pdf) (2006)
 10. **[link](http://150.214.190.154/gfs/pdf/%282009a%29_Sanchez.pdf)** [Obtaining linguistic fuzzy rule-based regression models from imprecise data with multiobjective genetic algorithms](http://dx.doi.org/    10.1007/s00500-008-0362-4) (2009)
 > Backfitting of fuzzy rules is an Iterative Rule Learning technique for obtaining the knowledge base of a fuzzy rule-based system in regression problems. It consists in fitting one fuzzy rule to the data, and replacing the whole training set by the residual of the approximation. The obtained rule is added to the knowledge base, and the process is repeated until the residual is zero, or near zero. Such a design has been extended to imprecise data for which the observation error is small. Nevertheless, when this error is moderate or high, the learning can stop early. In this kind of algorithms, the specificity of the residual might decrease when a new rule is added. There may happen that the residual grows so wide that it covers the value zero for all points (thus the algorithm stops), but we have not yet extracted all the information available in the dataset. Focusing on this problem, this paper is about datasets with medium to high discrepancies between the observed and the actual values of the variables, such as those containing missing values and coarsely discretized data. We will show that the quality of the iterative learning degrades in this kind of problems, because it does not make full use of all the available information. As an alternative to sequentially obtaining rules, we propose a new multiobjective Genetic Cooperative Competitive Learning (GCCL) algorithm. In our approach, each individual in the population codifies one rule, which competes in the population in terms of maximum coverage and fitting, while the individuals in the population cooperate to form the knowledge base.
 
-### arXiv `all:((polynomial AND genetic) AND (regression OR fitting)), 2009 -- 2013`
+### [arXiv](id:arxiv1) `all:((polynomial AND genetic) AND (regression OR fitting)), 2009 -- 2013`  [(TOC)](#toc)
 
 1. [Comparative analysis of model independent methods for exploring the nature of dark energy](http://arxiv.org/abs/1306.4885) (2013)
 > We make a comparative analysis of the various independent methods proposed in the literature for studying the nature of dark energy, using four different mocks of SnIa data. In particular, we explore a generic PCA approach, the Genetic Algorithms, a series of approximations like Pad\'e power law approximants, and various expansions in orthogonal polynomials, as well as cosmography, and compare them with the usual fit to $w$CDM. We find that, depending on the mock data, some methods are more efficient than others at distinguishing the underlying model, although there is no universally better method. 
@@ -90,7 +99,7 @@ polynomial regression](http://www.iwaponline.com/jh/008/0207/0080207.pdf) (2006)
 > In this paper, the complexities in the relationship between rainfall and sea surface temperature (SST) anomalies during the winter monsoon (November-January) over India were evaluated statistically using scatter plot matrices and autocorrelation functions.Linear as well as polynomial trend equations were obtained and it was observed that the coefficient of determination for the linear trend was very low and it remained low even when polynomial trend of degree six was used. An exponential regression equation and an artificial neural network with extensive variable selection were generated to forecast the average winter monsoon rainfall of a given year using the rainfall amounts and the sea surface temperature anomalies in the winter monsoon months of the previous year as predictors. The regression coefficients for the multiple exponential regression equation were generated using Levenberg-Marquardt algorithm. The artificial neural network was generated in the form of a multiplayer perceptron with sigmoid non-linearity and genetic-algorithm based variable selection. Both of the predictive models were judged statistically using the Willmott index, percentage error of prediction, and prediction yields. The statistical assessment revealed the potential of artificial neural network over exponential regression. 
 
 
-### arXiv `all:((algorithm AND genetic) AND (regression OR fitting)), 2009 -- 2013`
+### [arXiv](id:arxiv2) `all:((algorithm AND genetic) AND (regression OR fitting)), 2009 -- 2013`  [(TOC)](#toc)
 
 Yields 98 results, too many to include here. Most report applications, some are directed to other non-linear models, a few are repeated and two are concerned with **bayesian inference**:
 
@@ -100,3 +109,13 @@ Yields 98 results, too many to include here. Most report applications, some are 
 2. [abc: an R package for Approximate Bayesian Computation (ABC)](http://arxiv.org/abs/1106.2793) (2011)
 > Many recent statistical applications involve inference under complex models, where it is computationally prohibitive to calculate likelihoods but possible to simulate data. Approximate Bayesian Computation (ABC) is devoted to these complex models because it bypasses evaluations of the likelihood function using comparisons between observed and simulated summary statistics. We introduce the R abc package that implements several ABC algorithms for performing parameter estimation and model selection. In particular, the recently developed non-linear heteroscedastic regression methods for ABC are implemented. The abc package also includes a cross-validation tool for measuring the accuracy of ABC estimates, and to calculate the misclassification probabilities when performing model selection. The main functions are accompanied by appropriate summary and plotting tools. Considering an example of demographic inference with population genetics data, we show the potential of the R package.
 R is already widely used in bioinformatics and several fields of biology. The R abc package will make the ABC algorithms available to the large number of R users. abc is a freely available R package under the GPL license, and it can be downloaded at [this http URL](http://cran.r-project.org/web/packages/abc/index.html**.)
+
+##[Program Documentations](id:documentation)  [(TOC)](#toc)
+
+### [R/CRAN/R-bloggers/...](id:r)  [(TOC)](#toc)
+1. [R `genalg`](http://cran.r-project.org/web/packages/genalg/index.html) (2005)
+>A R based genetic algorithm that optimizes, using a user set evaluation function, a set of floats.
+It takes as input minimum and maximum values for the floats to optimizes. The optimum is the chromosome for which the evaluation value is minimal.
+It requires a `evalFunc` method to be supplied that takes as argument the chromosome, a vector of floats. Additionally, the GA optimization can be monitored by setting a `monitorFunc` that takes a `rbga` object as argument.
+
+### [Others: octave/scipy/...](id:others)  [(TOC)](#toc)
