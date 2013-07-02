@@ -15,7 +15,7 @@ To achieve this we need to know three values in advance:
 ```{r}
 n.vars     <- 3  # x1, x2,... 
 max.compts <- 4  # poly = compt1 + compt2 + ...
-max.degree <- 3
+max.degree <- 3  # meaning exponents up to 2^max.degree - 1
 ```
 
 The chromosome coding will as follow:
@@ -23,7 +23,7 @@ The chromosome coding will as follow:
 + each component is split into `n.vars` sets of `max.degree` size each (a variable)
 + for each variable, the number of 1s gives the variable's degree (this means that a given polynomial may have more than one possible representation)
 
-Eg: consider polynomial $x_1^2 \times x_3 + x_3^3 + x_1 \times x_2$
+Eg: consider polynomial $x_1^3 \times x_3 + x_3^7 + x_1 \times x_2$
 
 One possible coding -- for the values in the previous code snippet -- would be:
 
@@ -34,12 +34,16 @@ $$011,000,001;000,000,111;001,001,000;000,000,000$$
 The next functions transform the binary vector into a polynomial formula that `lm()` understands:
 
 ```{r}
+bin2dec <- function(x) 
+    sum(2^(which(rev(unlist(strsplit(as.character(x), "")) == 1))-1))
+
 make.component <- function(bits, n.vars) {
   vars <- paste0("x",1:n.vars)
   elements <- split(bits, ceiling(seq_along(bits)/(length(bits)/n.vars)))
   str <- ""
   for(i in 1:length(elements)) {
-    power <- length(elements[[i]][elements[[i]]==1])
+    # power <- length(elements[[i]][elements[[i]]==1]) previous coding
+    power <- bin2dec(elements[[i]])
     if (power == 1)
       if (str=="")
         str = vars[i]
@@ -69,7 +73,7 @@ make.formula <- function(bits, n.vars, max.compts) {
 }
 ```
 
-Let's check the previous eg, $x_1^2 \times x_3 + x_3^3 + x_1 \times x_2$:
+Let's check the previous eg, $x_1^3 \times x_3 + x_3^7 + x_1 \times x_2$:
 
 ```{r}
 code.eg <- c(0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0)
@@ -85,7 +89,7 @@ x1 <- seq(0, 8 * pi, length.out = 201)/pi
 x2 <- sin(x1)^2
 x3 <- abs(cos(x1))
 y  <- x1*x2 - x1*x3 + x3^3 + rnorm(201,0,.15) # a latent variable with some noise
-df <- data.frame(y=y,x1=x1,x2=x2,x3=x3) # make data frame
+df <- data.frame(y=y,x1=x1,x2=x2,x3=x3)       # make data frame
 ```
 
 This binary coding is useful to use the binary GA `rbga.bin()` from package `genalg` (see below):

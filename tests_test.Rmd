@@ -1,0 +1,49 @@
+```{r, message = FALSE, tidy = FALSE, echo = F}
+## knitr configuration: http://yihui.name/knitr/options#chunk_options
+opts_chunk$set(comment = "", error= TRUE, warning = FALSE, message = FALSE,
+               tidy = FALSE, cache = TRUE, echo = T,
+               fig.width = 6, fig.height = 6)
+```
+Testing Test
+
+========================================================
+
+```{r}
+set.seed(101)
+
+# Read Data
+
+size <- 50
+my.data <- data.frame(x1 <- rpois(size,4),
+                      x2 <- rnorm(size),
+                      y <- x1*x2 + x1)
+
+# Preprocess Data
+
+names(my.data) <- c(paste0("x",1:(ncol(my.data)-1)),"y")
+
+sapply(my.data, class)
+my.data$x1 <- as.numeric(my.data$x1) # x1 becomes a numeric value
+head(my.data,8)
+
+# Execute ML methods
+
+source("gapolyfuncs.R")
+report <- make.report(my.data, population=20, iterations=20)
+
+# See Results
+
+coef(report$ga.model)
+report$ga.error
+
+boxplot(report$ga.error, 
+        report$lm.error,
+        report$svm.error,
+        report$rpart.error,
+        report$rf.error,
+        report$citree.error,
+        names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
+        ylab="RMSE")
+
+# print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
+```
