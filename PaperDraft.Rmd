@@ -14,11 +14,19 @@ Em complemento, os algoritmos genéticos proporcionam um esquema de optimizaçã
 
 Os polinómios proporcionam um dos casos mais simples de modelos não-lineares. Além disso as funções polinomiais constituem uma das áreas mais aprofundadas da matemática. Esta característica de limiar torna o estudo dos modelos polinomiais especialmente atractiva.
 -->
-With notable exceptions, most machine learning techniques are based on linear models. This assumption has many advantages in its favor spanning, for example, reduced computational complexity and strong theoretical framework. Though sometimes linear models are adequate, many nonlinear problems without acceptable linear approximations are left, as can be seen by the number of articles that describe applications of nonlinear models in engineering, economics, linguistics, animal production, _etc_.
+With notable exceptions, most machine learning techniques are based on linear models. This assumption has many advantages spanning, for example, reduced computational complexity and strong theoretical framework. Though sometimes linear models are adequate, many nonlinear problems without acceptable linear approximations are left, as can be seen by the number of articles that describe applications of nonlinear models in engineering, economics, linguistics, animal production, _etc_.
 
 In addition, genetic algorithms provide an optimization scheme easy to conceptualize and with very broad application. If a nonlinear model requires parameterization, genetic algorithms provide a simple and often effective approach to search for local optimal parameters.
 
 Polynomials provide one of the simplest cases to nonlinear models. This threshold feature makes the study of polynomial models especially attractive when moving from linear to nonlinear models. Also the polynomial functions are one of the deepest studied subjects in mathematics.
+
+In this setting, the use of genetic algorithms to search for optimal parameters of polynomial models is unavoidable. Indeed, many applied works can be found under this keywords, with special incidence on engineering and biology, where often the required models do not admit acceptable linear approximations. 
+
+The specific nature of polynomials allows quite different representations of individual instances. For example, $$$p(x) = x^2 - 1 = (x-1)(x+1)$$$ can be described either by:
+
+* a list of coefficients: `[-1, 0, 1]`;
+* the product of two lower degree polynomials;
+* a parse tree: `sum(square(x),-1)`; 
 
 ### State of the Art
 
