@@ -8,14 +8,28 @@ Francisco Coelho |  | João Neto
 Introduction
 ------------
 
-_intro text_
+<!--Com notáveis excepções, a maioria das técnicas de _machine learning_ assenta em modelos lineares. Este pressuposto tem a seu favor inúmeras vantagens que abrangem, por exemplo, uma reduzida complexidade computacional e um forte enquadramento teórico. Embora por vezes os modelos lineares sejam adequados, restam muitos problemas não-lineares sem aproximações lineares aceitáveis, como pode ser constatado pelo número de artigos que descrevem aplicações de modelos não-lineares a problemas de engenharia, economia, linguística, produção animal, _etc_.
+
+Em complemento, os algoritmos genéticos proporcionam um esquema de optimização fácil de conceptualizar e de aplicação muito geral. Sendo necessário parameterizar um modelo não-linear, os algoritmos genéticos proporcionam um meio simples e frequentemente eficaz de encontrar aproximações de parâmetros localmente óptimos.
+
+Os polinómios proporcionam um dos casos mais simples de modelos não-lineares. Além disso as funções polinomiais constituem uma das áreas mais aprofundadas da matemática. Esta característica de limiar torna o estudo dos modelos polinomiais especialmente atractiva.
+-->
+With notable exceptions, most machine learning techniques are based on linear models. This assumption has many advantages in its favor spanning, for example, reduced computational complexity and strong theoretical framework. Though sometimes linear models are adequate, many nonlinear problems without acceptable linear approximations are left, as can be seen by the number of articles that describe applications of nonlinear models in engineering, economics, linguistics, animal production, _etc_.
+
+In addition, genetic algorithms provide an optimization scheme easy to conceptualize and with very broad application. If a nonlinear model requires parameterization, genetic algorithms provide a simple and often effective approach to search for local optimal parameters.
+
+Polynomials provide one of the simplest cases to nonlinear models. This threshold feature makes the study of polynomial models especially attractive when moving from linear to nonlinear models. Also the polynomial functions are one of the deepest studied subjects in mathematics.
 
 ### State of the Art
 
-Em [1] vimos que...
+1. _EXISTEM MUITAS APLICAÇÕES_
+2. _DESCRIÇÃO ESTRUTURAL (ÁRVORE DE PARSING) VS. COEFICIENTES DOS MONÓMIOS_
+3. _PRINCIPAIS PROBLEMAS E ACTUAIS PROPOSTAS DE RESOLUÇÃO_
 
 Section 1
 ---------
+
+_texto para a section 1_
 
 
 References
