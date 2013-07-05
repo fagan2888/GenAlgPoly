@@ -108,6 +108,23 @@ best.errors <-
 
 plot(lambda.values, best.errors, type="l")
 ##############################################
+# Check fitness progress
 
+source("gapolyfuncs.R")
+follow.fitness(my.data,population=200,iterations=50)
+
+# output:
+
+progress <- c(78.3925,78.3925,71.30467,71.30467,60.09713,20.41959,15.00416,15.00416,15.00416,15.00416,15.00416,15.00416,12.31946,12.31946,12.31946,12.31946,2.971683,2.971683,2.971683,2.971683,6.569273e-14,6.569273e-14,6.500183e-14,6.500183e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14,3.573077e-14)
+
+df <- data.frame(iteration = 1:length(progress),
+                 fitness = as.numeric(progress))
+
+qplot(iteration, fitness, data=df) +
+  geom_line() +
+  ylim(0, max(df$fitness)) +
+  ggtitle("Artificial dataset (population 200)")
+
+##############################################
 # print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
 ```
