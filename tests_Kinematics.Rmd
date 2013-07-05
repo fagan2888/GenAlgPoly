@@ -82,11 +82,23 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
 
 ########################################################
 # Lambda Test
-lambda.values <- seq(1,2,length.out=20)
+lambda.values <- seq(0.5,0.999,length.out=20)
 n.runs <- 5
 
 source("gapolyfuncs.R")
 errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterations=25)
+
+df <- data.frame(error = as.vector(matrix(errors,nrow=1)),
+                 lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
+
+write.table(df, "lambda.errors.kinematics.txt")
+
+library(ggplot2)
+qplot(lambda,error,data=df,geom=c("jitter","boxplot")) + 
+  ylab("root-mean-square error") + 
+  xlab("lambda value") +
+ # coord_cartesian(ylim = c(0, 50))  +
+  ggtitle("Kinematics dataset")
 
 ########################################################
 
