@@ -81,7 +81,7 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
 ##############################################
 
 # Lambda Test
-lambda.values <- seq(1,2,length.out=20)
+lambda.values <- seq(0.5,2,length.out=20)
 n.runs <- 1
 
 source("gapolyfuncs.R")

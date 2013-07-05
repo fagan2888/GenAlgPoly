@@ -29,19 +29,11 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=300, iterations=300)
+report <- make.report(my.data, population=200, iterations=100)
 
 # See Results
 
-save(report, file="Kinematics300.Rda") # recover with load("Kinematics.Rda") 
-
-df <- data.frame(ga.poly = report$ga.error,
-                 lin.reg = report$lm.error,
-                 svm = report$svm.error,
-                 rpart = report$rpart.error,
-                 rf = report$rf.error,
-                 ci.tree = report$citree.error)
-
+save(report, file="Kinematics200.Rda") # recover with load("Kinematics.Rda") 
 
 coef(report$ga.model)
 report$ga.error
@@ -91,7 +83,11 @@ errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterat
 df <- data.frame(error = as.vector(matrix(errors,nrow=1)),
                  lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
 
-write.table(df, "lambda.errors.kinematics.txt")
+write.table(df, "lambda.errors.kinematics2.txt")
+
+df <- read.table("lambda.errors.kinematics2.txt", header=TRUE)
+
+df$lambda <- as.factor(df$lambda)
 
 library(ggplot2)
 qplot(lambda,error,data=df,geom=c("jitter","boxplot")) + 
@@ -99,6 +95,11 @@ qplot(lambda,error,data=df,geom=c("jitter","boxplot")) +
   xlab("lambda value") +
  # coord_cartesian(ylim = c(0, 50))  +
   ggtitle("Kinematics dataset")
+##############################################
+# Check fitness progress
+
+source("gapolyfuncs.R")
+follow.fitness(my.data,population=300,iterations=50,mutation.rate=0.15,lambda=0.95)
 
 ########################################################
 

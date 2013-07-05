@@ -83,7 +83,7 @@ make.formula <- function(bits, n.vars, max.monoids) {
 # variable and the max number of componentes, all required information
 # to perform the polynomial regression and then compute the residuals' rsme 
 # which will be the fitness of the respective chromosome
-evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1.05) {
+evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
   
   function(chromosome) {
     formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.monoids))
@@ -105,7 +105,8 @@ make.report <- function(my.data,
                         population=100, 
                         iterations=25, 
                         runs=10, 
-                        mutation.rate=0.05) {
+                        mutation.rate=0.05,
+                        verbose=TRUE) {
   
   library(genalg)
   library(e1071)
@@ -142,7 +143,7 @@ make.report <- function(my.data,
       
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
-    ga.model <- lm(best.formula, data=my.data)
+    ga.model <- lm(best.formula, data=train.set)
     ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
     ga.error[i] <- rsme(ga.pred,test.set[,ncol(test.set)])
     
@@ -171,6 +172,9 @@ make.report <- function(my.data,
     citree.model <- ctree(y ~ ., data = train.set)
     citree.pred  <- predict(citree.model, test.set[,-ncol(test.set)]) 
     citree.error[i] <- rsme(citree.pred,test.set[,ncol(test.set)])    
+    
+    if (verbose)
+      cat(i)
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
@@ -221,7 +225,7 @@ test.lambda <- function(my.data, lambda.values,
       
       best.solution <- GAmodel$population[1,]
       best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
-      ga.model <- lm(best.formula, data=my.data)
+      ga.model <- lm(best.formula, data=test.set)
       ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
 
       errors[i,k] <- rsme(ga.pred,test.set[,ncol(test.set)])
@@ -242,6 +246,7 @@ follow.fitness <- function(my.data,
                            population=100, 
                            iterations=20, 
                            mutation.rate=0.05,
+                           lambda=1,
                            verbose=TRUE) {
   
   library(genalg)
@@ -259,7 +264,7 @@ follow.fitness <- function(my.data,
                       iters = iterations, 
                       mutationChance = mutation.rate, 
                       elitism = TRUE, 
-                      evalFunc = evalFuncFactory(train.set, n.vars, max.monoids),
+                      evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, lambda),
                       monitorFunc = monitorEvalFactory(train.set, n.vars, max.monoids))  
   
   fitness.progress
@@ -281,8 +286,9 @@ monitorEvalFactory <- function(train.set, n.vars, max.monoids) {
     }
     # we have the best solution (chromosome), let's eval it and keep it
     eval <- evalFuncFactory(train.set, n.vars, max.monoids)
-    
+        
     fitness.progress <- c(fitness.progress, eval(bestSolution)) #TODO: does not work (?)
+    print(make.formula(bestSolution, n.vars, max.monoids))
     print(eval(bestSolution))
   }
 }
