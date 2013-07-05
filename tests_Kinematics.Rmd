@@ -47,7 +47,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Kinematics300.txt")
+write.table(df, "Kinematics200.txt")
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 
