@@ -31,7 +31,7 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=50, iterations=25, mutation.rate=0.05)
+report <- make.report(my.data, population=50, iterations=25, mutation.rate=0.05, runs=1)
 
 # See Results
 
@@ -85,7 +85,7 @@ lambda.values <- seq(1,2,length.out=20)
 n.runs <- 1
 
 source("gapolyfuncs.R")
-errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=10, iterations=25)
+errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=10, iterations=10)
 
 # df <- as.data.frame(errors)
 # names(df) <- round(lambda.values,3)

@@ -1,6 +1,5 @@
 #########################################################################
 # initial values, can be overriden
-n.vars      <- 3  # x1, x2,... 
 max.monoids <- 4  # poly = monoid1 + monoid2 + ...
 max.degree  <- 3  # meaning exponents up to 2^max.degree - 1
 
@@ -96,12 +95,30 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1.05) {
   }
 }
 
+monitorEvalFactory <- function(n.vars, max.monoids) {
+
+  function(obj) {
+    minEval <- min(obj$evaluations)
+    filter  <- obj$evaluations == minEval
+    bestObjectCount = sum(rep(1, obj$popSize)[filter]);
+    # ok, deal with the situation that more than one object is best
+    if (bestObjectCount > 1) {
+      bestSolution = obj$population[filter,][1,];
+    } else {
+      bestSolution = obj$population[filter,];
+    }
+    print(bestSolution)
+    print(make.formula(bestSolution, n.vars, max.monoids))
+  }
+}
+
 #########################################################################
 # Returns a dataset with the rsme for each one of the tested ML methods
 # including GA Poly
 
 # pre: both sets must have columns named x1...xn and the last one is y (the output)
 make.report <- function(my.data, 
+                        n.vars,
                         population=100, 
                         iterations=25, 
                         runs=10, 
@@ -133,12 +150,13 @@ make.report <- function(my.data,
     train.set <- my.data[inTrain,]
     test.set  <- my.data[-inTrain,]
     
-    GAmodel <- rbga.bin(size = max.degree*n.vars*max.monoids, 
+    GAmodel <- rbga.bin(size = max.monoids + max.degree*n.vars*max.monoids, 
                         popSize = population, 
                         iters = iterations, 
                         mutationChance = mutation.rate, 
                         elitism = TRUE, 
-                        evalFunc = evalFuncFactory(train.set, n.vars,max.monoids))
+                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids),
+                        monitorFunc = monitorEvalFactory(n.vars, max.monoids))
       
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
@@ -212,7 +230,7 @@ test.lambda <- function(my.data, lambda.values,
       train.set <- my.data[inTrain,]
       test.set  <- my.data[-inTrain,]
       
-      GAmodel <- rbga.bin(size = max.degree*n.vars*max.monoids, 
+      GAmodel <- rbga.bin(size = max.monoids + max.degree*n.vars*max.monoids, 
                           popSize = population, 
                           iters = iterations, 
                           mutationChance = mutation.rate, 
