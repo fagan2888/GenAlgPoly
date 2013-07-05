@@ -15,8 +15,10 @@ set.seed(101)
 
 size <- 50
 my.data <- data.frame(x1 <- rpois(size,4),
-                      x2 <- rnorm(size),
-                      y <- x1*x2 + x1)
+                      x2 <- rnorm(size,10),
+                      x3 <- rpois(size,20),
+                      x4 <- rnorm(size,4,1),                      
+                      y <- x4^2*x2 + x1^2*x3 + 5)
 
 # Preprocess Data
 
@@ -29,21 +31,83 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=20, iterations=20)
+report <- make.report(my.data, population=50, iterations=25, mutation.rate=0.05)
 
 # See Results
 
 coef(report$ga.model)
 report$ga.error
 
-boxplot(report$ga.error, 
-        report$lm.error,
-        report$svm.error,
-        report$rpart.error,
-        report$rf.error,
-        report$citree.error,
-        names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
-        ylab="RMSE")
+# boxplot(report$ga.error, 
+#         report$lm.error,
+#         report$svm.error,
+#         report$rpart.error,
+#         report$rf.error,
+#         report$citree.error,
+#         names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
+#         ylab="RMSE")
+
+# df <- data.frame(GA.Poly = report$ga.error,
+#                  Lin.Reg = report$lm.error,
+#                  SVM = report$svm.error,
+#                  RPART = report$rpart.error,
+#                  Rnd.For = report$rf.error,
+#                  CI.Tree = report$citree.error)
+# 
+# write.table(df, "Articial_dataset.txt")
+
+size <- length(report$ga.error)
+list.data <- list(error=c(report$ga.error, 
+                          report$lm.error,
+                          report$svm.error,
+                          report$rpart.error,
+                          report$rf.error,
+                          report$citree.error), 
+                  method=c(rep("GA.Poly",size),
+                           rep("Lin.Reg.",size),
+                           rep("SVM",size), 
+                           rep("RPART",size),
+                           rep("Rnd.For.",size),
+                           rep("CI.Tree",size)))
+
+df <- as.data.frame(list.data)
+
+library(ggplot2)
+qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
+  ylab("root-mean-square error") + 
+  xlab("regression method") +
+  ggtitle("Artificial dataset")
+
+##############################################
+
+# Lambda Test
+lambda.values <- seq(1,2,length.out=20)
+n.runs <- 1
+
+source("gapolyfuncs.R")
+errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=10, iterations=25)
+
+# df <- as.data.frame(errors)
+# names(df) <- round(lambda.values,3)
+
+df <- data.frame(error = as.vector(matrix(errors,nrow=1)),
+                 lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
+
+write.table(df, "lambda.errors.txt")
+
+library(ggplot2)
+qplot(lambda,error,data=df,geom=c("jitter","boxplot")) + 
+  ylab("root-mean-square error") + 
+  xlab("lambda value") +
+  coord_cartesian(ylim = c(0, 50))  +
+  ggtitle("Artificial dataset")
+
+library(plyr)
+best.errors <- 
+  colwise(function(x) min(as.numeric(x)))(as.data.frame(errors)) # get min for each column
+
+plot(lambda.values, best.errors, type="l")
+##############################################
 
 # print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
 ```

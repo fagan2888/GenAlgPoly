@@ -80,5 +80,15 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
   xlab("regression method") +
   ggtitle("Kinematics dataset")
 
+########################################################
+# Lambda Test
+lambda.values <- seq(1,2,length.out=20)
+n.runs <- 5
+
+source("gapolyfuncs.R")
+errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterations=25)
+
+########################################################
+
 # print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
 ```

@@ -1,8 +1,8 @@
 #########################################################################
 # initial values, can be overriden
-n.vars     <- 3  # x1, x2,... 
-max.compts <- 4  # poly = compt1 + compt2 + ...
-max.degree <- 3  # meaning exponents up to 2^max.degree - 1
+n.vars      <- 3  # x1, x2,... 
+max.monoids <- 4  # poly = monoid1 + monoid2 + ...
+max.degree  <- 3  # meaning exponents up to 2^max.degree - 1
 
 #########################################################################
 # Root mean square error
@@ -17,57 +17,63 @@ bin2dec <- function(x)
 
 #########################################################################
 # The chromosome coding will as follow:
-# + the chromosome is split into `max.compts` sets of bits of equal size 
-#   (a component)
-# + each component is split into `n.vars` sets of `max.degree` size each 
+# + an initial segment detailing which monoids are active (the 1st is always active)
+# + the chromosome is split into `max.monoids` sets of bits of equal size 
+#   (a monoid)
+# + each monoid is split into `n.vars` sets of `max.degree` size each 
 #   (a variable)
-# + for each variable, the number of 1s gives the variable's degree 
-#   (this means that a given polynomial may have more than one possible 
-#   representation)
+# + for each variable, the bits give the binary description of the variable's degree 
 # 
 # Eg: consider polynomial $x_1^3 \times x_3 + x_3^7 + x_1 \times x_2$
 # 
 # One possible coding -- for the values in the previous code snippet -- would be:
 # 
-# $$011,000,001;000,000,111;001,001,000;000,000,000$$
+# $$ 1111 011,000,001;000,000,111;001,001,000;000,000,000$$
 # 
-# (the semicolons separate components, the commas seperate variables)
+# (the semicolons separate monoids, the commas separate variables)
 # 
-# The next functions transform the binary vector into a polynomial formula 
+# The next two functions transform the binary vector into a polynomial formula 
 # that `lm()` understands:
 
-make.component <- function(bits, n.vars) {
-  vars <- paste0("x",1:n.vars)
+make.monoid <- function(bits, n.vars, vars) {
   elements <- split(bits, ceiling(seq_along(bits)/(length(bits)/n.vars)))
-  str <- ""
+  monoid <- ""
   for(i in 1:length(elements)) {
     power <- bin2dec(elements[[i]])
     if (power == 1)
-      if (str=="")
-        str = vars[i]
-    else  
-      str = paste0(str, "*", vars[i])
+      if (monoid=="")
+        monoid = vars[i]
+      else  
+        monoid = paste0(monoid, "*", vars[i])
     if (power > 1)
-      if (str=="")
-        str = paste0(vars[i], "^", power)
-    else  
-      str = paste0(str, "*", vars[i], "^", power)
+      if (monoid=="")
+        monoid = paste0(vars[i], "^", power)
+      else  
+        monoid = paste0(monoid, "*", vars[i], "^", power)
   }
-  str
+  monoid
 }
 
-make.formula <- function(bits, n.vars, max.compts) {
-  components <- split(bits, ceiling(seq_along(bits)/(length(bits)/max.compts)))
-  str <- ""
-  for(i in 1:length(components)) {
-    comp <- make.component(components[[i]], n.vars)
-    if (comp!="")
-      if (str=="")
-        str = paste0("I(",comp,")")
-    else
-      str = paste0(str," + I(", comp ,")")
+make.formula <- function(bits, n.vars, max.monoids) {
+  vars          <- paste0("x",1:n.vars)    # c("x1","x2"...)
+  active.bits   <- 1:(max.monoids-1)       # the initial activation bits
+  active.monoid <- c(1,bits[active.bits])  # get those bits
+  bits          <- bits[-active.bits]      # the remainder is the info about the monoids
+  monoids       <- split(bits, ceiling(seq_along(bits)/(length(bits)/max.monoids)))
+  formula <- ""
+  for(i in 1:length(monoids)) {
+    if (active.monoid[i]==1) {
+      monoid <- make.monoid(monoids[[i]], n.vars, vars)
+      if (monoid!="")
+        if (formula=="")
+          formula = paste0("I(", monoid, ")")
+        else
+          formula = paste0(formula," + I(", monoid,")")
+    }
   }
-  str
+  if (formula=="")     # the extreme case where the polynomial is empty
+    formula = "I(x1)"  # default polynomial formula (by convention)
+  formula
 }
 
 #########################################################################
@@ -78,13 +84,15 @@ make.formula <- function(bits, n.vars, max.compts) {
 # variable and the max number of componentes, all required information
 # to perform the polynomial regression and then compute the residuals' rsme 
 # which will be the fitness of the respective chromosome
-evalFuncFactory <- function(df, n.vars, max.compts) {
+evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1.05) {
   
   function(chromosome) {
-    formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.compts))
+    formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.monoids))
     model <- lm(formula, data=df)
+    # for regularization: find how many monoids are there:
+    n.monoids <- length(strsplit(formula,"[+]")[[1]]) + 1 # check how many '+' are there
     # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
-    return( sqrt(mean(residuals(model)^2)) ) 
+    return( sqrt(mean(residuals(model)^2)) * lambda^n.monoids ) 
   }
 }
 
@@ -93,7 +101,11 @@ evalFuncFactory <- function(df, n.vars, max.compts) {
 # including GA Poly
 
 # pre: both sets must have columns named x1...xn and the last one is y (the output)
-make.report <- function(my.data, population=250, iterations=250, runs=10) {
+make.report <- function(my.data, 
+                        population=100, 
+                        iterations=25, 
+                        runs=10, 
+                        mutation.rate=0.05) {
   
   library(genalg)
   library(e1071)
@@ -121,15 +133,15 @@ make.report <- function(my.data, population=250, iterations=250, runs=10) {
     train.set <- my.data[inTrain,]
     test.set  <- my.data[-inTrain,]
     
-    GAmodel <- rbga.bin(size = max.degree*n.vars*max.compts, 
+    GAmodel <- rbga.bin(size = max.degree*n.vars*max.monoids, 
                         popSize = population, 
                         iters = iterations, 
-                        mutationChance = 0.02, 
+                        mutationChance = mutation.rate, 
                         elitism = TRUE, 
-                        evalFunc = evalFuncFactory(train.set, n.vars, max.compts))
+                        evalFunc = evalFuncFactory(train.set, n.vars,max.monoids))
       
     best.solution <- GAmodel$population[1,]
-    best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.compts))
+    best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
     ga.model <- lm(best.formula, data=my.data)
     ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
     ga.error[i] <- rsme(ga.pred,test.set[,ncol(test.set)])
@@ -161,11 +173,62 @@ make.report <- function(my.data, population=250, iterations=250, runs=10) {
     citree.error[i] <- rsme(citree.pred,test.set[,ncol(test.set)])    
   }
   
-  list(ga.error=ga.error,
+  list(ga.error=ga.error,         # make the errors report into a list
        lm.error=lm.error,
        svm.error=svm.error,
        rpart.error=rpart.error,
        rf.error=rf.error,
        citree.error=citree.error,
-       ga.model = best.ga.model)  # returns the best ga.model
+       ga.model = best.ga.model)  # also include the best found ga.model
+}
+
+#########################################################################
+# Testing different lamdba values (the regularization coefficient)
+# it returns a matrix of errors for each lambda value for a number
+# of given runs
+
+test.lambda <- function(my.data, lambda.values, 
+                        runs=5, 
+                        population=100, 
+                        iterations=20, 
+                        mutation.rate=0.05,
+                        verbose=TRUE) {
+
+  library(genalg)
+
+  train.p.size <- 0.7 # percentage of training set
+  n.vars       <- ncol(my.data)-1
+  
+  errors <- matrix( rep(0,length(lambda.values)*runs), ncol= length(lambda.values))
+  
+  for (k in 1:length(lambda.values)) {  
+    
+    lambda   <- lambda.values[k]
+    
+    for (i in 1:runs) {  # execute 'runs' times for each value of lambda
+      
+      # make train & test set
+      inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
+      train.set <- my.data[inTrain,]
+      test.set  <- my.data[-inTrain,]
+      
+      GAmodel <- rbga.bin(size = max.degree*n.vars*max.monoids, 
+                          popSize = population, 
+                          iters = iterations, 
+                          mutationChance = mutation.rate, 
+                          elitism = TRUE, 
+                          evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, lambda))
+      
+      best.solution <- GAmodel$population[1,]
+      best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
+      ga.model <- lm(best.formula, data=my.data)
+      ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
+
+      errors[i,k] <- rsme(ga.pred,test.set[,ncol(test.set)])
+    }
+    if (verbose)
+      print(paste0("#lambda: ",k))
+  }
+  
+  errors  
 }
