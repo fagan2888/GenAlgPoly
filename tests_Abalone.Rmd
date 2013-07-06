@@ -30,23 +30,23 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=200, iterations=200)
+report <- make.report(my.data, population=250, iterations=100)
 
 # See Results
 
 coef(report$ga.model)
 report$ga.error
 
-boxplot(report$ga.error, 
-        report$lm.error,
-        report$svm.error,
-        report$rpart.error,
-        report$rf.error,
-        report$citree.error,
-        names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
-        ylab="RMSE")
+# boxplot(report$ga.error, 
+#         report$lm.error,
+#         report$svm.error,
+#         report$rpart.error,
+#         report$rf.error,
+#         report$citree.error,
+#         names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
+#         ylab="RMSE")
 
-save(report, file="Abalone.Rda") # recover with load("Abalone.Rda") 
+save(report, file="Abalone250.Rda") # recover with load("Abalone.Rda") 
 
 df <- data.frame(ga.poly = report$ga.error, 
                  lin.reg = report$lm.error,
@@ -55,7 +55,39 @@ df <- data.frame(ga.poly = report$ga.error,
                  rf = report$rf.error,
                  ci.tree = report$citree.error)
 
-write.table(df, "Abalone.txt")
+write.table(df, "Abalone200.txt")
+
+library(ggplot2)
+
+# df <- data.frame(GA.Poly = report$ga.error,
+#                  Lin.Reg = report$lm.error,
+#                  SVM = report$svm.error,
+#                  RPART = report$rpart.error,
+#                  Rnd.For = report$rf.error,
+#                  CI.Tree = report$citree.error)
+
+size <- length(report$ga.error)
+list.data <- list(error=c(report$ga.error, 
+                          report$lm.error,
+                          report$svm.error,
+                          report$rpart.error,
+                          report$rf.error,
+                          report$citree.error), 
+                  method=c(rep("GA.Poly",size),
+                           rep("Lin.Reg.",size),
+                           rep("SVM",size), 
+                           rep("RPART",size),
+                           rep("Rnd.For.",size),
+                           rep("CI.Tree",size)))
+
+df <- as.data.frame(list.data)
+
+qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
+  ylab("root-mean-square error") + 
+  xlab("regression method") +
+  ggtitle("Abalone dataset")
+  
+  
 # print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
 ```
 
