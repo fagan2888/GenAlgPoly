@@ -14,32 +14,38 @@ GIVE A SUMMARY DESCRIPTION AND RESULTS OF "OUR" APPROACH.
 
 ## Introduction
 
-With notable exceptions (_e.g._ $k$-means), most machine learning techniques are based on linear models. This assumption has many advantages including, for example, reduced computational complexity and strong theoretical framework. However nonlinearity in unavoidable in many application scenarions or, _e.g._ in systems with feedback loops so common in ecology, cybernetics, robotics and other areas.
+With notable exceptions (_e.g._ neural networks), most machine learning regression techniques are based on linear models. This assumption has many advantages including, for example, reduced computational complexity and strong theoretical framework. However nonlinearity in unavoidable in many application scenarions or, _e.g._ in systems with feedback loops so common in ecology, cybernetics, robotics and other areas. Nevertheless the variety and number of phenomena that can be adapted into a linear model is amazing.
 
-Polynomials, one of the most studied subjects in mathematics, generalize linear models and are, perhaps, one of the simplest and most used nonlinear models. Applications of (nonlinear) polynomial models include colorimetric calibration ([APPL1-2005]), finding explicit formulae for turbulent pipe flows ([APPL2-1999]), computational linguistics ([APPL8-2009]) and more recently, analytical techniques for cultural heritage materials ([APPL3-2010]), liquid epoxy molding process ([APPL4-2011]), B-spline surface reconstruction ([APPL5-2012]), product design ([APPL6-2012]) or forecasting cyanotoxins presence in water reservoirs ([APPL7-2013]). Besides the huge range of quite different areas, the work for each one of these polynomial models used, somewhere, a genetic algorithm.
+Polynomials, one of the most studied subjects in mathematics, generalize linear functions and define, perhaps, the simplest and most used nonlinear models. Applications of polynomial include colorimetric calibration ([APPL1-2005]), explicit formulae for turbulent pipe flows ([APPL2-1999]), computational linguistics ([APPL8-2009]) and more recently, analytical techniques for cultural heritage materials ([APPL3-2010]), liquid epoxy molding process ([APPL4-2011]), B-spline surface reconstruction ([APPL5-2012]), product design ([APPL6-2012]) or forecasting cyanotoxins presence in water reservoirs ([APPL7-2013]). Besides the huge range of quite different areas, the work for each one of these polynomial models used, somewhere, a genetic algorithm.
 
-Genetic algorithms (GA), are perhaps one of the most popular "buzzwords" of recent decades but with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear model requires parameterization GAs provide a simple and often effective approach to search for localy optimal parameters. Research related to genetic algorithms abound and spans from the 1950's seminal work of Nils Aall Barricelli ([BARRICELLI-1962]) in the Institute for Advanced Study of Princeton to today's principal area of study of thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to GAs come from John Holland and his book ([BOOK-JOHNHOLLAND]).  
+Genetic algorithms (GA) where, arguably, one the most popular "hot" topics of research in the recent decades but with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization GAs provide a simple and often effective approach to search for localy optimal parameters. Research related to genetic algorithms abound and spans from the 1950's seminal work of Nils Aall Barricelli ([BARRICELLI-1962]) in the Institute for Advanced Study of Princeton to today's principal area of study of thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to GAs come from John Holland's work and his book ([BOOK-JOHNHOLLAND]).  
 
-One interesting "flavour" of genetic algorithms, termed "genetic programming" by John Koza ([KOZA1-1992]), proposed the use of GAs to search the syntatic stucture of complex functions. This syntatic structure search is keen to the central ideas of deep learning ([DEEPLEARNING1-2012] and [DEEPLEARNING2-2009]), the subarea of machine learning actually producing the most promising results. It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure ($y=\sum_i \beta_i x_i$) nonlinear (in particular polynomial) models pose an aditional "structure" search problem.
+One interesting "flavour" of genetic algorithms, named _genetic programming_ by John Koza ([KOZA1-1992]), proposed the use of GAs to search the syntatic stucture of complex functions. This syntatic structure search is keen to the central ideas of deep learning ([DEEPLEARNING1-2012] and [DEEPLEARNING2-2009]), the subarea of machine learning actually producing the most promising results (e.g. [DLAPPL1-2013]). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure ($y=\sum_i \beta_i x_i$) nonlinear (in particular polynomial) models pose an aditional "structure" search problem.
 
 The idea of using GAs to find a polynomial regression is not new ([GAPOLY5-2006], [GAPOLY2-2008] and [GAPOLY4-2009]) but still generates original research ([GAPOLY1-2011] and [GAPOLY3-2011]). In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the _mean square error_ and a _regularization_ factor to avoid overfitting by penalizing polynomials that are "too complex". 
 
-A method that produces complex models "directly" from observed data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
-MORE REASONS?
+A method that produces adequate models "directly" from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
+MORE REASONS?  
 
-[OUR RESOLUTION]  
-We represent a polynomial by a sum of monomials
+RESULTS OUTLINE  
 
-$$
-p\left( x_1, \ldots, x_n\right) = \sum_i \beta_i m_i
-$$
-where each monomial is $m_i = \prod_{j\in M_i} x_j^{\alpha_{ij}}$ the exponents are $\alpha_{ij}\in\mathbb{N}_0$ and the coeficients are $\beta_i \in \mathbb{R}$. For example 
-$$
-p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3
-$$
-has monomials $m_1 = x_1, m_2 = x_2 x_3$ and $m_3 = x_1^2 x_3$ coefficients $\beta_1 = 2, \beta_2 = 1$ and $\beta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$.
+The remainder of this paper is organized as usual: the next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
 
-This makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentialy with either $n$ or $d$. More importantly, the polynomial regression problem can be split into two subproblems:
+## Polynomial Regression with Genetic Algorithms
+
+The canonical representation of a polynomial is a sum
+$$
+p\left( x_1, \ldots, x_n\right) = \sum_i \beta_i m_i.
+$$
+
+In this sum each $m_i$ is a monomial, $m_i = \prod_{j\in M_i} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coeficients are real valued, $\beta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $m_1 = x_1, m_2 = x_2 x_3$ and $m_3 = x_1^2 x_3$ coefficients $\beta_1 = 2, \beta_2 = 1$ and $\beta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$.
+
+
+
+> **NOTA** Este parágrafo deu-me uma ideia: os $\alpha$ definem uma matriz em que as linhas são monómios e as colunas variáveis; "Multiplicando" esta matriz por um vector, obtemos o polinómio. Além disso, podemos continuar a definir a condição de regularização como antes, mas também podemos considerar condições *na* matriz (por exemplo, o número de entradas não nulas ser esparso ou a sua soma ser dominada por $\log nm$)... 
+
+
+This makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentialy with either $n$ or $d$. But more importantly, the polynomial regression problem can be split into two subproblems:
 
 1. for a given set of monomials $q_1, \ldots, q_n$, find regression coefficients $\beta_1,\ldots,\beta_n$ that minimize an adequate cost function;
 2. find the fittest set of monomials;
@@ -50,7 +56,6 @@ Our line of work is to solve the first problem with linear regression and the se
 
 [RESULTS]
 
-## Polynomial Regression with Genetic Algorithms
 
 HOW DO WE DO THE
 
@@ -141,3 +146,5 @@ _Explain the remaining search parameters_
 [KOZA1-1992]: http://mitpress.mit.edu/books/genetic-programming "Genetic Programming: On the Programming of Computers by Means of Natural Selection, by John R. Koza, (1992)"
 
 [BARRICELLI-1962]: http://dx.doi.org/10.1007%2FBF01556771 "Numerical testing of evolution theories : Part I Theoretical introduction and basic tests"
+
+[DLAPPL1-2013]: http://www.cs.toronto.edu/~dtarlow/TarSwerCharSutZem_ICML2013.pdf "Tarlow, Daniel and Sutskever, Ilya and Zemel, Richard S. Stochastic k-Neighborhood Selection for Supervised and Unsupervised Learning. 2013. in Proceedings of the 30th International Conference on Machine Learning (ICML)."
