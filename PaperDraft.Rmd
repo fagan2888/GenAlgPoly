@@ -15,13 +15,12 @@ GIVE A SUMMARY DESCRIPTION AND RESULTS OF "OUR" APPROACH.
 Introduction
 ------------
 
-With notable exceptions, most machine learning techniques are based on linear models. This assumption has many advantages including, for example, reduced computational complexity and strong theoretical framework. However many application scenarios pose nonlinear problems that have no acceptable linear approximations.  
-GIVE EXAMPLES AND EXPLAIN WHY LINEAR MODELS FAIL IN THOSE EXAMPLES.
+With notable exceptions, most machine learning techniques are based on linear models. This assumption has many advantages including, for example, reduced computational complexity and strong theoretical framework. However many application scenarios pose nonlinear problems without acceptable linear approximations. Nonlinear models usually occur in systems with feedback loops so common in ecology, cybernetics, robotics and may other areas.
 
 Polynomials, one of the most studied subjects in mathematics, generalize linear models and are, perhaps, one of the simplest and most used nonlinear models. Applications of (nonlinear) polynomial models include colorimetric calibration [APPL1-2005], finding explicit formulae for turbulent pipe flows [APPL2-1999], computational linguistics [APPL8-2009] and more recently, analytical techniques for cultural heritage materials [APPL3-2010], liquid epoxy molding process [APPL4-2011], B-spline surface reconstruction [APPL5-2012], product design [APPL6-2012] or forecasting cyanotoxins presence in water reservoirs [APPL7-2013]. Besides the huge range of quite different areas, the work for each one of these polynomial models used, somewhere, a genetic algorithm.
 
 Genetic algorithms (GA), are perhaps one of the most popular "buzzwords" of recent decades but with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear model requires parameterization, GAs provide a simple and often effective approach to search for localy optimal parameters. Research related to genetic algorithms abound and spans from the 1950's seminal work of Nils Aall Barricelli in the Institute for Advanced Study of Princeton to today's principal area of study of thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to GAs come from John Holland and his book [BOOK-JOHNHOLLAND]. One interesting "flavour" of genetic algorithms, termed "genetic programming" by John Koza, proposed the use of GAs to search the syntatic stucture of complex functions. This syntatic structure search is keen to the central ideas of deep learning, the subarea of machine learning actually producing the most advanced results.  
-INSERT MORE REFERENCES OF RECENT GA RESEARCH AND DEEPLEARNING RESULTS
+INSERT MORE REFERENCES OF RECENT GA RESEARCH, STRUCTURE LEARNING AND DEEP-LEARNING RESULTS
 
 **END** STATE-OF-THE-ART
 
