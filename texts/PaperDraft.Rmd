@@ -1,5 +1,7 @@
 # Exploring Polynomial Structure of Data with Genetic Algorithms
 
+(alternative title: Selection of Polynomial Features by Genetic Algorithms)
+
 Francisco Coelho |  | João Neto
 :---------------:|-----|:---------:
 [`fc@di.uevora.pt`](mailto://fc@di.uevora.pt)| |[`jpn@di.fc.ul.pt`](mailto://jpn@di.fc.ul.pt)
