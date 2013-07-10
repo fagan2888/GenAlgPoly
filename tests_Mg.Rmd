@@ -39,7 +39,7 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=250, iterations=50)
+report <- make.report(my.data, population=250, iterations=50, lambda=0.975)
 
 # See Results
 
@@ -57,7 +57,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Mg250.txt")
+write.table(df, "Mg250_lamda0.975.txt")
 # df <- read.table("Mg250.txt")
 
 size <- length(report$ga.error)
@@ -79,23 +79,22 @@ df <- as.data.frame(list.data)
 qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
   ylab("root-mean-square error") + 
   xlab("regression method") +
-  ggtitle("Mg dataset")
+  ggtitle("Mg dataset (lambda 0.975)")
 
 ########################################################
 # Lambda Test
-lambda.values <- seq(0.5,0.999,length.out=20)
+lambda.values <- seq(0.5,1.5,length.out=20)
 n.runs <- 5
 
 source("gapolyfuncs.R")
-errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterations=25)
+errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterations=50)
 
 df <- data.frame(error = as.vector(matrix(errors,nrow=1)),
-                 lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
+                 lambda = as.factor(rep(round(lambda.values,2), each=n.runs)))
 
 write.table(df, "lambda.errors.Mg.txt")
 
 df <- read.table("lambda.errors.Mg.txt", header=TRUE)
-
 df$lambda <- as.factor(df$lambda)
 
 library(ggplot2)
@@ -103,7 +102,7 @@ qplot(lambda,error,data=df,geom=c("jitter","boxplot")) +
   ylab("root-mean-square error") + 
   xlab("lambda value") +
  # coord_cartesian(ylim = c(0, 50))  +
-  ggtitle("Mg250 dataset")
+  ggtitle("Mg dataset")
 ##############################################
 # Check fitness progress
 
