@@ -8,7 +8,7 @@ Testing Housing
 ========================================================
 
 ```{r}
-set.seed(101)
+set.seed(202)
 
 # Read Data
 
@@ -29,11 +29,11 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=300, iterations=50)
+report <- make.report(my.data, population=300, iterations=100, lambda=0.975)
 
 # See Results
 
-save(report, file="Housing300.Rda") # recover with load("Housing300.Rda") 
+save(report, file="Housing300_lambda0.975.Rda") # recover with load("Housing300.Rda") 
 
 coef(report$ga.model)
 report$ga.error
@@ -47,7 +47,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Housing300.txt")
+write.table(df, "Housing300_lambda0.975.txt")
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 

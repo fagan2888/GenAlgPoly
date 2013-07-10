@@ -37,15 +37,6 @@ report <- make.report(my.data, population=250, iterations=100)
 coef(report$ga.model)
 report$ga.error
 
-# boxplot(report$ga.error, 
-#         report$lm.error,
-#         report$svm.error,
-#         report$rpart.error,
-#         report$rf.error,
-#         report$citree.error,
-#         names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
-#         ylab="RMSE")
-
 save(report, file="Abalone250.Rda") # recover with load("Abalone.Rda") 
 
 df <- data.frame(ga.poly = report$ga.error, 
@@ -58,13 +49,6 @@ df <- data.frame(ga.poly = report$ga.error,
 write.table(df, "Abalone200.txt")
 
 library(ggplot2)
-
-# df <- data.frame(GA.Poly = report$ga.error,
-#                  Lin.Reg = report$lm.error,
-#                  SVM = report$svm.error,
-#                  RPART = report$rpart.error,
-#                  Rnd.For = report$rf.error,
-#                  CI.Tree = report$citree.error)
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 
@@ -87,11 +71,28 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
   xlab("regression method") +
   ggtitle("Abalone dataset")
   
-  
-# print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
+##############################################
+# Check fitness progress
+
+source("gapolyfuncs.R")
+follow.fitness(my.data,population=250,iterations=50,mutation.rate=0.05,lambda=1.0)
+
+# output:
+
+lambda0.975 <- c(2.394678,2.300585,2.300585,2.359053,2.312674,2.300367,2.300045,2.247558,2.247558,2.247558,2.245439,2.236089,2.236089,2.200752,2.200752,2.200752,2.200752,2.200752,2.200752,2.199465,2.199465,2.199465,2.199465,2.182571,2.182571,2.182571,2.182571,2.182571,2.180992,2.180992,2.177054,2.177054,2.177054,2.177054,2.177054,2.177054,2.177054,2.177054,2.177054,2.177054,2.177054,2.176233,2.176233,2.176233,2.176233,2.176233,2.176233,2.176233,2.176233,2.176233)
+
+lambda1.0 <- c(2.421007,2.365993,2.351132,2.351132,2.351132,2.347682,2.273115,2.273115,2.273115,2.273115,2.273115,2.273115,2.232727,2.232727,2.232727,2.232727,2.232727,2.231771,2.231771,2.231771,2.229459,2.229459,2.214772,2.214772,2.214772,2.214772,2.196018,2.196018,2.196018,2.196018,2.196018,2.196018,2.196018,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.180123,2.171167,2.171167,2.171167,2.171167)
+
+df <- data.frame(iteration = 1:length(lambda0.975),
+                 lambda0.975 = as.numeric(lambda0.975),
+                 lambda1.0 = as.numeric(lambda1.0))
+
+ggplot(df, aes(iteration)) + 
+  geom_line(aes(y = lambda0.975, colour = "lambda = 0.975")) + 
+  geom_line(aes(y = lambda1.0, colour = "lambda = 1.0")) +
+  ylim(2.0, 2.5) +
+  ggtitle("Abalone dataset (population 250)") +
+  ylab("rmse") + 
+  theme(legend.title=element_blank()) # remove legend title
 ```
-
-Tabela para Abalone dataset
-------
-
 
