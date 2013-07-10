@@ -99,13 +99,13 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
 # Returns a dataset with the rsme for each one of the tested ML methods
 # including GA Poly
 
-# pre: both sets must have columns named x1...xn and the last one is y (the output)
+# pre: my.data must have columns named x1...xn and the last one is y (the output)
 make.report <- function(my.data, 
-                        n.vars,
-                        population=100, 
-                        iterations=25, 
-                        runs=10, 
-                        mutation.rate=0.05,
+                        population=100,     # GA population
+                        iterations=25,      # GA iterations
+                        runs=10,            # number of runs
+                        mutation.rate=0.05, # GA mutation rate
+                        lambda=1.0,         # regularization variable
                         verbose=TRUE) {
   
   library(genalg)
@@ -117,6 +117,7 @@ make.report <- function(my.data,
   train.p.size <- 0.7 # percentage of training set
   n.vars       <- ncol(my.data)-1
   
+  # vectors keeping the rsme errors for each regression method
   ga.error     <- rep(0,runs)
   lm.error     <- rep(0,runs)
   svm.error    <- rep(0,runs)
@@ -124,12 +125,12 @@ make.report <- function(my.data,
   rf.error     <- rep(0,runs)
   citree.error <- rep(0,runs)
   
-  best.ga.model <- NULL
-  best.ga.error <- 10e10
+  best.ga.model <- NULL  # the best GA model 
+  best.ga.error <- 10e10 # & its error
   
   for (i in 1:runs) {
     
-    # make train & test set
+    # make train & test set (ie, each run has a different train+test sets)
     inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
     train.set <- my.data[inTrain,]
     test.set  <- my.data[-inTrain,]
@@ -139,7 +140,7 @@ make.report <- function(my.data,
                         iters = iterations, 
                         mutationChance = mutation.rate, 
                         elitism = TRUE, 
-                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids))
+                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, lambda))
       
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
@@ -155,8 +156,7 @@ make.report <- function(my.data,
     lm.model <- lm(y ~ ., data = train.set)
     lm.pred  <- predict(lm.model, test.set[,-ncol(test.set)]) 
     lm.error[i] <- rsme(lm.pred,test.set[,ncol(test.set)])
-    
-    
+        
     svm.model <- svm(y ~ ., data=train.set, kernel='linear')
     svm.pred  <- predict(svm.model, test.set[,-ncol(test.set)]) 
     svm.error[i] <- rsme(svm.pred,test.set[,ncol(test.set)])
