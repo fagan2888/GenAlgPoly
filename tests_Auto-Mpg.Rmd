@@ -29,11 +29,11 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=25, iterations=10)
+report <- make.report(my.data, population=300, iterations=50)
 
 # See Results
 
-save(report, file="Auto-Mpg.Rda") # recover with load("Auto-Mpg.Rda") 
+save(report, file="Auto-Mpg300.Rda") # recover with load("Auto-Mpg300.Rda") 
 
 coef(report$ga.model)
 report$ga.error
@@ -47,7 +47,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Auto-Mpg.txt")
+write.table(df, "Auto-Mpg300.txt")
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 
