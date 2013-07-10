@@ -285,10 +285,10 @@ monitorEvalFactory <- function(train.set, n.vars, max.monoids) {
       bestSolution = obj$population[filter,];
     }
     # we have the best solution (chromosome), let's eval it and keep it
-    eval <- evalFuncFactory(train.set, n.vars, max.monoids)
+    eval <- evalFuncFactory(train.set, n.vars, max.monoids) # get eval function
         
-    fitness.progress <- c(fitness.progress, eval(bestSolution)) #TODO: does not work (?)
-    print(make.formula(bestSolution, n.vars, max.monoids))
+    # fitness.progress <- c(fitness.progress, eval(bestSolution)) #TODO: does not work (?)
+    # print(make.formula(bestSolution, n.vars, max.monoids))
     print(eval(bestSolution))
   }
 }
