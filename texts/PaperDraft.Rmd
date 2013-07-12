@@ -10,8 +10,6 @@ Francisco Coelho |  | João Neto
 >Antes de submeter, temos de considerar [Polynomial regression na wikipedia](http://en.wikipedia.org/wiki/Polynomial_regression) e a [regressão não-linear em geral](https://www.google.pt/search?q=nonlinear+regression).  
 >
 >Como este trabalho anda no meio de áreas muito trabalhadas, temos de ter muito cuidado com a questão da **investigação original**.
-> 
-> Sanity check  before merging...
 
 **Abstract**  
 
