@@ -11,7 +11,7 @@ Francisco Coelho |  | João Neto
 >
 >Como este trabalho anda no meio de áreas muito trabalhadas, temos de ter muito cuidado com a questão da **investigação original**.
 > 
-> Sanity check
+> Sanity check  before merging...
 
 **Abstract**  
 
