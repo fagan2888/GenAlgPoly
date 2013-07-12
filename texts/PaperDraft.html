@@ -1,115 +1,293 @@
 <!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="generator" content="pandoc">
-  <title></title>
-  <style type="text/css">code{white-space: pre;}</style>
-  <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Exploring Polynomial Structure of Data with Genetic Algorithms</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
 </head>
+
 <body>
-<h1 id="exploring-polynomial-structure-of-data-with-genetic-algorithms">Exploring Polynomial Structure of Data with Genetic Algorithms</h1>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Francisco Coelho</th>
-<th style="text-align: left;"></th>
-<th style="text-align: center;">João Neto</th>
+<h1>Exploring Polynomial Structure of Data with Genetic Algorithms</h1>
+
+<p>(alternative title: Selection of Polynomial Features by Genetic Algorithms)</p>
+
+<table><thead>
+<tr>
+<th align="center">Francisco Coelho</th>
+<th></th>
+<th align="center">João Neto</th>
 </tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><script type="text/javascript">
-<!--
-h='&#100;&#x69;&#46;&#x75;&#x65;&#118;&#x6f;&#114;&#x61;&#46;&#112;&#116;';a='&#64;';n='&#x2f;&#x2f;&#102;&#x63;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>fc@di.uevora.pt</code>'+'<\/'+'a'+'>');
-// -->
-</script><noscript>&#60;&#x63;&#x6f;&#100;&#x65;&#62;&#102;&#x63;&#64;&#100;&#x69;&#46;&#x75;&#x65;&#118;&#x6f;&#114;&#x61;&#46;&#112;&#116;&#60;&#x2f;&#x63;&#x6f;&#100;&#x65;&#62;&#32;&#40;&#x2f;&#x2f;&#102;&#x63;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x65;&#118;&#x6f;&#114;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#112;&#116;&#x29;</noscript></td>
-<td style="text-align: left;"></td>
-<td style="text-align: center;"><script type="text/javascript">
-<!--
-h='&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;';a='&#64;';n='&#x2f;&#x2f;&#106;&#112;&#110;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>jpn@di.fc.ul.pt</code>'+'<\/'+'a'+'>');
-// -->
-</script><noscript>&#60;&#x63;&#x6f;&#100;&#x65;&#62;&#106;&#112;&#110;&#64;&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;&#60;&#x2f;&#x63;&#x6f;&#100;&#x65;&#62;&#32;&#40;&#x2f;&#x2f;&#106;&#112;&#110;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#102;&#x63;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#108;&#32;&#100;&#x6f;&#116;&#32;&#112;&#116;&#x29;</noscript></td>
+</thead><tbody>
+<tr>
+<td align="center"><a href="mailto://fc@di.uevora.pt"><code>fc@di.uevora.pt</code></a></td>
+<td></td>
+<td align="center"><a href="mailto://jpn@di.fc.ul.pt"><code>jpn@di.fc.ul.pt</code></a></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <blockquote>
-<p>Antes de submeter, temos de considerar <a href="http://en.wikipedia.org/wiki/Polynomial_regression">Polynomial regression na wikipedia</a> e a <a href="https://www.google.pt/search?q=nonlinear+regression">regressão não-linear em geral</a>.</p>
+<p>Antes de submeter, temos de considerar <a href="http://en.wikipedia.org/wiki/Polynomial_regression">Polynomial regression na wikipedia</a> e a <a href="https://www.google.pt/search?q=nonlinear+regression">regressão não-linear em geral</a>.  </p>
+
 <p>Como este trabalho anda no meio de áreas muito trabalhadas, temos de ter muito cuidado com a questão da <strong>investigação original</strong>.</p>
+
+<p>Sanity check</p>
 </blockquote>
-<p><strong>Abstract</strong></p>
-<p>Many applications require models that have no acceptable linear approximation and many nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models is decades old but still poses challenges due to the complexity of the search and different definitions of “optimal” solution. This work describes a general method based in genetic algorithms to find “empirical” polynomial regressions.</p>
-<p>GIVE A SUMMARY DESCRIPTION AND RESULTS OF “OUR” APPROACH.</p>
-<h2 id="introduction">Introduction</h2>
+
+<p><strong>Abstract</strong>  </p>
+
+<p>Many applications require models that have no acceptable linear approximation and many nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models is decades old but still poses challenges due to the complexity of the search and different definitions of &ldquo;optimal&rdquo; solution.
+This work describes a general method based in genetic algorithms to find &ldquo;empirical&rdquo; polynomial regressions.</p>
+
+<p>GIVE A SUMMARY DESCRIPTION AND RESULTS OF &ldquo;OUR&rdquo; APPROACH.</p>
+
+<h2>Introduction</h2>
+
 <p>With notable exceptions (<em>e.g.</em> neural networks), most machine learning regression techniques are based on linear models. This assumption has many advantages including, for example, reduced computational complexity and strong theoretical framework. However nonlinearity in unavoidable in many application scenarions <em>e.g.</em> phase transitions or systems with feedback loops so common in ecology, cybernetics, robotics and other areas. Nevertheless the variety and number of phenomena that can be adapted into a linear model is amazing.</p>
+
 <p>Polynomials, one of the most studied subjects in mathematics, generalize linear functions and define, perhaps, the simplest and most used nonlinear models. Applications of polynomial include colorimetric calibration (<a href="http://dx.doi.org/10.1109/WISP.2005.1531626" title="Adaptive polynomial regression for colorimetric scanner calibration using genetic algorithms">APPL1-2005</a>), explicit formulae for turbulent pipe flows (<a href="http://www.environmental-expert.com/Files/5302/articles/5912/art-4.pdf" title="Method for the identification of explicit polynomial formulae for the friction in turbulent pipe flow">APPL2-1999</a>), computational linguistics (<a href="http://dx.doi.org/10.1007/s00500-008-0362-4" title="Obtaining linguistic fuzzy rule-based regression models from imprecise data with multiobjective genetic algorithms">APPL8-2009</a>) and more recently, analytical techniques for cultural heritage materials (<a href="http://discovery.ucl.ac.uk/459862/1/459862_Csefalvayova_2010_Talanta_EPS.pdf" title="Use of genetic algorithms with multivariate regression for determination of gelatine in historic papers based on FT-IR and NIR spectral data">APPL3-2010</a>), liquid epoxy molding process (<a href="http://dx.doi.org/10.1109/TII.2010.2100130" title="Modeling of a liquid epoxy molding process using a particle swarm optimization-based fuzzy regression approach">APPL4-2011</a>), B-spline surface reconstruction (<a href="http://dx.doi.org/10.1016/j.ins.2010.09.031" title="Iterative two-step genetic-algorithm-based method for efficient polynomial B-spline surface reconstruction">APPL5-2012</a>), product design (<a href="http://dx.doi.org/10.1007/978-3-642-27476-3_6" title="Development of Product Design Models Using Fuzzy Regression Based Genetic Programming">APPL6-2012</a>) or forecasting cyanotoxins presence in water reservoirs (<a href="http://dx.doi.org/10.1016/j.envres.2013.01.001" title="Hybrid modelling based on support vector regression with genetic algorithms in forecasting the cyanotoxins presence in the Trasona reservoir (Northern Spain)">APPL7-2013</a>). Besides the huge range of quite different areas, the work for each one of these polynomial models used, somewhere, a genetic algorithm.</p>
-<p>Genetic algorithms (GA) where, arguably, one the most popular “hot” topics of research in the recent decades but with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization GAs provide a simple and often effective approach to search for localy optimal parameters. Research related to genetic algorithms abound and spans from the 1950’s seminal work of Nils Aall Barricelli (<a href="http://dx.doi.org/10.1007%2FBF01556771" title="Numerical testing of evolution theories : Part I Theoretical introduction and basic tests">BARRICELLI-1962</a>) in the Institute for Advanced Study of Princeton to today’s principal area of study of thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to GAs come from John Holland’s work and his book (<a href="http://mitpress.mit.edu/books/adaptation-natural-and-artificial-systems" title="Adaptation in Natural and Artificial Systems">BOOK-JOHNHOLLAND</a>).</p>
-<p>One interesting “flavour” of genetic algorithms, named <em>genetic programming</em> by John Koza (<a href="http://mitpress.mit.edu/books/genetic-programming" title="Genetic Programming: On the Programming of Computers by Means of Natural Selection, by John R. Koza, (1992)">KOZA1-1992</a>), proposed the use of GAs to search the syntatic stucture of complex functions. This syntatic structure search is keen to the central ideas of deep learning (<a href="http://arxiv.org/abs/1206.5538" title="Representation Learning: A Review and New Perspectives">DEEPLEARNING1-2012</a> and <a href="http://www.iro.umontreal.ca/~lisa/publications2/index.php/publications/show/239" title="Learning Deep Architectures for AI">DEEPLEARNING2-2009</a>), the subarea of machine learning actually producing the most promising results (e.g. <a href="http://www.cs.toronto.edu/~dtarlow/TarSwerCharSutZem_ICML2013.pdf" title="Tarlow, Daniel and Sutskever, Ilya and Zemel, Richard S. Stochastic k-Neighborhood Selection for Supervised and Unsupervised Learning. 2013. in Proceedings of the 30th International Conference on Machine Learning (ICML).">DLAPPL1-2013</a>). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure (<span class="math">\(y=\sum_i \beta_i x_i\)</span>) nonlinear (in particular polynomial) models pose an aditional “structure” search problem.</p>
-<p>The idea of using GAs to find a polynomial regression is not new (<a href="http://dx.doi.org/10.1007/s00500-005-0008-8" title="Genetic polynomial regression as input selection algorithm for non-linear identification">GAPOLY5-2006</a>, <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.152.7415" title="Optimal Sampling of Genetic Algorithms on Polynomial Regression">GAPOLY2-2008</a> and <a href="http://dx.doi.org/10.1016/j.eswa.2008.06.046" title="A Novel hybrid genetic algorithm for kernel function and parameter optimization in support vector regression">GAPOLY4-2009</a>) but still generates original research (<a href="http://dx.doi.org/10.4203/ccp.97.39" title="Optimal Polynomial Regression Models by using a Genetic Algorithm">GAPOLY1-2011</a> and <a href="http://www.eejournal.ktu.lt/index.php/elt/article/view/460" title="Polynomial Curve Fitting with Varying Real Powers">GAPOLY3-2011</a>). In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the <em>mean square error</em> and a <em>regularization</em> factor to avoid overfitting by penalizing polynomials that are “too complex”.</p>
-<p>A method that produces adequate models “directly” from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.<br />MORE REASONS?</p>
-<p>RESULTS OUTLINE</p>
+
+<p>Genetic algorithms (GA) where, arguably, one the most popular &ldquo;hot&rdquo; topics of research in the recent decades but with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization GAs provide a simple and often effective approach to search for localy optimal parameters. Research related to genetic algorithms abound and spans from the 1950&#39;s seminal work of Nils Aall Barricelli (<a href="http://dx.doi.org/10.1007%2FBF01556771" title="Numerical testing of evolution theories : Part I Theoretical introduction and basic tests">BARRICELLI-1962</a>) in the Institute for Advanced Study of Princeton to today&#39;s principal area of study of thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to GAs come from John Holland&#39;s work and his book (<a href="http://mitpress.mit.edu/books/adaptation-natural-and-artificial-systems" title="Adaptation in Natural and Artificial Systems">BOOK-JOHNHOLLAND</a>).  </p>
+
+<p>One interesting &ldquo;flavour&rdquo; of genetic algorithms, named <em>genetic programming</em> by John Koza (<a href="http://mitpress.mit.edu/books/genetic-programming" title="Genetic Programming: On the Programming of Computers by Means of Natural Selection, by John R. Koza, (1992)">KOZA1-1992</a>), proposed the use of GAs to search the syntatic stucture of complex functions. This syntatic structure search is keen to the central ideas of deep learning (<a href="http://arxiv.org/abs/1206.5538" title="Representation Learning: A Review and New Perspectives">DEEPLEARNING1-2012</a> and <a href="http://www.iro.umontreal.ca/%7Elisa/publications2/index.php/publications/show/239" title="Learning Deep Architectures for AI">DEEPLEARNING2-2009</a>), the subarea of machine learning actually producing the most promising results (e.g. <a href="http://www.cs.toronto.edu/%7Edtarlow/TarSwerCharSutZem_ICML2013.pdf" title="Tarlow, Daniel and Sutskever, Ilya and Zemel, Richard S. Stochastic k-Neighborhood Selection for Supervised and Unsupervised Learning. 2013. in Proceedings of the 30th International Conference on Machine Learning (ICML).">DLAPPL1-2013</a>). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure (\( y=\sum_i \beta_i x_i \)) nonlinear (in particular polynomial) models pose an aditional &ldquo;structure&rdquo; search problem.</p>
+
+<p>The idea of using GAs to find a polynomial regression is not new (<a href="http://dx.doi.org/10.1007/s00500-005-0008-8" title="Genetic polynomial regression as input selection algorithm for non-linear identification">GAPOLY5-2006</a>, <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.152.7415" title="Optimal Sampling of Genetic Algorithms on Polynomial Regression">GAPOLY2-2008</a> and <a href="http://dx.doi.org/10.1016/j.eswa.2008.06.046" title="A Novel hybrid genetic algorithm for kernel function and parameter optimization in support vector regression">GAPOLY4-2009</a>) but still generates original research (<a href="http://dx.doi.org/10.4203/ccp.97.39" title="Optimal Polynomial Regression Models by using a Genetic Algorithm">GAPOLY1-2011</a> and <a href="http://www.eejournal.ktu.lt/index.php/elt/article/view/460" title="Polynomial Curve Fitting with Varying Real Powers">GAPOLY3-2011</a>). In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the <em>mean square error</em> and a <em>regularization</em> factor to avoid overfitting by penalizing polynomials that are &ldquo;too complex&rdquo;. </p>
+
+<p>A method that produces adequate models &ldquo;directly&rdquo; from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.<br/>
+MORE REASONS?  </p>
+
+<p>RESULTS OUTLINE  </p>
+
 <p>The remainder of this paper is organized as usual: the next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.</p>
-<h2 id="polynomial-regression-with-genetic-algorithms">Polynomial Regression with Genetic Algorithms</h2>
-<p>The canonical representation of a polynomial is a sum <span class="math">\[
+
+<h2>Polynomial Regression with Genetic Algorithms</h2>
+
+<p>The canonical representation of a polynomial is a sum
+\[ 
 p\left( x_1, \ldots, x_k\right) = \sum_i \beta_i m_i.
-\]</span></p>
-<p>In this sum each <span class="math">\(m_i\)</span> is a monomial, <span class="math">\(m_i = \prod_{j\in A_i} x_j^{\alpha_{ij}}\)</span>, the exponents are non-negative integers, <span class="math">\(\alpha_{ij}\in\mathbb{N}_0\)</span>, and the coeficients are real valued, <span class="math">\(\beta_i \in \mathbb{R}\)</span>. For example <span class="math">\(p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3\)</span> has monomials <span class="math">\(m_1 = x_1, m_2 = x_2 x_3\)</span> and <span class="math">\(m_3 = x_1^2 x_3\)</span> coefficients <span class="math">\(\beta_1 = 2, \beta_2 = 1\)</span> and <span class="math">\(\beta_3 = 1/2\)</span> and exponents <span class="math">\(\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1\)</span> and all other <span class="math">\(\alpha_{ij} = 0\)</span>.</p>
+ \]</p>
+
+<p>In this sum each \( m_i \) is a monomial, \( m_i = \prod_{j\in A_i} x_j^{\alpha_{ij}} \), the exponents are non-negative integers, \( \alpha_{ij}\in\mathbb{N}_0 \), and the coeficients are real valued, \( \beta_i \in \mathbb{R} \). For example \( p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3 \) has monomials \( m_1 = x_1, m_2 = x_2 x_3 \) and \( m_3 = x_1^2 x_3 \) coefficients \( \beta_1 = 2, \beta_2 = 1 \) and \( \beta_3 = 1/2 \) and exponents \( \alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1 \) and all other \( \alpha_{ij} = 0 \).</p>
+
 <blockquote>
-<p><strong>NOTA</strong> Este parágrafo deu-me uma ideia: os <span class="math">\(\alpha\)</span> definem uma matriz <span class="math">\(A\)</span> em que as linhas são monómios e as colunas variáveis; “Multiplicando” esta matriz por um vector, obtemos o polinómio: <span class="math">\(P=CA\)</span>. Além disso, podemos continuar a definir a condição de regularização como antes, mas também podemos considerar condições <em>na</em> matriz (por exemplo, o número de entradas não nulas ser esparso ou a sua soma ser dominada por <span class="math">\(\log nm\)</span>)…</p>
+<p><strong>NOTA</strong> Este parágrafo deu-me uma ideia: os \( \alpha \) definem uma matriz \( A \) em que as linhas são monómios e as colunas variáveis; &ldquo;Multiplicando&rdquo; esta matriz por um vector, obtemos o polinómio: \( P=CA \). Além disso, podemos continuar a definir a condição de regularização como antes, mas também podemos considerar condições <em>na</em> matriz (por exemplo, o número de entradas não nulas ser esparso ou a sua soma ser dominada por \( \log nm \))&hellip; </p>
 </blockquote>
-<p>This makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given <span class="math">\(n\)</span> variables and a maximum joint degree <span class="math">\(d\)</span> grows exponentialy with either <span class="math">\(n\)</span> or <span class="math">\(d\)</span>. But more importantly, the polynomial regression problem can be split into two subproblems:</p>
-<ol type="1">
-<li>for a given set of monomials <span class="math">\(q_1, \ldots, q_r\)</span>, find regression coefficients <span class="math">\(\theta_1,\ldots,\theta_r\)</span> that minimize an adequate cost function;</li>
+
+<p>This makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given \( n \) variables and a maximum joint degree \( d \) grows exponentialy with either \( n \) or \( d \). But more importantly, the polynomial regression problem can be split into two subproblems:</p>
+
+<ol>
+<li>for a given set of monomials \( q_1, \ldots, q_r \), find regression coefficients \( \theta_1,\ldots,\theta_r \) that minimize an adequate cost function;</li>
 <li>find the fittest set of monomials;</li>
 </ol>
+
 <p>Our line of work is to solve the first problem with linear regression and the second with GAs.</p>
-<p>[EVALUATION STRATEGY]</p>
+
+<p>[EVALUATION STRATEGY]  </p>
+
 <p>[RESULTS]</p>
+
 <p>HOW DO WE DO THE</p>
+
 <ul>
 <li>polynomial encoding</li>
 <li>cost function</li>
 <li>genetic operators</li>
 <li>selection of other search parameters (<em>eg</em> population size, maxiter, <em>etc</em>)</li>
 </ul>
-<h3 id="polinomial-encoding">Polinomial Encoding</h3>
+
+<h3>Polinomial Encoding</h3>
+
 <p><em>Describe our method to encode polynomial instances</em></p>
-<h3 id="cost-function">Cost Function</h3>
+
+<h3>Cost Function</h3>
+
 <p><em>Define the cost function</em></p>
-<p>Given a dataset <span class="math">\(D=\left\lbrace x_1^{(i)}, \ldots, x_k^{(i)}, y^{(i)} \in \mathbb{R}^{k+1} : i = 1,\ldots, n \right\rbrace\)</span> with <span class="math">\(n\)</span> observations of <span class="math">\(k+1\)</span> variables <span class="math">\(X_1, \ldots, X_k, Y\)</span>. To find a polynomial that fits the observations of the dependent variable <span class="math">\(Y\)</span> the usual procedure is to explore parameters <span class="math">\(\Theta\)</span> of a polynomial hypothesis <span class="math">\(h_{\Theta}\)</span> and select a combination that minimizes the <em>root-mean-square error</em> in the dataset <span class="math">\(D\)</span>: <span class="math">\[
+
+<p>Given a dataset \( D=\left\lbrace x_1^{(i)}, \ldots, x_k^{(i)}, y^{(i)} \in \mathbb{R}^{k+1} : i = 1,\ldots, n \right\rbrace \) with \( n \) observations of \( k+1 \) variables \( X_1, \ldots, X_k, Y \). To find a polynomial that fits the observations of the dependent variable \( Y \) the usual procedure is to explore parameters \( \Theta \) of a polynomial hypothesis \( h_{\Theta} \) and select a combination that minimizes the <em>root-mean-square error</em> in the dataset \( D \):
+\[ 
 J_{fit}\left( \Theta; D \right) = \frac{1}{n} \sum_{i=1}^n \left( y^{(i)} - h_{\Theta}\left(x_1^{(i)}, \ldots, x_m^{(i)}\right) \right)^2
-\]</span></p>
+ \]</p>
+
 <p>Since it is always possible to fit exactly a polynomial to any given dataset, <em>overfitting</em> the available data, a <em>regularization</em> factor is needed to penalyze hypothesis too biased by the training data:</p>
-<p><span class="math">\[
+
+<p>\[ 
 J_{reg} = ?
-\]</span></p>
-<h3 id="genetic-operators">Genetic Operators</h3>
+ \]</p>
+
+<h3>Genetic Operators</h3>
+
 <p><em>Define the genetic operators</em></p>
-<h3 id="other-search-parameters">Other Search Parameters</h3>
+
+<h3>Other Search Parameters</h3>
+
 <p><em>Explain the remaining search parameters</em></p>
-<h2 id="results">Results</h2>
+
+<h2>Results</h2>
+
 <ul>
-<li>Measured quantities</li>
+<li>Measured quantities
+
+<ul>
 <li>error</li>
 <li>number of iterations to convergence</li>
 <li>memory usage</li>
-<li>F1, ROC, ?<br /></li>
+<li>F1, ROC, ?<br/></li>
+</ul></li>
 <li>Selection of datasets and regression algorithms</li>
 <li>Summary Figures and Numeric results</li>
 </ul>
-<h2 id="conclusion">Conclusion</h2>
-<h2 id="references">References</h2>
-<p><strong>the references are defined “here” in the source but hidden in the resulting documents</strong></p>
-<ol type="1">
-<li><p>Ghai, Dhruva, Saraju P. Mohanty, and Garima Thakral. “Fast Analog Design Optimization using Regression based Modeling and Genetic Algorithm: A Nano-CMOS VCO Case Study.” Proceedings of the 14th IEEE International Symposium on Quality Electronic Design (ISQED). 2013.</p></li>
-<li><p>Rezania, Mohammad, Akbar A. Javadi, and Orazio Giustolisi. “Evaluation of liquefaction potential based on CPT results using evolutionary polynomial regression.” Computers and Geotechnics 37.1 (2010): 82-92.</p></li>
-<li><p>Zain, Azlan Mohd, Habibollah Haron, and Safian Sharif. “Genetic algorithm and simulated annealing to estimate optimal process parameters of the abrasive waterjet machining.” Engineering with computers 27.3 (2011): 251-259.</p></li>
-<li><p>Garg, A., and K. Tai. “Comparison of regression analysis, artificial neural network and genetic programming in handling the multicollinearity problem.” Modelling, Identification &amp; Control (ICMIC), 2012 Proceedings of International Conference on. IEEE, 2012.</p></li>
+
+<h2>Conclusion</h2>
+
+<h2>References</h2>
+
+<p><strong>the references are defined &ldquo;here&rdquo; in the source but hidden in the resulting documents</strong></p>
+
+<ol>
+<li><p>Ghai, Dhruva, Saraju P. Mohanty, and Garima Thakral. &ldquo;Fast Analog Design Optimization using Regression based Modeling and Genetic Algorithm: A Nano-CMOS VCO Case Study.&rdquo; Proceedings of the 14th IEEE International Symposium on Quality Electronic Design (ISQED). 2013.</p></li>
+<li><p>Rezania, Mohammad, Akbar A. Javadi, and Orazio Giustolisi. &ldquo;Evaluation of liquefaction potential based on CPT results using evolutionary polynomial regression.&rdquo; Computers and Geotechnics 37.1 (2010): 82-92.</p></li>
+<li><p>Zain, Azlan Mohd, Habibollah Haron, and Safian Sharif. &ldquo;Genetic algorithm and simulated annealing to estimate optimal process parameters of the abrasive waterjet machining.&rdquo; Engineering with computers 27.3 (2011): 251-259.</p></li>
+<li><p>Garg, A., and K. Tai. &ldquo;Comparison of regression analysis, artificial neural network and genetic programming in handling the multicollinearity problem.&rdquo; Modelling, Identification &amp; Control (ICMIC), 2012 Proceedings of International Conference on. IEEE, 2012.</p></li>
 </ol>
+
 </body>
+
 </html>
+
