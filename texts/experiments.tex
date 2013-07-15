@@ -69,7 +69,7 @@ These results were found using R's programming language~\cite{R}.
 
 To compare this paper's algorithm we applied the exact same train and test samples with other learning algorithms, namely: Linear Regression, Support Vector Machines~\cite{Meyer12}, Regression Trees~\cite{Therneau13}, Conditional Inference Trees~\cite{Hothorn06}~\cite{Strobl07}~\cite{Strobl08} and Random Forests~\cite{Liaw02}
 
-In order to train and test the performance of GApoly it was used several datasets (see below). For each dataset, we selected 70\% for training purposes and the remaining observations to make the test set in order to compute the estimated rmse. To achieve more robust results, for each dataset there were ten runs, each one with different samples for the train and test sets. The results below are boxplots for the test set error predictions over these different runs.
+In order to train and test the performance of GApoly it was used several datasets (see below). For each dataset, we selected 70\% for training purposes and the remaining observations to make the test set in order to compute the estimated rmse. To achieve more robust results, for most datasets there were 25 runs, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are boxplots for the test set error predictions over these different runs.
 
 \textbf{Artificial}: this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable $y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes 50 observations. 
 
@@ -90,45 +90,45 @@ In the next datasets, the population was 250 with 100 iterations for each run
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
-			{figures/Housing_dataset_lambda0.975.eps}
+			{figures/Housing_dataset_lambda0.8_25runs.eps}
 		\caption{results for Boston Housing dataset}
 	\end{center}
 \end{figure}
+
+Just as an example of the model the GApoly algorithm outputs: in this dataset the best polynomial, with a rmse of 0.38 for the test set, was the following:
+
+$$y = -0.12 x_6 x_9^4 + 0.78 x_6 - 0.4 x_9^2 x_{13} + 0.17 x_{13}^2 - 0.044$$
+
+where the attributes mean:
+$x_6$, RM average number of rooms per dwelling;
+$x_9$, RAD index of accessibility to radial highways;
+$x_{13}$, Lower status of the population.
 
 \textbf{Abalone}: This dataset can be used to predict the age of a abalone shell using the given 8 numeric attributes concerning several physical measurements. There are 4177 observations.
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
-			{figures/Abalone_dataset_lambda1.0.eps}
+			{figures/Abalone_dataset_lambda0.8_25runs.eps}
 		\caption{results for Abalone dataset}
 	\end{center}
 \end{figure}
 
-\textbf{Auto-MPG}: This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes. There are 398 observations. Here are the initial observations:
+% best polynomial, rsme 0.65
+% $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
 
-\begin{center}
-\begin{tabular}{cccccccc}
-x1 & x2 & x3 & x4 & x5 & x6 & x7 & y \\
-8 & 307 & 17 & 3504 & 12.0 & 70 & 1 & 18 \\
-8 & 350 & 35 & 3693 & 11.5 & 70 & 1 & 15 \\
-8 & 318 & 29 & 3436 & 11.0 & 70 & 1 & 18 \\
-8 & 304 & 29 & 3433 & 12.0 & 70 & 1 & 16 \\
-8 & 302 & 24 & 3449 & 10.5 & 70 & 1 & 17 
-\end{tabular}
-\end{center}
+\textbf{Auto-MPG}: This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes. There are 398 observations. Here are the initial observations:
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
-			{figures/Auto-Mpg_dataset_lambda0.8.eps}
+			{figures/Auto-Mpg_dataset_lambda0.8_25runs.eps}
 		\caption{results for Auto-MPG dataset}
 	\end{center}
 \end{figure}
 
-% The best polynomial, with a rmse of 2.15 for the test set, was 
-
-% $$y = -3.4 10^{-6} x_4 x_6^2 + 1.05 10^{-8} x_6^5 + 33.7$$
+% best polynomial, rmse 0.32
+%$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
 
 \textbf{Kinematics}: This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using 8 continuous attributes. There are 8192 observations.
 

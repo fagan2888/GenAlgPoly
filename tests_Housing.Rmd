@@ -39,7 +39,6 @@ save(report, file="Housing300_lambda0.8.Rda") # recover with load("Housing300.Rd
 coef(report$ga.model)
 report$ga.error
 
-library(ggplot2)
 
 df <- data.frame(GA.Poly = report$ga.error,
                  Lin.Reg = report$lm.error,
@@ -50,6 +49,7 @@ df <- data.frame(GA.Poly = report$ga.error,
 
 write.table(df, "Housing300_lambda0.8.txt")
 
+library(ggplot2)
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 
                           report$lm.error,
@@ -69,6 +69,7 @@ df <- as.data.frame(list.data)
 qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
   ylab("root-mean-square error") + 
   xlab("regression method") +
+  coord_cartesian(ylim = c(0.2, 0.75))  +
   ggtitle("Housing dataset")
 
 ########################################################
