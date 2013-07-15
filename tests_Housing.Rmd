@@ -8,7 +8,7 @@ Testing Housing
 ========================================================
 
 ```{r}
-set.seed(202)
+set.seed(101)
 
 # Read Data
 
@@ -25,15 +25,16 @@ names(my.data) <- c(paste0("x",1:(ncol(my.data)-1)),"y")
 sapply(my.data, class)
 # my.data$x3 <- as.numeric(my.data$x3) # x3 was a factor, make it a numeric value
 head(my.data,8)
+my.data <- as.data.frame(scale(my.data))
 
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=300, iterations=100, lambda=0.975)
+report <- make.report(my.data, population=300, iterations=100, lambda=0.8, runs=25)
 
 # See Results
 
-save(report, file="Housing300_lambda0.975.Rda") # recover with load("Housing300.Rda") 
+save(report, file="Housing300_lambda0.8.Rda") # recover with load("Housing300.Rda") 
 
 coef(report$ga.model)
 report$ga.error
@@ -47,7 +48,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Housing300_lambda0.975.txt")
+write.table(df, "Housing300_lambda0.8.txt")
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 
@@ -64,8 +65,6 @@ list.data <- list(error=c(report$ga.error,
                            rep("CI.Tree",size)))
 
 df <- as.data.frame(list.data)
-
-write.table(df, "")
 
 qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
   ylab("root-mean-square error") + 

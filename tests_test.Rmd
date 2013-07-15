@@ -31,7 +31,7 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=50, iterations=25, mutation.rate=0.05, runs=1)
+report <- make.report(my.data, population=100, iterations=50, mutation.rate=0.05)
 
 # See Results
 
@@ -71,6 +71,7 @@ list.data <- list(error=c(report$ga.error,
                            rep("CI.Tree",size)))
 
 df <- as.data.frame(list.data)
+
 
 library(ggplot2)
 qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
