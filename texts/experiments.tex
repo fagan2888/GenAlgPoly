@@ -18,7 +18,6 @@ The chromosome coding will as follow:
 \end{enumerate}
 
 Eg: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with max.monomials = 4, n.vars = 3 and max.degree=3. One possible encoding would be:
-
 $$110 - 011,000,001~~;~~000,000,111~~;~~001,001,000~~;~~110,010,101$$
 
 (for reading purposes the semicolons separate monomials, the commas separate variables)
@@ -28,28 +27,6 @@ The first 3 bits inform that the second and third monomials are active while the
 Let's interpret the first monomial description, $011,000,001$. It is divided by three since n.vars=3. The first triple $011$ is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, $000$, means that $x_2$ is not part of the monomial. The thrid triple $001$ says that variable $x_3$ has exponent $1$, so the first monomial consists of $x_1^3 x_3$. All the remaining sets of $9$ bits are interpreted the same way and we get the previous polynomial.
 
 Notice that all binary descriptions give rise to valid polynomials. However, if the coding consists of entirely zeros, by convention, it describes polynomial $x_1$. This has to do with the execution of the polynomial regression that would fail if we interpret it as the zero polynomial. Anyway, for progressive larger  binary descriptions, the chances of getting this zero description decrease exponentially, so it does not impact in any meaningful way in the algorithm's performance.
-
-Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ sometimes provide better, even if marginal, results. The next figure shows results for the Abalone dataset with five runs for each $\lambda$ (cf. Experimental Results section for more info on this dataset).
-
-\begin{figure}[htb]
-	\begin{center}
-		\includegraphics[height=6cm,width=10cm,angle=0]
-			{figures/Abalone_dataset_lambdas.eps}
-		\caption{fitness progress for Abalone dataset}
-	\end{center}
-\end{figure}
-
-The values for another dataset:
-
-\begin{figure}[htb]
-	\begin{center}
-		\includegraphics[height=6cm,width=10cm,angle=0]
-			{figures/Auto-Mpg_dataset_lambdas.eps}
-		\caption{fitness progress for Abalone dataset}
-	\end{center}
-\end{figure}
-
-The inflection point is around $\lambda = 0.8$. We'll use the regularisation parameter with this value.
 
 \subsection{Regularization}
 
@@ -62,6 +39,30 @@ J_{fit}\left( \Theta; D \right) = \lambda^{M} \sqrt{ \frac{1}{n} \sum_{i=1}^n \l
 $$
 
 where M is the number of monomials the polynomial has. A $\lambda$ greater than one punishes polynomials with more monomials.
+
+Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ sometimes provide better, even if marginal, results. Figure~\ref{Abalone_dataset_lambdas} shows results for the Abalone dataset with five runs for each $\lambda$ (cf. Experimental Results includes information about these datasets).
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[height=6cm,width=10cm,angle=0]
+			{figures/Abalone_dataset_lambdas.eps}
+		\caption{fitness progress for Abalone dataset}
+		\label{Abalone_dataset_lambdas}
+	\end{center}
+\end{figure}
+
+Figure~\ref{Auto-Mpg_dataset_lambdas} presents regularization results for the Auto-MPG dataset:
+
+\begin{figure}[htb]
+	\begin{center}
+		\includegraphics[height=6cm,width=10cm,angle=0]
+			{figures/Auto-Mpg_dataset_lambdas.eps}
+		\caption{fitness progress for Abalone dataset}
+		\label{Auto-Mpg_dataset_lambdas}
+	\end{center}
+\end{figure}
+
+The typical inflection point is around $\lambda = 0.8$. We'll use the regularisation parameter with this value.
 
 \section{Experimental Results}
 
@@ -78,20 +79,22 @@ In order to train and test the performance of GApoly it was used several dataset
 		\includegraphics[height=6cm,width=10cm,angle=0]
 			{figures/artificial_dataset1_lambda1.0.eps}
 		\caption{results for Artificial dataset}
+		\label{artificial_dataset1_lambda1.0}
 	\end{center}
 \end{figure}
 
-This dataset was used in order to verify if GApoly was able to find the polynomial relation, which the algorithm did. In this case, all runs used a population of 100 with 50 iterations for each run.
+This dataset was used in order to verify if GApoly was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). In this case, all runs used a population of 100 with 50 iterations for each run.
 
-In the next datasets, the population was 250 with 100 iterations for each run
+In the next datasets, the population has size 250 with 100 iterations for each run.
 
-\textbf{Housing}: This data set concerns the task of predicting housing values in areas of Boston. There are 13 continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's\footnote{This and the remaining regression datasets were selected from Luis Torgo's data repository, http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these set originally come from UCI ML repository, http://archive.ics.uci.edu/ml/}. There are 506 observations.
+\textbf{Housing}: This data set concerns the task of predicting housing values in areas of Boston. There are 13 continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's\footnote{This and the remaining regression datasets were selected from Luis Torgo's data repository, http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these set originally come from UCI ML repository, http://archive.ics.uci.edu/ml/}. There are 506 observations. Figure~\ref{Housing_dataset_lambda0.8_25runs} presents the results for this dataset.
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
 			{figures/Housing_dataset_lambda0.8_25runs.eps}
 		\caption{results for Boston Housing dataset}
+		\label{Housing_dataset_lambda0.8_25runs}
 	\end{center}
 \end{figure}
 
@@ -104,61 +107,64 @@ $x_6$, RM average number of rooms per dwelling;
 $x_9$, RAD index of accessibility to radial highways;
 $x_{13}$, Lower status of the population.
 
-\textbf{Abalone}: This dataset can be used to predict the age of a abalone shell using the given 8 numeric attributes concerning several physical measurements. There are 4177 observations.
+\textbf{Abalone}: This dataset can be used to predict the age of a abalone shell using the given 8 numeric attributes concerning several physical measurements. There are 4177 observations. Figure~\ref{Abalone_dataset_lambda0.8_25runs} presents the results for this dataset.
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
 			{figures/Abalone_dataset_lambda0.8_25runs.eps}
 		\caption{results for Abalone dataset}
+		\label{Abalone_dataset_lambda0.8_25runs}
 	\end{center}
 \end{figure}
 
 % best polynomial, rsme 0.65
 % $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
 
-\textbf{Auto-MPG}: This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes. There are 398 observations. Here are the initial observations:
+\textbf{Auto-MPG}: This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes. There are 398 observations. Figure~\ref{Auto-Mpg_dataset_lambda0.8_25runs} presents the results for this dataset.
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
 			{figures/Auto-Mpg_dataset_lambda0.8_25runs.eps}
 		\caption{results for Auto-MPG dataset}
+		\label{Auto-Mpg_dataset_lambda0.8_25runs}
 	\end{center}
 \end{figure}
 
 % best polynomial, rmse 0.32
 %$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
 
-\textbf{Kinematics}: This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using 8 continuous attributes. There are 8192 observations.
+\textbf{Kinematics}: This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using 8 continuous attributes. There are 8192 observations. Figure~\ref{Kinematics300_lambda0.8_25runs} presents the results for this dataset.
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
-			{figures/Kinematics_dataset_lambda1.0.eps}
+			{figures/Kinematics300_lambda0.8_25runs.eps}
 		\caption{results for Kinematics dataset}
+		\label{Kinematics300_lambda0.8_25runs}
 	\end{center}
 \end{figure}
 
+% best polynomial, rmse 0.74
+% $$ y = 0.24 x_5 - 0.23 x_5 x_6 x_7 - 0.19 x_4 x_7 - 0.5 x_3 $$
+
 \subsection{Convergence speed}
 
-The GA quickly proceeds in the first 50 to 100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation\footnote{the processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimisation was not the focus of this article}, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. The next figure shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
+The GA quickly proceeds in the first 50 to 100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation\footnote{The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimisation was not the focus of this article}, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
 
 \begin{figure}[htb]
 	\begin{center}
 		\includegraphics[height=6cm,width=10cm,angle=0]
 			{figures/Abalone_fitnessProgress.eps}
 		\caption{fitness progress for Abalone dataset}
+		\label{Abalone_fitnessProgress}
 	\end{center}
 \end{figure}
-
-Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ tend to provide better, even if marginal, results. The next figure shows results for the artific
 
 \subsection{Discussion}
 
 The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms GApoly systematically (it outperforms all the others) except in the Auto-MPG test and, of course, in the artificial dataset that uses a straightforward polynomial relation. 
-
-
 
 \section{Bibliography}
 

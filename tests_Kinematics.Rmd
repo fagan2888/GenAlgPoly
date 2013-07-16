@@ -48,7 +48,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Kinematics200.txt")
+write.table(df, "Kinematics300_lambda0.8_25runs.txt")
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 
@@ -65,8 +65,6 @@ list.data <- list(error=c(report$ga.error,
                            rep("CI.Tree",size)))
 
 df <- as.data.frame(list.data)
-
-write.table(df, "")
 
 qplot(method,error,data=df,geom=c("jitter","boxplot")) + 
   ylab("root-mean-square error") + 
