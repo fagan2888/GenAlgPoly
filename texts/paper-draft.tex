@@ -4,6 +4,10 @@
 \geometry{a4paper} % or letter or a5paper or ... etc
 % \geometry{landscape} % rotated page geometry
 \usepackage{amsfonts}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
 \usepackage{graphicx}
 \usepackage{acronym}
 \usepackage{pgfplots}
@@ -17,6 +21,7 @@
 \author{Francisco Coelho \and João Neto}
 \date{[{\sc draft} \today]} % delete this line to display the current date
 
+\newcommand{\sample}[1]{\ensuremath{^{\left(#1\right)}}}
 
 \acrodef{GA}{Genetic algorithms}
 \acrodef{rmse}{root-mean-square error}
@@ -35,34 +40,32 @@ This paper describes a two-step method that uses genetic algorithms and linear r
 
 \section{Introduction}
 
-With notable exceptions (\emph{e.g.} neural networks), most machine learning regression techniques are based on linear models. This assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in ecology, cybernetics, robotics and other areas.
+With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in ecology, cybernetics, robotics and other areas.
 
-Polynomials, one of the most studied subjects in mathematics, generalize linear functions and define, perhaps, the simplest and most used nonlinear models. Applications of polynomial include colorimetric calibration \cite{mendes2005adaptive}, explicit \emph{formulae} for turbulent pipe flows \cite{davidson1999method}, computational linguistics \cite{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \cite{csefalvayova2010use}, liquid epoxy molding process \cite{chan2011modeling}, B-spline surface reconstruction \cite{galvez2012iterative}, product design \cite{chan2012development} or forecasting cyanotoxins presence in water reservoirs \cite{garcia2013hybrid}. These examples not only illustrate the wide spectrum of applications but also the work in each one of these polynomial models uses, at some point, a genetic algorithm.
+Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \cite{mendes2005adaptive}, explicit formulae for turbulent pipe flows \cite{davidson1999method}, computational linguistics \cite{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \cite{csefalvayova2010use}, liquid epoxy molding process \cite{chan2011modeling}, B-spline surface reconstruction \cite{galvez2012iterative}, product design \cite{chan2012development} or forecasting cyanotoxins presence in water reservoirs \cite{garcia2013hybrid}. This not only illustrates the wide spectrum of applications but, additionally, work in each one of these polynomial models uses, at some point, a genetic algorithm.
 
-\ac{GA} where, arguably, one the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterisation, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \cite{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study of thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \cite{holland1975adaptation}.  
+\ac{GA} where, arguably, one the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \cite{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \cite{holland1975adaptation}.  
 
-One interesting ``flavour" of genetic algorithms, named \emph{genetic programming} by John Koza \cite{koza1992genetic}, proposed the use of \acp{GA} to search the syntatic stucture of complex functions. This syntatic structure search is keen to the central ideas of deep learning \cite{bengio2013representation, bengio2009learning}, the subarea of machine learning actually producing the most promising results (\emph{e.g.} \cite{tarlowstochastic}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure ($y=\sum_i \beta_i x_i$) nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
+One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \cite{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntatic structure search is keen to the central ideas of deep learning \cite{bengio2013representation, bengio2009learning}, the subarea of machine learning actually producing the most promising results (\emph{e.g.} \cite{tarlowstochastic}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \cite{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \cite{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimises a cost function that accounts for both the \ac{rmse} and a regularisation factor to avoid over-fitting. 
+The idea of using \acp{GA} to find a polynomial regression is not new \cite{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \cite{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimises a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
 It turns out that, discarding the computational cost of training, the polynomial regression method presented here, \ac{GAPoly}, provides a quite competitive regression method. Indeed, it is only systematically out-performed by random forests, an \emph{ensemble} method.
 
-The remainder of this paper is organised as usual: the next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
+The remainder of this paper is organized as usual: the next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
 
 
-\section{Polynomial Regression with Genetic Algorithms}
+\section{Genetic Algorithms for Polynomials}
 
-This section starts with a brief description of the polynomial representation used to support the encoding of polynomial instances. This encoding is required to define the populations the \acp{GA} will evolve. Then is defined the cost function, including regularisation for over-fitting.  
+This section is dedicated to describe an algorithm to find a polynomial regression from a given dataset. It starts with a brief introduction and description of the algorithm and proceeds into core details as the encoding used to represent individual polynomial instances in the \ac{GA} populations and the regularization of the cost function.
 
 A usual representation of polynomials is
 $$
-p\left( x_1, \ldots, x_k\right) = \sum_i \beta_i m_i
+p\left( x_1, \ldots, x_k\right) = \sum_i \theta_i m_i
 $$
-where each $m_i$ is a monomial, $m_i = \prod_{j\in A_i} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coefficients are real valued, $\beta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $m_1 = x_1, m_2 = x_2 x_3$ and $m_3 = x_1^2 x_3$ coefficients $\beta_1 = 2, \beta_2 = 1$ and $\beta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$.
-
-By using the exponents alone we have a matrix that defines the monomial structure of the polynomial, $A = \left[\alpha_{ij}\right]$. For the example above
+where each $m_i$ is a monomial, $m_i = \prod_{j} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coefficients are real valued, $\theta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $m_1 = x_1, m_2 = x_2 x_3$ and $m_3 = x_1^2 x_3$ coefficients $\theta_1 = 2, \theta_2 = 1$ and $\theta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$. The exponents alone are a matrix that defines the monomial structure of the polynomial, $A = \left[\alpha_{ij}\right]$. For the example above
 $$
 A = \left[ 
 \begin{array}{ccc}
@@ -80,9 +83,9 @@ x_1^2 x_3
 \right]
 $$
 where each row defines a monomial and each column represents a variable. Changing the order of the rows doesn't change the polynomial whereas changing the order of the columns corresponds to changing the respective variables.
-%Notice that if we interpret matrix $A$ as a single column of monomials and set $B = \left[ \begin{array}{ccc} 2 & 1 & \frac{1}{2} \end{array} \right ]$ then
+%Notice that if we interpret matrix $A$ as a single column of monomials and set the coefficients $T = \left[ \begin{array}{ccc} 2 & 1 & \frac{1}{2} \end{array} \right ]$ then
 %$$
-%p\left( x_1, x_2, x_3 \right) = BA = \left[ \begin{array}{ccc} 2 & 1 & \frac{1}{2} \end{array} \right ]\left[ 
+%p\left( x_1, x_2, x_3 \right) = TA = \left[ \begin{array}{ccc} 2 & 1 & \frac{1}{2} \end{array} \right ]\left[ 
 %\begin{array}{ccc}
 %x_1 \\
 %x_2 x_3 \\
@@ -92,41 +95,66 @@ where each row defines a monomial and each column represents a variable. Changin
 %$$
 
 This representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentialy with either $n$ or $d$. But more importantly, the polynomial regression problem can be naturally split into two subproblems:
-
+%
 \begin{enumerate}
-\item for a given set of monomials $q_1, \ldots, q_r$, find regression coefficients $\theta_1,\ldots,\theta_r$ that minimize an adequate cost function;
-\item find the fittest set of monomials;
+\item for a given set of monomials $m_1, \ldots, m_R$, find the regression coefficients $\theta_1,\ldots,\theta_R$ that minimize the \ac{rmse} on a given dataset;
+
+\item find the fittest set of monomials, \emph{i.e.} the polynomial that minimizes the \ac{rmse} on the same dataset;
 \end{enumerate}
+%
+More precisely, concerning the first problem, let $\mathcal{D}$ be a dataset with $N$ observations of variables $Y, X_1,\ldots,X_n$ and $\mathcal{M} = \left\lbrace m_1,\ldots, m_R\right\rbrace$ a set of $R$ monomial expressions over $X_1,\ldots,X_n$. Define the hypothesis\footnote{The expression $m|_{X=x}$ reads ``\emph{replace all instances of $X$ by $x$ in $m$}''.}
+%
+\begin{eqnarray*}
+h_{\Theta,\mathcal{M}}\left(x_1,\ldots,x_n\right) &=& \sum_{j = 1}^R \theta_j m_j|_{X_i=x_i,\forall 1 \leq i \leq n}
+\end{eqnarray*}
+%
+and let the cost
+%
+\begin{eqnarray}
+J\left(\Theta;\mathcal{M},\mathcal{D}\right) &=& \sqrt{\frac{1}{N}\sum_{i=1}^N \left( y\sample{i} - h_{\Theta,\mathcal{M}}\left( x_1\sample{i},\ldots,x_n\sample{i} \right) \right)^2 }\label{eq:rmse}
+\end{eqnarray}
+%
+be the usual \acf{rmse} function. Now the first problem can be stated as:
+%
+\begin{quote}
+Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{M}$, find parameters $\Theta$ that minimize $J\left(\Theta;\mathcal{M},\mathcal{D}\right)$.
+\end{quote}
+%
+It turns out that this problem can be solved as a usual linear regression problem by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{M}$.
 
-Algorithm \ref{alg:gapoly} solves the first problem with linear regression and the second with \acp{GA}.
-
+The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{P}$ a set of polynomials. For each polynomial $p\in \mathcal{P}$ let $\mathcal{M}_p$ be the set of monomials in $p$ (without the coefficients) and compute the fitness
+%
+\begin{eqnarray*}
+\phi_p &=& \min_\Theta J\left(\Theta;\mathcal{M}_p,\mathcal{D}\right)
+\end{eqnarray*}
+%
+by solving the first problem. With a fitness of every instance, a \ac{GA} will apply genetic operators (usually mutation and crossover) to evolve the population $\mathcal{P}$ until a reasonable approximation of a local minimum is found. 
+%
 \begin{algorithm}[htb]
 \begin{algorithmic}
-\Function{J}{$D,\left[m_1,\ldots,m_k\right]$}\Comment{Cost, or error, of the polynomial $m_1,\ldots,m_k$ in the dataset $D$}
-	\State\Return $err \gets \Call{lm}{D,\left[m_1,\ldots,m_k\right]}$ \Comment{Error in Linear Regression}
-\EndFunction
-\Statex
 \Function{GAPoly}{$D,pop_0,\epsilon$}
-	\State $pop \gets pop_0$
+	\State $pop \gets pop_0;\: err \gets 1.0+\epsilon$
 	\While{$err > \epsilon$}
 		\State $pop \gets \Call{IterateGA}{pop}$\Comment{Build next generation}
-		\State $pop \gets \Call{Sort}{pop, key = \textsc{Error}}$\Comment{Sort population by error}
-		\State $err \gets \textrm{error of }\Call{First}{pop}$
+		\State $pop \gets \Call{Sort}{pop, key = \textsc{Lm.rmse}}$\Comment{Sort by \ac{rmse} of linear regression}
+		\State $err \gets \textsc{rmse}\left(\Call{First}{pop}\right)$
 	\EndWhile
 	\State\Return $\Call{First}{pop}$
 \EndFunction
 \end{algorithmic}
-\caption{\ac{GAPoly} uses linear regression to find the monomials coefficients and genetic algorithms to explore the space of monomials.}\label{alg:gapoly}
+\caption{\ac{GAPoly} uses linear regression to find monomial coefficients that minimize the \ac{rmse} over a dataset and \acp{GA} to explore the space of polynomials. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$.}\label{alg:gapoly}
 \end{algorithm} 
-
-
-
-[EVALUATION STRATEGY]  
-
-[RESULTS]
-
-
-\subsection{Polinomial Encoding}
+%
+\begin{theorem}
+The composition of \acp{GA} with linear regression, as defined in Algorithm \ref{alg:gapoly}, converges to a polynomial that is a local minimum of the \ac{rmse} function, encapsulated in the fitness function $J$.
+\end{theorem}
+%
+\begin{proof}
+It follows from the properties of \acp{GA} and linear regression.
+\end{proof}
+%
+Subsection \ref{subs:polynomial.encoding} details of the encoding of individual polynomial instances as chromosomes and other parameters of the \ac{GA} implementation used. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
+\subsection{Polinomial Encoding}\label{subs:polynomial.encoding}
 
 The chromosome coding will as follow:
 \begin{enumerate}
@@ -149,7 +177,7 @@ Let's interpret the first monomial description, $011,000,001$. It is divided by 
 Notice that all binary descriptions give rise to valid polynomials. However, if the coding consists of entirely zeros, by convention, it describes polynomial $x_1$. This has to do with the execution of the polynomial regression that would fail if we interpret it as the zero polynomial. Anyway, for progressive larger  binary descriptions, the chances of getting this zero description decrease exponentially, so it does not impact in any meaningful way in the algorithm's performance.
 
 
-\subsection{Cost Function}
+\subsection{Cost Function}\label{subs:cost.function}
 
 The polynomial fitness considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the polynomial's monomials $m_i$.
 
