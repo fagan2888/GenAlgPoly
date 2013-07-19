@@ -28,7 +28,7 @@ def by_cols(d):
 	s += "\n"
 	return s
 
-filename = "fc-abalone_lambda-errors.txt"
+filename = "lambda.errors.Auto-Mpg.txt"
 
 f = file(filename,"r")
 

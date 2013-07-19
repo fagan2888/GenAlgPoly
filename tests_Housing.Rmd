@@ -102,6 +102,20 @@ source("gapolyfuncs.R")
 follow.fitness(my.data,population=300,iterations=50,mutation.rate=0.15,lambda=0.95)
 
 ########################################################
+# check what attributes Random Forest select has the most importants
+
+train.p.size <- 0.7 # percentage of training set
+n.vars       <- ncol(my.data)-1
+
+inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
+train.set <- my.data[inTrain,]
+test.set  <- my.data[-inTrain,]
+
+rf.model <- randomForest(y ~ ., data=train.set, importance=TRUE, do.trace=100, ntree=100)
+rf.model$importance
+
+
+
 
 # print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
 ```

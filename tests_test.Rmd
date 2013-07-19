@@ -31,7 +31,7 @@ head(my.data,8)
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=100, iterations=50, mutation.rate=0.05)
+report <- make.report(my.data, population=100, iterations=50, mutation.rate=0.15)
 
 # See Results
 
@@ -47,14 +47,14 @@ report$ga.error
 #         names=c("GA Poly", "Lin.Reg.", "SVM", "RPART", "Rnd.For.", "CI Tree"),
 #         ylab="RMSE")
 
-# df <- data.frame(GA.Poly = report$ga.error,
-#                  Lin.Reg = report$lm.error,
-#                  SVM = report$svm.error,
-#                  RPART = report$rpart.error,
-#                  Rnd.For = report$rf.error,
-#                  CI.Tree = report$citree.error)
-# 
-# write.table(df, "Articial_dataset.txt")
+df <- data.frame(GA.Poly = report$ga.error,
+                 Lin.Reg = report$lm.error,
+                 SVM = report$svm.error,
+                 RPART = report$rpart.error,
+                 Rnd.For = report$rf.error,
+                 CI.Tree = report$citree.error)
+
+write.table(df, "Articial_dataset.txt")
 
 size <- length(report$ga.error)
 list.data <- list(error=c(report$ga.error, 

@@ -160,4 +160,10 @@ Tian-Li Yu and Wei-Kai Lin.
 \newblock In {\em Proceedings of the 10th annual conference on Genetic and
   evolutionary computation}, pages 1089--1096. ACM, 2008.
 
+\bibitem{willighage2012genalg}
+Egon Willighagen.
+\newblock genalg: R Based Genetic Algorithm
+\newblock 2012
+\newblock R package version 0.1.1
+
 \end{thebibliography}
