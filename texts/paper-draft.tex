@@ -159,7 +159,7 @@ h_{\Theta,\mathcal{M}}\left(x_1,\ldots,x_n\right) &=& \sum_{j = 1}^R \theta_j m_
 and let the cost
 %
 \begin{eqnarray}
-J\left(\Theta;\mathcal{M},\mathcal{D}\right) &=& \sqrt{\frac{1}{N}\sum_{i=1}^N \left( y\sample{i} - h_{\Theta,\mathcal{M}}\left( x_1\sample{i},\ldots,x_n\sample{i} \right) \right)^2 }\label{eq:rmse}
+J_{fit}\left(\Theta;\mathcal{M},\mathcal{D}\right) &=& \sqrt{\frac{1}{N}\sum_{i=1}^N \left( y\sample{i} - h_{\Theta,\mathcal{M}}\left( x_1\sample{i},\ldots,x_n\sample{i} \right) \right)^2 }\label{eq:rmse}
 \end{eqnarray}
 %
 be the usual \acf{rmse} function. Now the first problem can be stated as:
@@ -228,10 +228,9 @@ If the coding consists of entirely zeros, by convention, it describes polynomial
 
 The polynomial fitness considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the polynomial's monomials $m_i$.
 
-This fitness function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularization term into the fitness function. Our proposal is to include a multiplicative factor into the fitness function proportional to the number of monomials. Thus, the fitness function from equation \ref{eq:rmse} becomes
+This fitness function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularization term into the fitness function. Our proposal is to include a multiplicative factor into the fitness function proportional to the number of monomials. Thus, the fitness function from equation \ref{eq:rmse} defines
 \begin{eqnarray}
-J_{fit}\left( \Theta; D \right) &=& \lambda^{m} \sqrt{ \frac{1}{n} \sum_{i=1}^n \left( y^{(i)} - h_{\Theta}\left(x_1^{(i)}, \ldots, x_m^{(i)}\right) \right)^2 }
-\label{eq:rmse-reg}
+J_{reg}\left(\Theta;\mathcal{M},\mathcal{D}\right) &=& \lambda^{m} J_{fit}\left(\Theta;\mathcal{M},\mathcal{D}\right)\label{eq:rmse-reg}
 \end{eqnarray}
 %
 where $m$ is the number of monomials the polynomial has. A $\lambda$ greater than one punishes polynomials with more monomials.
@@ -291,46 +290,7 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 \caption{Error distribution by regularisation exponent for the Abalone dataset.}\label{Abalone_dataset_lambdas}
 
 \end{center}\end{figure}
-%
-%
-\end{document}
 
-\begin{figure}[tb]\begin{center}
-\begin{tikzpicture}
-\begin{axis}[width=\textwidth,height=6cm,
-	boxplot/draw direction=y,
-	xtick={1,2,3,4,5,6,7,8,9,10,11,12,13},
-	xticklabels={0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15, 1.20, 1.25, 1.30},
-	xlabel={regularisation exponent ($\lambda$)},
-	ymin=2.0,
-	ymax=5.0,
-	ylabel={Error distribution (\ac{rmse})},
-	title={Error distribution by regularisation exponent (\textbf{Auto-MPG dataset})},
-	mark options={scale=0.5},
-	]	
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
-	\addplot[boxplot] table [y index=0] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=1] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=2] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=3] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=4] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=5] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=6] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=7] {data/lambda.errors.Auto-Mpg.dat};		
-	\addplot[boxplot] table [y index=8] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=9] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=10] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=11] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=12] {data/lambda.errors.Auto-Mpg.dat};
-
-\end{axis}
-\end{tikzpicture}
-
-% \includegraphics[height=6cm,width=\textwidth,angle=0]{figures/Abalone_dataset_lambdas.eps}
-
-\caption{Error distribution by regularisation exponent for the Auto-MPG dataset.}\label{Auto-MPG_dataset_lambdas}
-
-\end{center}\end{figure}
 
 The typical inflection point lies around $\lambda = 0.8$. The following results use the regularisation parameter with this value.
 
