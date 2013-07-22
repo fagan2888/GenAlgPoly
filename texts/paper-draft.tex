@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass{elsarticle}
 
 %
 %	FILE ENCODING
@@ -9,8 +9,8 @@
 %
 %	PAGE GEOMETRY
 %
-\usepackage{geometry}
-\geometry{a4paper}
+%\usepackage{geometry}
+%\geometry{a4paper}
 %
 
 %
@@ -47,7 +47,7 @@
 \usepgfplotslibrary{external}
 \tikzexternalize
 % ENABLE NEXT LINE TO TYPESET FIGURES
-\tikzset{external/force remake}
+%\tikzset{external/force remake}
 %
 
 %
@@ -61,9 +61,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
-\title{Selection of Polynomial Features by Genetic Algorithms}
-\author{Francisco Coelho \and João Neto}
-\date{[{\sc draft} \today]}
+
 
 %
 %	DOCUMENT COMMANDS
@@ -78,13 +76,28 @@
 %
 \begin{document}
 
+\begin{frontmatter}
 
-\maketitle
+\title{Selection of Polynomial Features by Genetic Algorithms}
+\author[ue,labmag]{Francisco Coelho}
+\ead{fc@di.uevora.pt}
+
+\author[fcul,labmag]{João Pedro Neto}
+\ead{jpn@di.fc.ul.pt}
+
+\address[ue]{Dept. Informática, Universidade de Évora, Rua Romão Ramalho 58 Évora 7000-671 Évora}
+\address[fcul]{Dept. Informática, Faculdade de Ciências da Universidade de Lisboa, Campo Grande 1749-016 Lisboa}
+\address[labmag]{Laboratory of Agent Modelling (LabMAg)}
+
+\date{[{\sc draft} \today]}
+
 \begin{abstract}
 Many applications require models that have no acceptable linear approximation and many nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models is decades old but still poses challenges due to the complexity of the search and different definitions of optimal solution.
 
 This paper describes a two-step method that uses genetic algorithms and linear regression to find empirical polynomial regressions. Experiments on common datasets show that, discounting the training computational effort, this method is quite competitive.
 \end{abstract}
+
+\end{frontmatter}
 
 \section{Introduction}
 
@@ -241,7 +254,7 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 \begin{tabular}{cc}
 \begin{tikzpicture}
 \begin{axis}[
-	width=0.5\textwidth,height=6cm,
+	width=0.49\textwidth,height=6cm,
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6,7},
 	yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
@@ -266,10 +279,11 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 %
 \begin{tikzpicture}
 \begin{axis}[
-	width=0.5\textwidth,height=6cm,
+	width=0.49\textwidth,height=6cm,
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6,7},
-	yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
+	%yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
+	yticklabels={},
 	title = {Auto MPG Dataset},
 	xlabel={Error (Auto MPG)},
 	]	
@@ -321,28 +335,19 @@ To compare this paper's proposed algorithm we applied the exact same train and t
 
 In order to train and test the performance of \ac{GAPoly} it was used several datasets (see below). For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed 25 times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are boxplots for the test set error predictions over these different runs.
 
-\textbf{Artificial}: this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable $y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes 50 observations and, only in this case, there were executed just 10 runs.
 
-\begin{figure}[htb]\begin{center}
+\begin{figure}[tb]\begin{center}
 \begin{tikzpicture}
-\begin{axis}[width=\textwidth,height=6cm,
-	boxplot/draw direction=y,
-	xtick={1,2,3,4,5,6},
-	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
-	xlabel={Regression Method},
-	ymin=0,
-	ymax=300,
-	ylabel={Error distribution (\ac{rmse})},
+\begin{axis}[width=0.90\textwidth,height=6cm,
+	boxplot/draw direction=x,
+	ytick={1,2,3,4,5,6},
+	yticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
+	ylabel={Regression Method},
+	xmin=-5,
+	xmax=300,
+	xlabel={Error distribution (\ac{rmse})},
 	title={Regression results for \textbf{Artificial dataset}},
-	mark options={scale=0.5},
 	]
-	\addplot[only marks, mark=o,color=black] table [x expr=1+0.2*rand,y index=0] {data/Articial_dataset.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=2+0.2*rand,y index=1] {data/Articial_dataset.dat};		
-	\addplot[only marks, mark=o,color=black] table [x expr=3+0.2*rand,y index=2] {data/Articial_dataset.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=4+0.2*rand,y index=3] {data/Articial_dataset.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=5+0.2*rand,y index=4] {data/Articial_dataset.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=6+0.2*rand,y index=5] {data/Articial_dataset.dat};
-	
 	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/Articial_dataset.dat};
 	\addplot[boxplot] table [y index=1] {data/Articial_dataset.dat};
@@ -354,12 +359,12 @@ In order to train and test the performance of \ac{GAPoly} it was used several da
 \end{axis}
 \end{tikzpicture}
 
-% \includegraphics[height=6cm,width=\textwidth,angle=0]{figures/Abalone_dataset_lambdas.eps}
-
-		\caption{results for Artificial dataset}
-		\label{artificial_dataset1_lambda1.0}
+\caption{results for Artificial dataset}
+\label{artificial_dataset1_lambda1.0}
 
 \end{center}\end{figure}
+
+\textbf{Artificial}: this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable $y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes 50 observations and, only in this case, there were executed just 10 runs.
 
 This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). In this case, we used a population of 100 solutions with 50 iterations for each run.
 
@@ -369,7 +374,7 @@ In the next datasets, the population has size 250 with 100 iterations for each r
 
 \begin{figure}[htb]\begin{center}
 \begin{tikzpicture}
-\begin{axis}[width=\textwidth,height=6cm,
+\begin{axis}[width=0.98\textwidth,height=6cm,
 	boxplot/draw direction=y,
 	xtick={1,2,3,4,5,6},
 	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
@@ -380,13 +385,6 @@ In the next datasets, the population has size 250 with 100 iterations for each r
 	title={Regression results for \textbf{Housing dataset}},
 	mark options={scale=0.5},
 	]
-	\addplot[only marks, mark=o,color=black] table [x expr=1+0.2*rand,y index=0] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=2+0.2*rand,y index=1] {data/Housing300_lambda0.8_25runs.dat};		
-	\addplot[only marks, mark=o,color=black] table [x expr=3+0.2*rand,y index=2] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=4+0.2*rand,y index=3] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=5+0.2*rand,y index=4] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=6+0.2*rand,y index=5] {data/Housing300_lambda0.8_25runs.dat};
-	
 	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/Housing300_lambda0.8_25runs.dat};
 	\addplot[boxplot] table [y index=1] {data/Housing300_lambda0.8_25runs.dat};
@@ -420,7 +418,7 @@ For comparisation if we access the mean decrease in accuracy found by Random For
 
 \begin{figure}[htb]\begin{center}
 \begin{tikzpicture}
-\begin{axis}[width=\textwidth,height=6cm,
+\begin{axis}[width=0.98\textwidth,height=6cm,
 	boxplot/draw direction=y,
 	xtick={1,2,3,4,5,6},
 	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
@@ -431,13 +429,7 @@ For comparisation if we access the mean decrease in accuracy found by Random For
 	title={Regression results for \textbf{Abalone dataset}},
 	mark options={scale=0.5},
 	]
-	\addplot[only marks, mark=o,color=black] table [x expr=1+0.2*rand,y index=0] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=2+0.2*rand,y index=1] {data/Abalone300_lambda0.8_25runs.dat};		
-	\addplot[only marks, mark=o,color=black] table [x expr=3+0.2*rand,y index=2] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=4+0.2*rand,y index=3] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=5+0.2*rand,y index=4] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=6+0.2*rand,y index=5] {data/Abalone300_lambda0.8_25runs.dat};
-	
+		
 	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/Abalone300_lambda0.8_25runs.dat};
 	\addplot[boxplot] table [y index=1] {data/Abalone300_lambda0.8_25runs.dat};
@@ -462,7 +454,7 @@ For comparisation if we access the mean decrease in accuracy found by Random For
 
 \begin{figure}[htb]\begin{center}
 \begin{tikzpicture}
-\begin{axis}[width=\textwidth,height=6cm,
+\begin{axis}[width=0.98\textwidth,height=6cm,
 	boxplot/draw direction=y,
 	xtick={1,2,3,4,5,6},
 	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
@@ -473,13 +465,7 @@ For comparisation if we access the mean decrease in accuracy found by Random For
 	title={Regression results for \textbf{Auto-MPG dataset}},
 	mark options={scale=0.5},
 	]
-	\addplot[only marks, mark=o,color=black] table [x expr=1+0.2*rand,y index=0] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=2+0.2*rand,y index=1] {data/Auto-Mpg300_lambda0.8_25runs.dat};		
-	\addplot[only marks, mark=o,color=black] table [x expr=3+0.2*rand,y index=2] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=4+0.2*rand,y index=3] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=5+0.2*rand,y index=4] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=6+0.2*rand,y index=5] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	
+		
 	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/Auto-Mpg300_lambda0.8_25runs.dat};
 	\addplot[boxplot] table [y index=1] {data/Auto-Mpg300_lambda0.8_25runs.dat};
@@ -504,7 +490,7 @@ For comparisation if we access the mean decrease in accuracy found by Random For
 
 \begin{figure}[htb]\begin{center}
 \begin{tikzpicture}
-\begin{axis}[width=\textwidth,height=7cm,
+\begin{axis}[width=0.98\textwidth,height=7cm,
 	boxplot/draw direction=y,
 	xtick={1,2,3,4,5,6},
 	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
@@ -515,13 +501,7 @@ For comparisation if we access the mean decrease in accuracy found by Random For
 	title={Regression results for \textbf{Kinematics dataset}},
 	mark options={scale=0.5},
 	]
-	\addplot[only marks, mark=o,color=black] table [x expr=1+0.2*rand,y index=0] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=2+0.2*rand,y index=1] {data/Kinematics300_lambda0.8_25runs.dat};		
-	\addplot[only marks, mark=o,color=black] table [x expr=3+0.2*rand,y index=2] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=4+0.2*rand,y index=3] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=5+0.2*rand,y index=4] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[only marks, mark=o,color=black] table [x expr=6+0.2*rand,y index=5] {data/Kinematics300_lambda0.8_25runs.dat};
-	
+		
 	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/Kinematics300_lambda0.8_25runs.dat};
 	\addplot[boxplot] table [y index=1] {data/Kinematics300_lambda0.8_25runs.dat};
@@ -550,7 +530,7 @@ The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable er
 \begin{tikzpicture}
 
 \begin{axis}[
-	width=0.95\textwidth,
+	width=0.98\textwidth,
 	height=6cm,
 	xmin=-5,
 	xmax=255,
@@ -575,7 +555,11 @@ The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable er
 
 The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). One exception -- the artificial dataset that uses a straightforward polynomial relation -- is the Auto-MPG datatest where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
 
-\section{Bibliography}
+\section*{Acknowledgements}
+
+The authors thank the Fundação para a Ciência e Tecnologia (FCT) and the  laboratório de I\&D LabMAg the financial support given to this work under the strategic project PEst-­OE/EEI/UI0434/2011.
+
+%\section{Bibliography}
 
 \bibliographystyle{plain}
 \bibliography{fullbib}

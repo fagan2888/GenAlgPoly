@@ -1,4 +1,4 @@
-﻿# Target Journals
+# Target Journals
 
 1. [Evolutionary Computation](http://www.mitpressjournals.org/loi/evco) **IF: 2.109**
 2. [International Journal of Computer Applications](http://www.ijcaonline.org/) **IF: NA**
@@ -11,11 +11,9 @@
 > Isto é um nojo! Até parece que tem de haver um journal para cada investigador.
 
 
-** Journals
+## Journals
 
-Pattern Recognition Letters
-http://www.journals.elsevier.com/pattern-recognition-letters/
-http://www.elsevier.com/journals/pattern-recognition-letters/0167-8655/guide-for-authors
+[Pattern Recognition Letters](http://www.journals.elsevier.com/pattern-recognition-letters/) com [instruções](http://www.elsevier.com/journals/pattern-recognition-letters/0167-8655/guide-for-authors)
 Impact Factor: 1.529
 
 Evolutionary Computation  

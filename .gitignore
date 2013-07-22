@@ -8,6 +8,7 @@ unnamed-chunk-*.*
 .md
 .Rda
 *.stackdump
+elsarticle/
 
 #################
 ## Eclipse
