@@ -10,6 +10,7 @@ unnamed-chunk-*.*
 *.stackdump
 elsarticle/
 paper-draft-figure*
+*.synctex.gz
 
 #################
 ## Eclipse

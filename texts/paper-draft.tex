@@ -44,8 +44,8 @@
 \usepgfplotslibrary{statistics}
 %
 %	avoid processing figures every time
-\usepgfplotslibrary{external}
-\tikzexternalize
+%\usepgfplotslibrary{external}
+%\tikzexternalize
 % ENABLE NEXT LINE TO TYPESET FIGURES
 %\tikzset{external/force remake}
 %
@@ -124,9 +124,9 @@ This section is dedicated to the description of an algorithm to find a polynomia
 
 A usual representation of polynomials is
 $$
-p\left( x_1, \ldots, x_k\right) = \sum_i \theta_i m_i
+p\left( x_1, \ldots, x_m\right) = \sum_i \theta_i q_i
 $$
-where each $m_i$ is a monomial, $m_i = \prod_{j} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coefficients are real valued, $\theta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $m_1 = x_1, m_2 = x_2 x_3$ and $m_3 = x_1^2 x_3$,    coefficients $\theta_1 = 2, \theta_2 = 1$ and $\theta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$. The exponents alone are a matrix that defines the monomial structure of the polynomial, $A = \left[\alpha_{ij}\right]$. For the example above
+where each $q_i$ is a monomial, $q_i = \prod_{j} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coefficients are real valued, $\theta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $q_1 = x_1, q_2 = x_2 x_3$ and $q_3 = x_1^2 x_3$, coefficients $\theta_1 = 2, \theta_2 = 1$ and $\theta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$. The exponents alone are a matrix that defines the monomial structure of the polynomial, $A = \left[\alpha_{ij}\right]$. For the example above
 $$
 A = \left[ 
 \begin{array}{ccc}
@@ -158,32 +158,32 @@ where each row defines a monomial and each column represents a variable. Changin
 This representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentialy with either $n$ or $d$. But more importantly, the polynomial regression problem can be naturally split into two subproblems:
 %
 \begin{enumerate}
-\item for a given set of monomials $m_1, \ldots, m_R$, find the regression coefficients $\theta_1,\ldots,\theta_R$ that minimize the \ac{rmse} on a given dataset;
+\item for a given set of monomials $\mathcal{P} = \left\lbrace q_1, \ldots, q_k\right\rbrace$, find the regression coefficients $\theta_1,\ldots,\theta_k$ that minimize the \ac{rmse} on a given dataset;
 
 \item find the fittest set of monomials, \emph{i.e.} the polynomial that minimizes the \ac{rmse} on the same dataset;
 \end{enumerate}
 %
-More precisely, concerning the first problem, let $\mathcal{D}$ be a dataset with $N$ observations of variables $Y, X_1,\ldots,X_n$ and $\mathcal{M} = \left\lbrace m_1,\ldots, m_R\right\rbrace$ a set of $R$ monomial expressions over $X_1,\ldots,X_n$. Define the hypothesis\footnote{The expression $m|_{X=x}$ reads ``\emph{replace all instances of $X$ by $x$ in $m$}''.}
+More precisely, concerning the first problem, let $\mathcal{D}$ be a dataset with $n$ observations of variables $Y, X_1,\ldots,X_m$ and $\mathcal{P} = \left\lbrace q_1,\ldots, q_k\right\rbrace$ a set of $k$ monomial expressions over $X_1,\ldots,X_m$. Define the hypothesis\footnote{The expression $q|_{X=x}$ reads ``\emph{replace all instances of $X$ by $x$ in $q$}''.}
 %
 \begin{eqnarray*}
-h_{\Theta,\mathcal{M}}\left(x_1,\ldots,x_n\right) &=& \sum_{j = 1}^R \theta_j m_j|_{X_i=x_i,\forall 1 \leq i \leq n}
+h_{\Theta,\mathcal{P}}\left(x_1,\ldots,x_m\right) &=& \sum_{j = 1}^k \theta_j q_j|_{X_i=x_i,\forall 1 \leq i \leq m}
 \end{eqnarray*}
 %
 and let the cost
 %
 \begin{eqnarray}
-J_{fit}\left(\Theta;\mathcal{M},\mathcal{D}\right) &=& \sqrt{\frac{1}{N}\sum_{i=1}^N \left( y\sample{i} - h_{\Theta,\mathcal{M}}\left( x_1\sample{i},\ldots,x_n\sample{i} \right) \right)^2 }\label{eq:rmse}
+J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \sqrt{\frac{1}{n}\sum_{i=1}^n \left( y\sample{i} - h_{\Theta,\mathcal{P}}\left( x_1\sample{i},\ldots,x_m\sample{i} \right) \right)^2 }\label{eq:rmse}
 \end{eqnarray}
 %
 be the usual \acf{rmse} function. Now the first problem can be stated as:
 %
 \begin{quote}
-Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{M}$, find parameters $\Theta$ that minimize $J\left(\Theta;\mathcal{M},\mathcal{D}\right)$.
+Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{P}$, find parameters $\Theta$ that minimize $J\left(\Theta;\mathcal{P},\mathcal{D}\right)$.
 \end{quote}
 %
 It turns out that this problem can be solved as a usual linear regression problem by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{M}$.
 
-The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{P}$ a set of polynomials. For each polynomial $p\in \mathcal{P}$ let $\mathcal{M}_p$ be the set of monomials in $p$ (without the coefficients) and compute the fitness
+The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{Q}$ a set of polynomials. For each polynomial $p\in \mathcal{Q}$ let $\mathcal{M}_p$ be the set of monomials in $p$ (without the coefficients) and compute the fitness
 %
 \begin{eqnarray*}
 \phi_p &=& \min_\Theta J\left(\Theta;\mathcal{M}_p,\mathcal{D}\right)
@@ -207,31 +207,31 @@ by solving the first problem. With a fitness of every instance, a \ac{GA} will a
 \end{algorithm} 
 %
 Notice that the properties of \acp{GA} and linear regression entail that
-the composition of \acp{GA} with linear regression, as defined in Algorithm \ref{alg:gapoly}, converges to a polynomial that is a local minimum of the \ac{rmse} function, encapsulated in the fitness function $J$.
+the composition of \acp{GA} with linear regression, as defined in Algorithm \ref{alg:gapoly}, converges to a polynomial that is a local minimum of the fitness function, encapsulated in the \ac{rmse} function $J_{\textrm{fit}}$.
 %
 
 %
-Subsection \ref{subs:polynomial.encoding} details of the encoding of individual polynomial instances as chromosomes and other parameters of the \ac{GA} implementation used. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
+Subsection \ref{subs:polynomial.encoding} describes the encoding of individual polynomial instances as chromosomes and other parameters of the \ac{GA} implementation used. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
 
 %
 \subsection{Polinomial Encoding}\label{subs:polynomial.encoding}
 %
 The encoding for any polynomial will be as follows:
 \begin{enumerate}
-\item an initial segment detailing which monomials are active (the 1st monomial is always active), this is represented in unary description, i.e., each monomial is identified by a single bit
-\item the remaining is split into $m$ sets of bits of equal size, each one representing a monomial
-\item each monomial is split into $n$ sets of $d$ size each, i.e., a variable
-\item for each variable, the remaining bits give the binary description of the variable degree, i.e., the maximum exponent is given by $2^d-1$
+\item an initial segment detailing which monomials are active (the first monomial is always active), this is represented in unary description, i.e., each monomial is identified by a single bit
+\item the remaining is split into $k$ sets of bits of equal size, each one representing a monomial
+\item each monomial is split into $m$ sets of $d$ size each, \emph{i.e.}, a variable
+\item for each variable, the remaining bits give the binary description of the variable degree, \emph{i.e.}, the maximum exponent is given by $2^d-1$
 \end{enumerate}
 
-Let's see an example: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with $m = 4, n = 3$ and $d=3$. One possible encoding would be:
+Let's see an example: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with $k = 4, m = 3$ and $d=3$. One possible encoding would be:
 $$110 - 011,000,001~~;~~000,000,111~~;~~001,001,000~~;~~110,010,101$$
 
 (for reading purposes the semicolons separate monomials, the commas separate variables)
 
-The first three bits inform that the second and third monomials are active while the fourth is not (as said, the first monomial is always active). This last monomial does not enter neither in the polynomial regression nor in the fitness evaluation. However, it acts as a kind of junk DNA, becoming active when, in a future mutation or crossover, the third bit of the entire sequence flips from 0 to 1.
+The first three bits inform that the second and third monomials are active while the fourth is not (as said, the first monomial is always active). This last monomial does not enter neither in the polynomial regression nor in the \ac{rmse} (fitness) evaluation. However, it acts as a kind of junk DNA, becoming active when, in a future mutation or crossover, the third bit of the entire sequence flips from 0 to 1.
 
-Let's interpret the first monomial description, $011,000,001$. It is divided by three since $n=3$. The first triple $011$ is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, $000$, means that $x_2$ is not part of the monomial. The third triple $001$ says that variable $x_3$ has exponent $1$, so the first monomial consists of $x_1^3 x_3$. All the remaining sets of nine bits are interpreted the same way and we get the previous polynomial.
+Let's interpret the first monomial description, $011,000,001$. It is divided by three since $m=3$. The first triple $011$ is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, $000$, means that $x_2$ is not part of the monomial. The third triple $001$ says that variable $x_3$ has exponent $1$, so the first monomial consists of $x_1^3 x_3$. All the remaining sets of nine bits are interpreted the same way and we get the previous polynomial.
 
 Notice that all binary descriptions give rise to valid polynomials. Notice however that this is not a bijective mapping. For each polynomial there are multiple representations. For example, $x_1+x_2$ and $x_2+x_1$ have different representations. The authors considered that more complex mappings in order to force a one to one mapping would impact negatively in the algorithm performance without giving anything in return.
 
@@ -239,14 +239,14 @@ If the coding consists of entirely zeros, by convention, it describes polynomial
 
 \subsection{Cost Function}\label{subs:cost.function}
 
-The polynomial fitness considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the polynomial's monomials $m_i$.
+The polynomial regression \ac{rmse} considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the polynomial's monomials $q_i$.
 
-This fitness function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularization term into the fitness function. Our proposal is to include a multiplicative factor into the fitness function proportional to the number of monomials. Thus, the fitness function from equation \ref{eq:rmse} defines
+This \ac{rmse} function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularization term into the \ac{rmse} function. Our proposal is to include a multiplicative factor proportional to the number of monomials. Thus, the error from equation \ref{eq:rmse} defines
 \begin{eqnarray}
-J_{reg}\left(\Theta;\mathcal{M},\mathcal{D}\right) &=& \lambda^{m} J_{fit}\left(\Theta;\mathcal{M},\mathcal{D}\right)\label{eq:rmse-reg}
+J_{\textrm{reg}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \lambda^{k} J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right)\label{eq:rmse-reg}
 \end{eqnarray}
 %
-where $m$ is the number of monomials the polynomial has. A $\lambda$ greater than one punishes polynomials with more monomials.
+where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized.
 
 Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ sometimes provide better, even if marginal, results. Figure~\ref{Abalone_dataset_lambdas} shows results for the Abalone dataset with ten runs for each $\lambda$, and figure~\ref{Auto-MPG_dataset_lambdas} presents regularization results for the Auto-MPG dataset. The following section Experimental Results includes information about these datasets.
 
@@ -258,13 +258,14 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6,7},
 	yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
-	title = {Abalone Dataset},
-	xlabel = {Error (Abalone)},
-	ylabel={Regularization ($\lambda$)},
+	title = {Dataset: \textsc{Abalone}},
+	xlabel = {Error distribution},
+	ylabel={Regularization weight ($\lambda$)},
+	xmax=2.7,
 	]	
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
+	%\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/figure1.dat};
-	\addplot[boxplot] table [y index=2] {data/figure1.dat};
+	\addplot[boxplot][fill=gray!50!white] table [y index=2] {data/figure1.dat};
 	\addplot[boxplot] table [y index=4] {data/figure1.dat};
 	\addplot[boxplot] table [y index=6] {data/figure1.dat};		
 	\addplot[boxplot] table [y index=8] {data/figure1.dat};
@@ -284,12 +285,13 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 	ytick={1,2,3,4,5,6,7},
 	%yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
 	yticklabels={},
-	title = {Auto MPG Dataset},
-	xlabel={Error (Auto MPG)},
+	title = {Dataset: \textsc{Auto MPG}},
+	xlabel = {Error distribution},
+	ylabel={},
 	]	
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
+	%\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
 	\addplot[boxplot] table [y index=0] {data/lambda.errors.Auto-Mpg.dat};
-	\addplot[boxplot] table [y index=2] {data/lambda.errors.Auto-Mpg.dat};
+	\addplot[boxplot][fill=gray!50!white] table [y index=2] {data/lambda.errors.Auto-Mpg.dat};
 	\addplot[boxplot] table [y index=4] {data/lambda.errors.Auto-Mpg.dat};
 	\addplot[boxplot] table [y index=6] {data/lambda.errors.Auto-Mpg.dat};		
 	\addplot[boxplot] table [y index=8] {data/lambda.errors.Auto-Mpg.dat};
@@ -298,19 +300,18 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 
 \end{axis}
 \end{tikzpicture}
-
 \end{tabular}
 
-\caption{Error distribution by regularisation exponent for the Abalone dataset.}\label{Abalone_dataset_lambdas}
+\caption{Error distribution by regularization exponent for the Abalone dataset.}\label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
 
 \end{center}\end{figure}
 
 
-The typical inflection point lies around $\lambda = 0.8$. The following results use the regularisation parameter with this value.
+The typical inflection point lies around $\lambda = 0.8$. The following results use the regularization parameter with this value.
 
 \subsection{Genetic Operators}
 
-It was used the R package genalg~\cite{willighage2012genalg} for the execution of genetic algorithm. The operators were the standard ones: (a) crossover, i.e., a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b) mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, i.e., 20\% of the best solutions are kept in the next generation.
+It was used the R package genalg~\cite{willighage2012genalg} for the execution of genetic algorithm. The operators were the standard ones: (a) crossover, i.e., a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b) mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, i.e., 20\% of the best solutions are kept in (fc: survive to?) the next generation.
 
 \section{Experimental Results}
 
@@ -341,69 +342,98 @@ In order to train and test the performance of \ac{GAPoly} it was used several da
 \begin{axis}[width=0.90\textwidth,height=6cm,
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6},
-	yticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
+	%yticklabels={GA.Poly,Rnd.For,Lin.Reg,SVM,RPART,CI.Tree},
 	ylabel={Regression Method},
 	xmin=-5,
 	xmax=300,
-	xlabel={Error distribution (\ac{rmse})},
-	title={Regression results for \textbf{Artificial dataset}},
+	xlabel={Error distribution},
+	title={Dataset: \textsc{Artificial}},
 	]
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
-	\addplot[boxplot] table [y index=0] {data/Articial_dataset.dat};
+	%\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
+	\addplot[boxplot][fill=gray!50!white] table [y index=0] {data/Articial_dataset.dat};
+	\addplot[boxplot] table [y index=4] {data/Articial_dataset.dat};
 	\addplot[boxplot] table [y index=1] {data/Articial_dataset.dat};
 	\addplot[boxplot] table [y index=2] {data/Articial_dataset.dat};
 	\addplot[boxplot] table [y index=3] {data/Articial_dataset.dat};
-	\addplot[boxplot] table [y index=4] {data/Articial_dataset.dat};
 	\addplot[boxplot] table [y index=5] {data/Articial_dataset.dat};
 
 \end{axis}
 \end{tikzpicture}
 
-\caption{results for Artificial dataset}
+\caption{results for Artificial dataset \emph{must} highlight method \#1: GAPoly}
 \label{artificial_dataset1_lambda1.0}
 
 \end{center}\end{figure}
 
-\textbf{Artificial}: this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable $y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes 50 observations and, only in this case, there were executed just 10 runs.
 
-This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). In this case, we used a population of 100 solutions with 50 iterations for each run.
-
-In the next datasets, the population has size 250 with 100 iterations for each run.
-
-\textbf{Housing}: This data set concerns the task of predicting housing values in areas of Boston. There are 13 continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's\footnote{This and the remaining regression datasets were selected from Luis Torgo's data repository, http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these datasets originally come from UCI ML repository, http://archive.ics.uci.edu/ml/}. There are 506 observations. Figure~\ref{Housing_dataset_lambda0.8_25runs} presents the results for this dataset.
-
-\begin{figure}[htb]\begin{center}
-\begin{tikzpicture}
-\begin{axis}[width=0.98\textwidth,height=6cm,
-	boxplot/draw direction=y,
-	xtick={1,2,3,4,5,6},
-	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
-	xlabel={Regression Method},
-	ymin=0.25,
-	ymax=0.85,
-	ylabel={Error distribution (\ac{rmse})},
-	title={Regression results for \textbf{Housing dataset}},
-	mark options={scale=0.5},
+\newcommand{\axpl}[3]{
+\begin{axis}[width=0.49\textwidth,height=4cm,
+	ticks=major,
+	boxplot/draw direction=x,
+	ytick={1,2,3,4,5,6},
+	%yticklabels={GA.Poly, Lin.Reg, SVM, RPART,Rnd.For,CI.Tree},
+	title={Dataset: \textsc{#2}},
+	ylabel={Method},
+	xlabel={Error},
+	separate axis lines,
+	axis lines = box,
+%	axis y line = #3,
 	]
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
-	\addplot[boxplot] table [y index=0] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=1] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=2] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=3] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=4] {data/Housing300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=5] {data/Housing300_lambda0.8_25runs.dat};
+	%\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
+	\addplot[boxplot][fill=gray!50!white] table [y index=0] {data/#1.dat};
+	\addplot[boxplot] table [y index=4] {data/#1.dat};
+	\addplot[boxplot] table [y index=1] {data/#1.dat};
+	\addplot[boxplot] table [y index=2] {data/#1.dat};
+	\addplot[boxplot] table [y index=3] {data/#1.dat};
+	\addplot[boxplot] table [y index=5] {data/#1.dat};
 
 \end{axis}
+}
+
+\begin{figure}[tb]\begin{center}
+\begin{tabular}{cc}
+\begin{tikzpicture}
+	\axpl{Housing300_lambda0.8_25runs}{Housing}{left}
+\end{tikzpicture}
+%
+&
+%
+\begin{tikzpicture}
+	\axpl{Abalone300_lambda0.8_25runs}{Abalone}{right}
+\end{tikzpicture}
+%
+\\
+%
+\begin{tikzpicture}
+	\axpl{Auto-Mpg300_lambda0.8_25runs}{Auto MPG}{left}
+\end{tikzpicture}
+%
+&
+%
+\begin{tikzpicture}
+	\axpl{Kinematics300_lambda0.8_25runs}{Kinematics}{right}
 \end{tikzpicture}
 
-% \includegraphics[height=6cm,width=\textwidth,angle=0]{figures/Abalone_dataset_lambdas.eps}
+\end{tabular}
 
-		\caption{results for Boston Housing dataset}
-		\label{Housing_dataset_lambda0.8_25runs}
-
+\caption{results for Housing, Abalone, Auto MPG and Kinematics datasets. Methods are: 1: \ac{GAPoly}, 2: Random Forests 3: Linear Regression, 4: SVM, 5: RPART and 6: CI.Tree}
+\label{Housing_dataset_lambda0.8_25runs}
+\label{Abalone_dataset_lambda0.8_25runs}
+\label{Auto-Mpg_dataset_lambda0.8_25runs}
+\label{Kinematics300_lambda0.8_25runs}
 \end{center}\end{figure}
 
-Just as an example of the model the \ac{GAPoly} algorithm outputs: in this dataset the best polynomial was the following:
+\begin{description}
+\item{\textsc{Artificial}} this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable $y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$ observations and, only in this case, there were executed just 10 runs.
+
+This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). In this case, we used a population of $N=100$ solutions with 50 iterations for each run. \textbf{Não entendo}
+
+In the next datasets, the population has size $n=250$ with 100 iterations for each run.
+
+\item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's\footnote{This and the remaining regression datasets were selected from Luis Torgo's data repository, http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these datasets originally come from UCI ML repository, http://archive.ics.uci.edu/ml/}. There are $N=506$ observations. Figure~\ref{Housing_dataset_lambda0.8_25runs} presents the results for this dataset.
+
+
+Just as an example of the model the \ac{GAPoly} algorithm outputs: in this dataset the best polynomial,
 
 $$y = -0.12 x_6 x_9^4 + 0.78 x_6 - 0.4 x_9^2 x_{13} + 0.17 x_{13}^2 - 0.044$$
 
@@ -412,120 +442,30 @@ $x_6$, RM average number of rooms per dwelling;
 $x_9$, RAD index of accessibility to radial highways;
 $x_{13}$, Lower status of the population.
 
-For comparisation if we access the mean decrease in accuracy found by Random Forests, the most important attributes are -- in decreasing order -- $x_{13}, x_6, x_5$ (but $x_5$ is already considered $4$ times less important than $x_6$). Both algorithms agree in two of their three most important attributes.
+For comparation, if we access the mean decrease in accuracy found by Random Forests, the most important attributes are --- in decreasing order --- $x_{13}, x_6, x_5$ (but $x_5$ is already considered $4$ times less important than $x_6$). Both algorithms agree in two of their three most important attributes.
 
-\textbf{Abalone}: This dataset can be used to predict the age of a abalone shell using the given 8 numeric attributes concerning several physical measurements. There are 4177 observations. Figure~\ref{Abalone_dataset_lambda0.8_25runs} presents the results for this dataset.
-
-\begin{figure}[htb]\begin{center}
-\begin{tikzpicture}
-\begin{axis}[width=0.98\textwidth,height=6cm,
-	boxplot/draw direction=y,
-	xtick={1,2,3,4,5,6},
-	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
-	xlabel={Regression Method},
-	ymin=0.64,
-	ymax=0.79,
-	ylabel={Error distribution (\ac{rmse})},
-	title={Regression results for \textbf{Abalone dataset}},
-	mark options={scale=0.5},
-	]
-		
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
-	\addplot[boxplot] table [y index=0] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=1] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=2] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=3] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=4] {data/Abalone300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=5] {data/Abalone300_lambda0.8_25runs.dat};
-
-\end{axis}
-\end{tikzpicture}
-
-% \includegraphics[height=6cm,width=\textwidth,angle=0]{figures/Abalone_dataset_lambdas.eps}
-
-\caption{results for Abalone dataset} \label{Abalone_dataset_lambda0.8_25runs}
-
-\end{center}\end{figure}
+\item{\textsc{Abalone}} This dataset can be used to predict the age of a abalone shell using the given $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations. Figure~\ref{Abalone_dataset_lambda0.8_25runs} presents the results for this dataset.
 
 % best polynomial, rsme 0.65
 % $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
 
-\textbf{Auto-MPG}: This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes. There are 398 observations. Figure~\ref{Auto-Mpg_dataset_lambda0.8_25runs} presents the results for this dataset.
-
-\begin{figure}[htb]\begin{center}
-\begin{tikzpicture}
-\begin{axis}[width=0.98\textwidth,height=6cm,
-	boxplot/draw direction=y,
-	xtick={1,2,3,4,5,6},
-	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
-	xlabel={Regression Method},
-	ymin=0.3,
-	ymax=0.55,
-	ylabel={Error distribution (\ac{rmse})},
-	title={Regression results for \textbf{Auto-MPG dataset}},
-	mark options={scale=0.5},
-	]
-		
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
-	\addplot[boxplot] table [y index=0] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=1] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=2] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=3] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=4] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=5] {data/Auto-Mpg300_lambda0.8_25runs.dat};
-
-\end{axis}
-\end{tikzpicture}
-
-% \includegraphics[height=6cm,width=\textwidth,angle=0]{figures/Abalone_dataset_lambdas.eps}
-
-\caption{results for Auto-MPG dataset}	\label{Auto-Mpg_dataset_lambda0.8_25runs}
-
-\end{center}\end{figure}
+\item{\textsc{Auto-MPG}} This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations. Figure~\ref{Auto-Mpg_dataset_lambda0.8_25runs} presents the results for this dataset.
 
 % best polynomial, \ac{rmse} 0.32
 %$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
 
-\textbf{Kinematics}: This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using 8 continuous attributes. There are 8192 observations. Figure~\ref{Kinematics300_lambda0.8_25runs} presents the results for this dataset.
-
-\begin{figure}[htb]\begin{center}
-\begin{tikzpicture}
-\begin{axis}[width=0.98\textwidth,height=7cm,
-	boxplot/draw direction=y,
-	xtick={1,2,3,4,5,6},
-	xticklabels={GA.Poly,Lin.Reg,SVM,RPART,Rnd.For,CI.Tree},
-	xlabel={Regression Method},
-	ymin=0.53,
-	ymax=0.85,
-	ylabel={Error distribution (\ac{rmse})},
-	title={Regression results for \textbf{Kinematics dataset}},
-	mark options={scale=0.5},
-	]
-		
-	\pgfplotsset{boxplot/every box/.append style={fill=gray!50!white}}
-	\addplot[boxplot] table [y index=0] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=1] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=2] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=3] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=4] {data/Kinematics300_lambda0.8_25runs.dat};
-	\addplot[boxplot] table [y index=5] {data/Kinematics300_lambda0.8_25runs.dat};
-
-\end{axis}
-\end{tikzpicture}
-
-\caption{results for Kinematics dataset}
-		\label{Kinematics300_lambda0.8_25runs}
-
-\end{center}\end{figure}
+\item{\textsc{Kinematics}} This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using $m=8$ continuous attributes. There are $n=8192$ observations. Figure~\ref{Kinematics300_lambda0.8_25runs} presents the results for this dataset.
 
 % best polynomial, \ac{rmse} 0.74
 % $$ y = 0.24 x_5 - 0.23 x_5 x_6 x_7 - 0.19 x_4 x_7 - 0.5 x_3 $$
 
+\end{description}
+
 \subsection{Convergence speed}
 
-The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation\footnote{The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimisation was not the focus of this article}, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
+The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation\footnote{The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimization was not the focus of this article}, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
 \begin{center}
 \begin{tikzpicture}
 
@@ -537,15 +477,15 @@ The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable er
 	mark options={scale=0.5},
 	line width=1pt,
 	xlabel={number of iterations},
-	ylabel={\ac{rmse}},
-	title={Error (\ac{rmse}) vs. number of iterations (\textbf{Abalone dataset})},
+	ylabel={error},
+	title={Error \emph{vs.} number of iterations (Dataset: \textsc{Abalone})},
 	]
 	
 	\addplot[solid,color=black] table [x expr=\coordindex, y index = 0] {data/lambdas.dat};\addlegendentry{$\lambda=0.975$};
 	\addplot[dashed,color=black] table [x expr=\coordindex, y index = 1] {data/lambdas.dat};\addlegendentry{$\lambda=1.000$};
 \end{axis}
 \end{tikzpicture}
-\caption{fitness progress for Abalone dataset (population $200$)}
+\caption{Error progress for Abalone dataset (population $200$)}
 \label{Abalone_fitnessProgress}
 
 \end{center}
@@ -557,7 +497,7 @@ The proposed method has competitive results comparing with some well-known regre
 
 \section*{Acknowledgements}
 
-The authors thank the Fundação para a Ciência e Tecnologia (FCT) and the  laboratório de I\&D LabMAg the financial support given to this work under the strategic project PEst-­OE/EEI/UI0434/2011.
+The authors are grateful to the \textsc{Fundação para a Ciência e Tecnologia} (FCT) and the  R\&D laboratory \textsc{LabMAg} for the financial support given to this work, under the strategic project \textsc{PEst-­OE/EEI/UI0434/2011}.
 
 %\section{Bibliography}
 
