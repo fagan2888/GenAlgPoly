@@ -1,4 +1,4 @@
-\documentclass{elsarticle}
+\documentclass[draft,authoryear,3p,times,twocolumn]{elsarticle}
 
 %
 %	FILE ENCODING
@@ -114,13 +114,13 @@ polynomial regression \sep genetic algorithm
 
 With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in ecology, cybernetics, robotics and other areas.
 
-Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \cite{mendes2005adaptive}, explicit formulae for turbulent pipe flows \cite{davidson1999method}, computational linguistics \cite{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \cite{csefalvayova2010use}, liquid epoxy molding process \cite{chan2011modeling}, B-spline surface reconstruction \cite{galvez2012iterative}, product design \cite{chan2012development} or forecasting cyanotoxins presence in water reservoirs \cite{garcia2013hybrid}. This not only illustrates the wide spectrum of applications but, additionally, work in each one of these polynomial models uses, at some point, a genetic algorithm.
+Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formulae for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy molding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. This not only illustrates the wide spectrum of applications but, additionally, work in each one of these polynomial models uses, at some point, a genetic algorithm.
 
-\ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \cite{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \cite{holland1975adaptation}.  
+\ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{holland1975adaptation}.  
 
-One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \cite{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \cite{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} \cite{tarlowstochastic}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
+One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \citep{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \cite{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \cite{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
+The idea of using \acp{GA} to find a polynomial regression is not new \citep{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \citep{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
@@ -169,9 +169,9 @@ where each row defines a monomial and each column represents a variable. Changin
 This representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentially with either $n$ or $d$. But more importantly, the polynomial regression problem can be naturally split into two subproblems:
 %
 \begin{enumerate}
-\item for a given set of monomials $\mathcal{P} = \left\lbrace q_1, \ldots, q_k\right\rbrace$, find the regression coefficients $\theta_1,\ldots,\theta_k$ that minimize the \ac{rmse} on a given dataset;
+\item For a given set of monomials $\mathcal{P} = \left\lbrace q_1, \ldots, q_k\right\rbrace$, find the regression coefficients $\theta_1,\ldots,\theta_k$ that minimize the \ac{rmse} on a given dataset;
 
-\item find the fittest set of monomials, \emph{i.e.} the polynomial that minimizes the \ac{rmse} on the same dataset;
+\item Find the fittest set of monomials, \emph{i.e.} the polynomial that minimizes the \ac{rmse} on the same dataset;
 \end{enumerate}
 %
 More precisely, concerning the first problem, let $\mathcal{D}$ be a dataset with $n$ observations of variables $Y, X_1,\ldots,X_m$ and $\mathcal{P} = \left\lbrace q_1,\ldots, q_k\right\rbrace$ a set of $k$ monomial expressions over $X_1,\ldots,X_m$. Define the hypothesis\footnote{The expression $q|_{X=x}$ reads ``\emph{replace all instances of $X$ by $x$ in $q$}''.}
@@ -183,7 +183,8 @@ h_{\Theta,\mathcal{P}}\left(x_1,\ldots,x_m\right) &=& \sum_{j = 1}^k \theta_j q_
 and let the cost
 %
 \begin{eqnarray}
-J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \sqrt{\frac{1}{n}\sum_{i=1}^n \left( y\sample{i} - h_{\Theta,\mathcal{P}}\left( x_1\sample{i},\ldots,x_m\sample{i} \right) \right)^2 }\label{eq:rmse}
+J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right)  & =  \nonumber \\
+\sqrt{\frac{1}{n}\sum_{i=1}^n \left( y\sample{i} - h_{\Theta,\mathcal{P}}\left( x_1\sample{i},\ldots,x_m\sample{i} \right) \right)^2 }\label{eq:rmse}
 \end{eqnarray}
 %
 be the usual \acf{rmse} function. Now the first problem can be stated as:
@@ -207,8 +208,8 @@ by solving the first problem. With a fitness of every instance, a \ac{GA} will a
 \Function{GAPoly}{$D,pop_0,\epsilon$}
 	\State $pop \gets pop_0;\: err \gets 1.0+\epsilon$
 	\While{$err > \epsilon$}
-		\State $pop \gets \Call{IterateGA}{pop}$\Comment{Build next generation}
-		\State $pop \gets \Call{Sort}{pop, key = \textsc{Lm.rmse}}$\Comment{Sort by \ac{rmse} of linear regression}
+		\State $pop \gets \Call{IterateGA}{pop}$
+		\State $pop \gets \Call{Sort}{pop, key = \textsc{Lm.rmse}}$
 		\State $err \gets \textsc{rmse}\left(\Call{First}{pop}\right)$
 	\EndWhile
 	\State\Return $\Call{First}{pop}$
@@ -222,7 +223,7 @@ the composition of \acp{GA} with linear regression, as defined in Algorithm \ref
 %
 
 %
-Subsection \ref{subs:polynomial.encoding} describes the encoding of individual polynomial instances as chromosomes and other parameters of the \ac{GA} implementation used. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
+Subsection \ref{subs:polynomial.encoding} describes the encoding of individual polynomial instances as chromosomes and other parameters of the utilized \ac{GA} implementation. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
 
 %
 \subsection{Polynomial Encoding}\label{subs:polynomial.encoding}
@@ -236,13 +237,17 @@ The encoding for any polynomial will be as follows:
 \end{enumerate}
 
 Let's see an example: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with $k = 4, m = 3$ and $d=3$. One possible encoding would be:
-$$110 - 011,000,001~~;~~000,000,111~~;~~001,001,000~~;~~110,010,101$$
+\begin{verbatim}
+110 - 011,000,001 ; 000,000,111 ;
+      001,001,000 ; 110,010,101
+\end{verbatim}
+
 
 (for reading purposes the semicolons separate monomials, the commas separate variables)
 
 The first three bits inform that the second and third monomials are active while the fourth is not (as said, the first monomial is always active). This last monomial does not enter neither in the polynomial regression nor in the \ac{rmse} (fitness) evaluation. However, it acts as a kind of junk DNA, becoming active when, in a future mutation or crossover, the third bit of the entire sequence flips from~0 to~1.
 
-Let's interpret the first monomial description, $011,000,001$. It is divided by three since $m=3$. The first triple $011$ is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, $000$, means that $x_2$ is not part of the monomial. The third triple $001$ says that variable $x_3$ has exponent $1$. The first monomial is~$x_1^3 x_3$.
+Let's interpret the first monomial description, \verb!011,000,001!. It is divided by three since $m=3$. The first triple \verb!011! is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, \verb!000!, means that $x_2$ is not part of the monomial. The third triple \verb!001! says that variable $x_3$ has exponent $1$. The first monomial is~$x_1^3 x_3$.
 
 Notice that all binary descriptions give rise to valid polynomials. However this is not a bijective mapping. For each polynomial there are multiple representations. For example, $x_1+x_2$ and $x_2+x_1$ have different representations. The authors considered that more complex mappings in order to force a one to one mapping would impact negatively in the algorithm's performance.
 
@@ -259,13 +264,13 @@ J_{\textrm{reg}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \lambda^{k} J_{\
 %
 where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized.
 
-Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ provide better, even if marginal, results. Figure~\ref{Abalone_dataset_lambdas} shows regularization results for the Abalone and Auto-MPG datasets with ten runs for each $\lambda$. The following section  includes information about these datasets.
+Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ provide better, even if marginal, results. Figure~\ref{Abalone_dataset_lambdas} shows regularization results for the Abalone and Auto MPG datasets with ten runs for each $\lambda$. The following section  includes information about these datasets.
 
-\begin{figure}[tb]\begin{center}
+\begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
 \begin{tikzpicture}
 \begin{axis}[
-	width=0.49\textwidth,height=6cm,
+	width=0.49\textwidth,height=4cm,
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6,7},
 	yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
@@ -291,7 +296,7 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 %
 \begin{tikzpicture}
 \begin{axis}[
-	width=0.49\textwidth,height=6cm,
+	width=0.49\textwidth,height=4cm,
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6,7},
 	%yticklabels={0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3},
@@ -313,34 +318,32 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 \end{tikzpicture}
 \end{tabular}
 
-\caption{Error distribution by regularization exponent for the Abalone and Auto-MPG datasets. The box plots summarize the error values of 10 runs for each value of $\lambda$. The smallest overall error is shown in gray and, in both cases, was achieved with $\lambda=0.8$.}
+\caption{Error distribution by regularization exponent for the Abalone and Auto MPG datasets. The box plots summarize the error values of 10 runs for each value of $\lambda$. The smallest overall error is shown in gray and, in both cases, was achieved with $\lambda=0.8$.}
 \label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
 
-\end{center}\end{figure}
+\end{center}\end{figure*}
 
 The typical inflection point lies around $\lambda = 0.8$. The dataset results for applying the proposed regression method use the regularization parameter with this value.
 
 \subsection{Genetic Operators}
 
-To perform the genetic algorithm it was used the R package genalg~\cite{willighage2012genalg}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
+To perform the genetic algorithm it was used the R package genalg~\citep{willighage2012genalg}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
 
 \section{Experimental Results}
 
-The results were found using R's programming language~\cite{R}.
-
-To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: Linear Regression, Support Vector Machines~\cite{Meyer12}, Regression Trees~\cite{Therneau13}, Conditional Inference Trees~\cite{Hothorn06, Strobl07, Strobl08} and Random Forests~\cite{Liaw02}
+The results were found using \texttt{R} programming language~\citep{R}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: Linear Regression, Support Vector Machines~\citep{Meyer12}, Regression Trees~\citep{Therneau13}, Conditional Inference Trees~\citep{Hothorn06, Strobl07, Strobl08} and Random Forests~\citep{Liaw02}
 
 In order to train and test the performance of \ac{GAPoly} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
 
 \begin{figure}[tb]\begin{center}
 \begin{tikzpicture}
-\begin{axis}[width=0.90\textwidth,height=6cm,
+\begin{axis}[width=0.48\textwidth,height=4cm,
 	boxplot/draw direction=x,
 	ytick={1,2,3,4,5,6},
 	%yticklabels={GA.Poly,Rnd.For,Lin.Reg,SVM,RPART,CI.Tree},
-	ylabel={Regression Method},
-	xmin=-5,
-	xmax=300,
+	ylabel={Method index},
+	xmin=-25,
+	xmax=325,
 	xlabel={Error distribution},
 	title={Dataset: \textsc{Artificial}},
 	]
@@ -355,7 +358,7 @@ In order to train and test the performance of \ac{GAPoly} several mainstream dat
 \end{axis}
 \end{tikzpicture}
 
-\caption{results for Artificial dataset.  Methods are: 1: \ac{GAPoly}, 2: Random Forests 3: Linear Regression, 4: SVM, 5: RPART and 6: CI.Tree. As shown, \ac{GAPoly} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.}
+\caption{Results for Artificial dataset. As shown, \ac{GAPoly} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPoly}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
 \label{artificial_dataset1_lambda1.0}
 
 \end{center}\end{figure}
@@ -368,8 +371,8 @@ In order to train and test the performance of \ac{GAPoly} several mainstream dat
 	ytick={1,2,3,4,5,6},
 	%yticklabels={GA.Poly, Lin.Reg, SVM, RPART,Rnd.For,CI.Tree},
 	title={Dataset: \textsc{#2}},
-	ylabel={Method},
-	xlabel={Error},
+	ylabel={Method index},
+	xlabel={Error distribution},
 	separate axis lines,
 	axis lines = box,
 %	axis y line = #3,
@@ -385,7 +388,7 @@ In order to train and test the performance of \ac{GAPoly} several mainstream dat
 \end{axis}
 }
 
-\begin{figure}[tb]\begin{center}
+\begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
 \begin{tikzpicture}
 	\axpl{Housing300_lambda0.8_25runs}{Housing}{left}
@@ -411,12 +414,12 @@ In order to train and test the performance of \ac{GAPoly} several mainstream dat
 
 \end{tabular}
 
-\caption{results for Housing, Abalone, Auto MPG and Kinematics datasets. Methods are: 1: \ac{GAPoly} (the grey box plot), 2: Random Forests 3: Linear Regression, 4: SVM, 5: RPART and 6: CI.Tree. Random Forests, an ensemble method, has the better results. However \ac{GAPoly} achieves similar errors in two of the datasets. For the remaining two \ac{GAPoly} produces similar errors to the other classic regression methods.}
+\caption{Summary results for different regression methods on the Housing, Abalone, Auto MPG and Kinematics datasets. Random Forests, an ensemble method (``2'' in the plots), has the better results. However \ac{GAPoly} achieves similar errors in two of the datasets. For the remaining two \ac{GAPoly} produces similar errors to the other classic regression methods.  The regression methods depicted in these figures are: 1. \ac{GAPoly}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
 \label{Housing_dataset_lambda0.8_25runs}
 \label{Abalone_dataset_lambda0.8_25runs}
 \label{Auto-Mpg_dataset_lambda0.8_25runs}
 \label{Kinematics300_lambda0.8_25runs}
-\end{center}\end{figure}
+\end{center}\end{figure*}
 
 \begin{description}
 \item{\textsc{Artificial}} this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable~$y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$~observations.
@@ -443,7 +446,7 @@ For comparison, if we access the mean decrease in accuracy found by Random Fores
 % best polynomial, rsme 0.65
 % $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
 
-\item{\textsc{Auto-MPG}} This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations.
+\item{\textsc{Auto MPG}} This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations.
 
 % best polynomial, \ac{rmse} 0.32
 %$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
@@ -459,20 +462,19 @@ For comparison, if we access the mean decrease in accuracy found by Random Fores
 
 The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
 
-\begin{figure}[tb]
+\begin{figure*}[tb]
 \begin{center}
 \begin{tikzpicture}
 
 \begin{axis}[
 	width=0.98\textwidth,
-	height=6cm,
+	height=4cm,
 	xmin=-5,
 	xmax=245,
-	mark options={scale=0.5},
-	line width=1pt,
-	xlabel={number of iterations},
-	ylabel={error},
-	title={Error \emph{vs.} number of iterations (Dataset: \textsc{Abalone})},
+	%line width=1pt,
+	xlabel={Number of iterations},
+	ylabel={Error},
+	title={Error evolution with number of iterations (Dataset: \textsc{Abalone})},
 	]
 	
 	\addplot[solid,color=black] table [x expr=\coordindex, y index = 0] {data/lambdas.dat};\addlegendentry{$\lambda=0.975$};
@@ -483,27 +485,27 @@ The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable er
 \label{Abalone_fitnessProgress}
 
 \end{center}
-\end{figure}
+\end{figure*}
 
 \section{Conclusion and Future Work}
 
-The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). One exception --- the artificial dataset that uses a straightforward polynomial relation --- is the Auto-MPG dataset where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
+The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). One exception --- the artificial dataset that uses a straightforward polynomial relation --- is the Auto MPG dataset where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
 
-For complexity considerations \ac{GAPoly} demands some processing time. On a current quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimization was not the focus of this article.
+For complexity considerations \ac{GAPoly} demands some processing time. On a current quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like \texttt{C++}. However, speed optimization was not the focus of this article.
 
 A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{GAPoly}.
 
 \section*{Acknowledgements}
 
-The authors are grateful to the \textsc{Fundação para a Ciência e Tecnologia} (FCT) and the  R\&D laboratory \textsc{LabMAg} for the financial support given to this work, under the strategic project \textsc{PEst-OE/EEI/UI0434/2011}.
+The authors are grateful to the Fundação para a Ciência e Tecnologia (FCT) and the  R\&D laboratory LabMAg for the financial support given to this work, under the strategic project \textsc{PEst-OE/EEI/UI0434/2011}.
 
-The datasets used herein were selected from Luis Torgo's data  repository, \url{http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html}. Most come originally from UCI ML repository, \url{http://archive.ics.uci.edu/ml/}.
+The datasets used herein were selected from Luís Torgo's data  repository, \url{http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html}. Most come originally from UCI ML repository, \url{http://archive.ics.uci.edu/ml/}.
 
-The authors wish to thank professor André Falcão for all the useful discussions around the article.
+The authors wish to thank professor André Falcão for motivation and useful discussions around the article.
 
 %\section{Bibliography}
 
-\bibliographystyle{plain}
+\bibliographystyle{model2-names}
 \bibliography{fullbib}
 
 \end{document}

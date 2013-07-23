@@ -17,7 +17,7 @@
 Impact Factor: 1.529
     * _To serve the interests of a diverse readership, the introduction should provide a concise summary of the background of the work in an accepted terminology in pattern recognition, state the unique contributions, and discuss broader impacts of the work outside the immediate subject area. All contributions are reviewed on the basis of scientific merits and breadth of potential interests._
     * **Highlights** are mandatory for this journal. They consist of a short collection of bullet points that convey the core findings of the article and should be submitted in a separate file in the online submission system. Please use 'Highlights' in the file name and include 3 to 5 bullet points (maximum 85 characters, including spaces, per bullet point). See [this](http://www.elsevier.com/highlights) for examples.
-    * **Proposta**
+    * **Proposta** 
         * this paper describes a two-step method to polynomial regression
         * polynomial structure is searched by genetic algorithm
         * coefficient adjustment is optimized with linear regression
