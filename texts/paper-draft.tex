@@ -155,7 +155,7 @@ where each row defines a monomial and each column represents a variable. Changin
 %\right].
 %$$
 
-This representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentialy with either $n$ or $d$. But more importantly, the polynomial regression problem can be naturally split into two subproblems:
+This representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentially with either $n$ or $d$. But more importantly, the polynomial regression problem can be naturally split into two subproblems:
 %
 \begin{enumerate}
 \item for a given set of monomials $\mathcal{P} = \left\lbrace q_1, \ldots, q_k\right\rbrace$, find the regression coefficients $\theta_1,\ldots,\theta_k$ that minimize the \ac{rmse} on a given dataset;
@@ -214,14 +214,14 @@ the composition of \acp{GA} with linear regression, as defined in Algorithm \ref
 Subsection \ref{subs:polynomial.encoding} describes the encoding of individual polynomial instances as chromosomes and other parameters of the \ac{GA} implementation used. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
 
 %
-\subsection{Polinomial Encoding}\label{subs:polynomial.encoding}
+\subsection{Polynomial Encoding}\label{subs:polynomial.encoding}
 %
 The encoding for any polynomial will be as follows:
 \begin{enumerate}
 \item an initial segment detailing which monomials are active (the first monomial is always active), this is represented in unary description, i.e., each monomial is identified by a single bit
-\item the remaining is split into $k$ sets of bits of equal size, each one representing a monomial
+\item the remaining bits are split into $k$ sets of equal size, each one representing a monomial
 \item each monomial is split into $m$ sets of $d$ size each, \emph{i.e.}, a variable
-\item for each variable, the remaining bits give the binary description of the variable degree, \emph{i.e.}, the maximum exponent is given by $2^d-1$
+\item for each variable, the remaining bits are the binary description of the variable degree, \emph{i.e.}, the maximum exponent is given by $2^d-1$
 \end{enumerate}
 
 Let's see an example: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with $k = 4, m = 3$ and $d=3$. One possible encoding would be:
@@ -229,17 +229,17 @@ $$110 - 011,000,001~~;~~000,000,111~~;~~001,001,000~~;~~110,010,101$$
 
 (for reading purposes the semicolons separate monomials, the commas separate variables)
 
-The first three bits inform that the second and third monomials are active while the fourth is not (as said, the first monomial is always active). This last monomial does not enter neither in the polynomial regression nor in the \ac{rmse} (fitness) evaluation. However, it acts as a kind of junk DNA, becoming active when, in a future mutation or crossover, the third bit of the entire sequence flips from 0 to 1.
+The first three bits inform that the second and third monomials are active while the fourth is not (as said, the first monomial is always active). This last monomial does not enter neither in the polynomial regression nor in the \ac{rmse} (fitness) evaluation. However, it acts as a kind of junk DNA, becoming active when, in a future mutation or crossover, the third bit of the entire sequence flips from~0 to~1.
 
-Let's interpret the first monomial description, $011,000,001$. It is divided by three since $m=3$. The first triple $011$ is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, $000$, means that $x_2$ is not part of the monomial. The third triple $001$ says that variable $x_3$ has exponent $1$, so the first monomial consists of $x_1^3 x_3$. All the remaining sets of nine bits are interpreted the same way and we get the previous polynomial.
+Let's interpret the first monomial description, $011,000,001$. It is divided by three since $m=3$. The first triple $011$ is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, $000$, means that $x_2$ is not part of the monomial. The third triple $001$ says that variable $x_3$ has exponent $1$. The first monomial is~$x_1^3 x_3$.
 
-Notice that all binary descriptions give rise to valid polynomials. Notice however that this is not a bijective mapping. For each polynomial there are multiple representations. For example, $x_1+x_2$ and $x_2+x_1$ have different representations. The authors considered that more complex mappings in order to force a one to one mapping would impact negatively in the algorithm performance without giving anything in return.
+Notice that all binary descriptions give rise to valid polynomials. However this is not a bijective mapping. For each polynomial there are multiple representations. For example, $x_1+x_2$ and $x_2+x_1$ have different representations. The authors considered that more complex mappings in order to force a one to one mapping would impact negatively in the algorithm's performance.
 
-If the coding consists of entirely zeros, by convention, it describes polynomial $x_1$. This has to do with the execution of the polynomial regression that would fail if we interpret it as the zero polynomial. Anyway, for progressive larger  binary descriptions, the chances of getting this zero description decrease exponentially, so it does not impact in any meaningful way in the algorithm's performance.
+% If the coding consists of entirely zeros, by convention, it describes polynomial $x_1$. This has to do with the execution of the polynomial regression that would fail if we interpret it as the zero polynomial. Anyway, for progressive larger  binary descriptions, the chances of getting this zero description decrease exponentially, so it does not impact in any meaningful way in the algorithm's performance.
 
 \subsection{Cost Function}\label{subs:cost.function}
 
-The polynomial regression \ac{rmse} considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the polynomial's monomials $q_i$.
+The polynomial regression \ac{rmse} considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the monomials $q_i$.
 
 This \ac{rmse} function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularization term into the \ac{rmse} function. Our proposal is to include a multiplicative factor proportional to the number of monomials. Thus, the error from equation \ref{eq:rmse} defines
 \begin{eqnarray}
@@ -248,7 +248,7 @@ J_{\textrm{reg}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \lambda^{k} J_{\
 %
 where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized.
 
-Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ sometimes provide better, even if marginal, results. Figure~\ref{Abalone_dataset_lambdas} shows results for the Abalone dataset with ten runs for each $\lambda$, and figure~\ref{Auto-MPG_dataset_lambdas} presents regularization results for the Auto-MPG dataset. The following section Experimental Results includes information about these datasets.
+Somewhat unexpectedly after some experiences it was found that lower values for $\lambda$ provide better, even if marginal, results. Figure~\ref{Abalone_dataset_lambdas} shows regularization results for the Abalone and Auto-MPG datasets with ten runs for each $\lambda$. The following section  includes information about these datasets.
 
 \begin{figure}[tb]\begin{center}
 \begin{tabular}{cc}
@@ -302,40 +302,24 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 \end{tikzpicture}
 \end{tabular}
 
-\caption{Error distribution by regularization exponent for the Abalone dataset.}\label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
+\caption{Error distribution by regularization exponent for the Abalone and Auto-MPG datasets. The box plots summarize the error values of 10 runs for each value of $\lambda$. The smallest overall error is shown in gray and, in both cases, was achieved with $\lambda=0.8$.}
+\label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
 
 \end{center}\end{figure}
 
-
-The typical inflection point lies around $\lambda = 0.8$. The following results use the regularization parameter with this value.
+The typical inflection point lies around $\lambda = 0.8$. The dataset results for applying the proposed regression method use the regularization parameter with this value.
 
 \subsection{Genetic Operators}
 
-It was used the R package genalg~\cite{willighage2012genalg} for the execution of genetic algorithm. The operators were the standard ones: (a) crossover, i.e., a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b) mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, i.e., 20\% of the best solutions are kept in (fc: survive to?) the next generation.
+To perform the genetic algorithm it was used the R package genalg~\cite{willighage2012genalg}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
 
 \section{Experimental Results}
 
-\begin{itemize}
-\item Measured quantities
-	
-	\begin{itemize}
+The results were found using R's programming language~\cite{R}.
 
-	\item error
-	\item number of iterations to convergence
-	\item memory usage
-	\item F1, ROC, ?  
-	
-	\end{itemize}
+To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: Linear Regression, Support Vector Machines~\cite{Meyer12}, Regression Trees~\cite{Therneau13}, Conditional Inference Trees~\cite{Hothorn06, Strobl07, Strobl08} and Random Forests~\cite{Liaw02}
 
-\item Selection of datasets and regression algorithms
-\item Summary Figures and Numeric results
-\end{itemize}
-These results were found using R's programming language~\cite{R}.
-
-To compare this paper's proposed algorithm we applied the exact same train and test samples using other learning algorithms, namely: Linear Regression, Support Vector Machines~\cite{Meyer12}, Regression Trees~\cite{Therneau13}, Conditional Inference Trees~\cite{Hothorn06, Strobl07, Strobl08} and Random Forests~\cite{Liaw02}
-
-In order to train and test the performance of \ac{GAPoly} it was used several datasets (see below). For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed 25 times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are boxplots for the test set error predictions over these different runs.
-
+In order to train and test the performance of \ac{GAPoly} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
 
 \begin{figure}[tb]\begin{center}
 \begin{tikzpicture}
@@ -360,7 +344,7 @@ In order to train and test the performance of \ac{GAPoly} it was used several da
 \end{axis}
 \end{tikzpicture}
 
-\caption{results for Artificial dataset \emph{must} highlight method \#1: GAPoly}
+\caption{results for Artificial dataset.  Methods are: 1: \ac{GAPoly}, 2: Random Forests 3: Linear Regression, 4: SVM, 5: RPART and 6: CI.Tree. As shown, \ac{GAPoly} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.}
 \label{artificial_dataset1_lambda1.0}
 
 \end{center}\end{figure}
@@ -416,7 +400,7 @@ In order to train and test the performance of \ac{GAPoly} it was used several da
 
 \end{tabular}
 
-\caption{results for Housing, Abalone, Auto MPG and Kinematics datasets. Methods are: 1: \ac{GAPoly}, 2: Random Forests 3: Linear Regression, 4: SVM, 5: RPART and 6: CI.Tree}
+\caption{results for Housing, Abalone, Auto MPG and Kinematics datasets. Methods are: 1: \ac{GAPoly} (the grey box plot), 2: Random Forests 3: Linear Regression, 4: SVM, 5: RPART and 6: CI.Tree. Random Forests, an ensemble method, has the better results. However \ac{GAPoly} achieves similar errors in two of the datasets. For the remaining two \ac{GAPoly} produces similar errors to the other classic regression methods.}
 \label{Housing_dataset_lambda0.8_25runs}
 \label{Abalone_dataset_lambda0.8_25runs}
 \label{Auto-Mpg_dataset_lambda0.8_25runs}
@@ -424,14 +408,13 @@ In order to train and test the performance of \ac{GAPoly} it was used several da
 \end{center}\end{figure}
 
 \begin{description}
-\item{\textsc{Artificial}} this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable $y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$ observations and, only in this case, there were executed just 10 runs.
+\item{\textsc{Artificial}} this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable~$y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$~observations.
 
-This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). In this case, we used a population of $N=100$ solutions with 50 iterations for each run. \textbf{Não entendo}
+This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}).The genetic algorithm run with a population of $N=100$~solutions with 50~iterations for each run.
 
-In the next datasets, the population has size $n=250$ with 100 iterations for each run.
+In the next datasets, the population of the genetic algorithm had size~$n=250$ with 100~iterations for each run.
 
-\item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's\footnote{This and the remaining regression datasets were selected from Luis Torgo's data repository, http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these datasets originally come from UCI ML repository, http://archive.ics.uci.edu/ml/}. There are $N=506$ observations. Figure~\ref{Housing_dataset_lambda0.8_25runs} presents the results for this dataset.
-
+\item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's. There are $N=506$ observations.
 
 Just as an example of the model the \ac{GAPoly} algorithm outputs: in this dataset the best polynomial,
 
@@ -442,19 +425,19 @@ $x_6$, RM average number of rooms per dwelling;
 $x_9$, RAD index of accessibility to radial highways;
 $x_{13}$, Lower status of the population.
 
-For comparation, if we access the mean decrease in accuracy found by Random Forests, the most important attributes are --- in decreasing order --- $x_{13}, x_6, x_5$ (but $x_5$ is already considered $4$ times less important than $x_6$). Both algorithms agree in two of their three most important attributes.
+For comparison, if we access the mean decrease in accuracy found by Random Forests, the most important attributes are --- in decreasing order --- $x_{13}, x_6, x_5$ (but $x_5$ is already considered $4$ times less important than $x_6$). Both algorithms agree in two of their three most important attributes.
 
-\item{\textsc{Abalone}} This dataset can be used to predict the age of a abalone shell using the given $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations. Figure~\ref{Abalone_dataset_lambda0.8_25runs} presents the results for this dataset.
+\item{\textsc{Abalone}} This dataset can be used to predict the age of a abalone shell using the given $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations. 
 
 % best polynomial, rsme 0.65
 % $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
 
-\item{\textsc{Auto-MPG}} This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations. Figure~\ref{Auto-Mpg_dataset_lambda0.8_25runs} presents the results for this dataset.
+\item{\textsc{Auto-MPG}} This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations.
 
 % best polynomial, \ac{rmse} 0.32
 %$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
 
-\item{\textsc{Kinematics}} This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using $m=8$ continuous attributes. There are $n=8192$ observations. Figure~\ref{Kinematics300_lambda0.8_25runs} presents the results for this dataset.
+\item{\textsc{Kinematics}} This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using $m=8$ continuous attributes. There are $n=8192$ observations. 
 
 % best polynomial, \ac{rmse} 0.74
 % $$ y = 0.24 x_5 - 0.23 x_5 x_6 x_7 - 0.19 x_4 x_7 - 0.5 x_3 $$
@@ -463,7 +446,7 @@ For comparation, if we access the mean decrease in accuracy found by Random Fore
 
 \subsection{Convergence speed}
 
-The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation\footnote{The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimization was not the focus of this article}, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
+The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given two different values for $\lambda$.
 
 \begin{figure}[tb]
 \begin{center}
@@ -473,7 +456,7 @@ The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable er
 	width=0.98\textwidth,
 	height=6cm,
 	xmin=-5,
-	xmax=255,
+	xmax=245,
 	mark options={scale=0.5},
 	line width=1pt,
 	xlabel={number of iterations},
@@ -485,19 +468,27 @@ The \ac{GA} quickly proceeds in the first 50 to 100 generations to reasonable er
 	\addplot[dashed,color=black] table [x expr=\coordindex, y index = 1] {data/lambdas.dat};\addlegendentry{$\lambda=1.000$};
 \end{axis}
 \end{tikzpicture}
-\caption{Error progress for Abalone dataset (population $200$)}
+\caption{Error progress for Abalone dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularization values. The population for both consisted of $200$ polynomials. The error values seem to stabilize around iteration~250.}
 \label{Abalone_fitnessProgress}
 
 \end{center}
 \end{figure}
 
-\section{Conclusion}
+\section{Conclusion and Future Work}
 
 The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). One exception -- the artificial dataset that uses a straightforward polynomial relation -- is the Auto-MPG datatest where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
+
+\ac{GAPoly} demands some processing time. On a current quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimization was not the focus of this article.
+
+A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{GAPoly}.
 
 \section*{Acknowledgements}
 
 The authors are grateful to the \textsc{Fundação para a Ciência e Tecnologia} (FCT) and the  R\&D laboratory \textsc{LabMAg} for the financial support given to this work, under the strategic project \textsc{PEst-­OE/EEI/UI0434/2011}.
+
+The datasets used herein were selected from Luis Torgo's data  repository, www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these datasets originally come from UCI ML repository, http://archive.ics.uci.edu/ml/.
+
+The authors wish to thank professor André Falcão for all the useful discussions around the article.
 
 %\section{Bibliography}
 
