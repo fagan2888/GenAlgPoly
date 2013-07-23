@@ -3,7 +3,7 @@
 %
 %	FILE ENCODING
 %
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 %
 
 %
@@ -58,6 +58,12 @@
 %
 
 %
+%	HYPERREFERENCES
+%
+\usepackage{hyperref}
+%
+
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
@@ -79,14 +85,16 @@
 \begin{frontmatter}
 
 \title{Selection of Polynomial Features by Genetic Algorithms}
+
 \author[ue,labmag]{Francisco Coelho}
 \ead{fc@di.uevora.pt}
 
-\author[fcul,labmag]{João Pedro Neto}
+\author[fcul,labmag]{JoÃ£o Pedro Neto\corref{jpn}}
 \ead{jpn@di.fc.ul.pt}
+\cortext[jpn]{Corresponding author}
 
-\address[ue]{Dept. Informática, Universidade de Évora, Rua Romão Ramalho 58 Évora 7000-671 Évora}
-\address[fcul]{Dept. Informática, Faculdade de Ciências da Universidade de Lisboa, Campo Grande 1749-016 Lisboa}
+\address[ue]{Dept. InformÃ¡tica, Universidade de Ã‰vora, Rua RomÃ£o Ramalho 58, 7000-671 Ã‰vora}
+\address[fcul]{Dept. InformÃ¡tica, Faculdade de CiÃªncias da Universidade de Lisboa, Campo Grande 1749-016 Lisboa}
 \address[labmag]{Laboratory of Agent Modelling (LabMAg)}
 
 \date{[{\sc draft} \today]}
@@ -97,6 +105,9 @@ Many applications require models that have no acceptable linear approximation an
 This paper describes a two-step method that uses genetic algorithms and linear regression to find empirical polynomial regressions. Experiments on common datasets show that, discounting the training computational effort, this method is quite competitive.
 \end{abstract}
 
+\begin{keyword}
+polynomial regression \sep genetic algorithm 
+\end{keyword}
 \end{frontmatter}
 
 \section{Introduction}
@@ -107,9 +118,9 @@ Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\
 
 \ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \cite{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \cite{holland1975adaptation}.  
 
-One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \cite{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntatic structure search is keen to the central ideas of deep learning \cite{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} \cite{tarlowstochastic}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
+One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \cite{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \cite{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} \cite{tarlowstochastic}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \cite{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \cite{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimises a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
+The idea of using \acp{GA} to find a polynomial regression is not new \cite{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \cite{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
@@ -178,18 +189,18 @@ J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \sqrt{\frac{1}{n
 be the usual \acf{rmse} function. Now the first problem can be stated as:
 %
 \begin{quote}
-Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{P}$, find parameters $\Theta$ that minimize $J\left(\Theta;\mathcal{P},\mathcal{D}\right)$.
+Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{P}$, find parameters $\Theta$ that minimize $J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right)$.
 \end{quote}
 %
 It turns out that this problem can be solved as a usual linear regression problem by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{M}$.
 
-The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{Q}$ a set of polynomials. For each polynomial $p\in \mathcal{Q}$ let $\mathcal{M}_p$ be the set of monomials in $p$ (without the coefficients) and compute the fitness
+The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $Q$ a set of polynomials. For each polynomial $p\in Q$ let $\mathcal{P}_p$ be the set of monomials in $p$ (without the coefficients) and compute the fitness
 %
 \begin{eqnarray*}
-\phi_p &=& \min_\Theta J\left(\Theta;\mathcal{M}_p,\mathcal{D}\right)
+\phi_p &=& \min_\Theta J_{\textrm{fit}}\left(\Theta;\mathcal{P}_p,\mathcal{D}\right)
 \end{eqnarray*}
 %
-by solving the first problem. With a fitness of every instance, a \ac{GA} will apply genetic operators (usually mutation and crossover) to evolve the population $\mathcal{P}$ until a reasonable approximation of a local minimum is found. 
+by solving the first problem. With a fitness of every instance, a \ac{GA} will apply genetic operators (usually mutation and crossover) to evolve the population $Q$ until a reasonable approximation of a local minimum is found. 
 %
 \begin{algorithm}[tb]
 \begin{algorithmic}
@@ -410,11 +421,11 @@ In order to train and test the performance of \ac{GAPoly} several mainstream dat
 \begin{description}
 \item{\textsc{Artificial}} this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable~$y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$~observations.
 
-This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}).The genetic algorithm run with a population of $N=100$~solutions with 50~iterations for each run.
+This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). The genetic algorithm run with a population of $n=100$~solutions with $50$~iterations for each run.
 
 In the next datasets, the population of the genetic algorithm had size~$n=250$ with 100~iterations for each run.
 
-\item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's. There are $N=506$ observations.
+\item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's. There are $n=506$ observations.
 
 Just as an example of the model the \ac{GAPoly} algorithm outputs: in this dataset the best polynomial,
 
@@ -476,19 +487,19 @@ The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable er
 
 \section{Conclusion and Future Work}
 
-The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). One exception -- the artificial dataset that uses a straightforward polynomial relation -- is the Auto-MPG datatest where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
+The proposed method has competitive results comparing with some well-known regression methods. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). One exception --- the artificial dataset that uses a straightforward polynomial relation --- is the Auto-MPG dataset where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
 
-\ac{GAPoly} demands some processing time. On a current quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimization was not the focus of this article.
+For complexity considerations \ac{GAPoly} demands some processing time. On a current quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded by one to two orders in magnitude if the process is implemented in a low level programming language like C++. However, speed optimization was not the focus of this article.
 
 A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{GAPoly}.
 
 \section*{Acknowledgements}
 
-The authors are grateful to the \textsc{Fundação para a Ciência e Tecnologia} (FCT) and the  R\&D laboratory \textsc{LabMAg} for the financial support given to this work, under the strategic project \textsc{PEst-­OE/EEI/UI0434/2011}.
+The authors are grateful to the \textsc{FundaÃ§Ã£o para a CiÃªncia e Tecnologia} (FCT) and the  R\&D laboratory \textsc{LabMAg} for the financial support given to this work, under the strategic project \textsc{PEst-OE/EEI/UI0434/2011}.
 
-The datasets used herein were selected from Luis Torgo's data  repository, www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html. Most of these datasets originally come from UCI ML repository, http://archive.ics.uci.edu/ml/.
+The datasets used herein were selected from Luis Torgo's data  repository, \url{http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html}. Most come originally from UCI ML repository, \url{http://archive.ics.uci.edu/ml/}.
 
-The authors wish to thank professor André Falcão for all the useful discussions around the article.
+The authors wish to thank professor AndrÃ© FalcÃ£o for all the useful discussions around the article.
 
 %\section{Bibliography}
 
@@ -496,3 +507,4 @@ The authors wish to thank professor André Falcão for all the useful discussions 
 \bibliography{fullbib}
 
 \end{document}
+
