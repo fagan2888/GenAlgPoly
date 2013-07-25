@@ -1,0 +1,1 @@
+Results for Artificial dataset. As shown, \ac{GAPoly} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPoly}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees
