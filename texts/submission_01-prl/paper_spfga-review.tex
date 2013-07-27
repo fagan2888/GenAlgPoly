@@ -1,4 +1,10 @@
-\documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
+\documentclass[review,authoryear]{elsarticle}
+
+%
+%	LINE NUMBERING FOR REVISION
+%
+\usepackage{lineno}
+%
 
 %
 %	FILE ENCODING
@@ -17,7 +23,7 @@
 %	AMS STUFF
 %
 \usepackage{amsfonts}
-\usepackage{amsthm}
+%\usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
 %
 
@@ -66,7 +72,11 @@
 %
 %
 \begin{document}
-
+%
+%	Line numbers for revision
+%
+\linenumbers
+%
 \begin{frontmatter}
 
 \title{Selection of Polynomial Features by Genetic Algorithms}
@@ -92,7 +102,7 @@ This paper describes a two-step method that uses genetic algorithms and linear r
 \end{abstract}
 
 \begin{keyword}
-polynomial regression \sep genetic algorithm 
+polynomial regression \sep genetic algorithm \sep feature extraction \sep dimensionality reduction 
 \end{keyword}
 \end{frontmatter}
 
@@ -194,13 +204,13 @@ by solving the first problem. With a fitness of every instance, a \ac{GA} will a
 	\State $pop \gets pop_0;\: err \gets 1.0+\epsilon$
 	\While{$err > \epsilon$}
 		\State $pop \gets \Call{IterateGA}{pop}$
-		\State $pop \gets \Call{Sort}{pop, key = \textsc{Lm.rmse}}$
-		\State $err \gets \textsc{rmse}\left(\Call{First}{pop}\right)$
+		\State $pop \gets \Call{Sort}{pop, key = J}$\Comment{Sort by regression cost, $J$}
+		\State $err \gets J\left(\Call{First}{pop}\right)$
 	\EndWhile
 	\State\Return $\Call{First}{pop}$
 \EndFunction
 \end{algorithmic}
-\caption{\ac{GAPoly} uses linear regression to find monomial coefficients that minimize the \ac{rmse} over a dataset and \acp{GA} to explore the space of polynomials. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$.}\label{alg:gapoly}
+\caption{\ac{GAPoly} uses linear regression to find monomial coefficients that minimize the \ac{rmse} over a dataset and \acp{GA} to explore the space of polynomials. The role of the linear regression step is to produce a fitting error that sorts the population. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$.}\label{alg:gapoly}
 \end{algorithm} 
 %
 Notice that the properties of \acp{GA} and linear regression entail that
@@ -222,10 +232,9 @@ The encoding for any polynomial will be as follows:
 \end{enumerate}
 
 Let's see an example: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with $k = 4, m = 3$ and $d=3$. One possible encoding would be:
-\begin{verbatim}
-110 - 011,000,001 ; 000,000,111 ;
-      001,001,000 ; 110,010,101
-\end{verbatim}
+\begin{center}
+\texttt{110 - 011,000,001 ; 000,000,111 ; 001,001,000 ; 110,010,101}
+\end{center}
 
 
 (for reading purposes the semicolons separate monomials, the commas separate variables)
@@ -280,13 +289,13 @@ The results were found using \texttt{R} programming language~\citep{R}\footnote{
 
 In order to train and test the performance of \ac{GAPoly} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
 
-\begin{figure}[tb]\begin{center}
-\includegraphics[width=0.48\textwidth]{figure_2.pdf}
+\begin{figure*}[tb]\begin{center}
+\includegraphics[width=0.98\textwidth]{figure_2.pdf}
 
 \caption{Results for Artificial dataset. As shown, \ac{GAPoly} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPoly}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
 \label{artificial_dataset1_lambda1.0}
 
-\end{center}\end{figure}
+\end{center}\end{figure*}
 
 \begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
