@@ -1,4 +1,4 @@
-\documentclass[review,authoryear]{elsarticle}
+\documentclass[review,preprint,authoryear,12pt]{elsarticle}
 
 %
 %	LINE NUMBERING FOR REVISION
@@ -72,45 +72,45 @@
 %
 %
 \begin{document}
-%
-%	Line numbers for revision
-%
-\linenumbers
-%
 \begin{frontmatter}
 
 \title{Selection of Polynomial Features by Genetic Algorithms}
 
-\author[ue,labmag]{Francisco Coelho\corref{fc}}
+\author[ue,labmag]{Francisco ~Coelho\corref{fc}}
 \ead{fc@di.uevora.pt}
 \cortext[fc]{Corresponding author}
 
-\author[fcul,labmag]{João Pedro Neto}
+\author[fcul,labmag]{João ~Pedro ~Neto}
 \ead{jpn@di.fc.ul.pt}
 
 
 \address[ue]{Dept. Informática, Universidade de Évora, Rua Romão Ramalho 58, 7000-671 Évora}
 \address[fcul]{Dept. Informática, Faculdade de Ciências da Universidade de Lisboa, Campo Grande 1749-016 Lisboa}
 \address[labmag]{Laboratory of Agent Modelling (LabMAg)}
-
-\date{[{\sc draft} \today]}
-
+%
+%\date{[{\sc draft} \today]}
+%
 \begin{abstract}
 Many applications require models that have no acceptable linear approximation and many nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models is decades old but still poses challenges due to the complexity of the search and different definitions of optimal solution.
 
 This paper describes a two-step method that uses genetic algorithms and linear regression to find empirical polynomial regressions. Experiments on common datasets show that, discounting the training computational effort, this method is quite competitive.
 \end{abstract}
-
+%
 \begin{keyword}
 polynomial regression \sep genetic algorithm \sep feature extraction \sep dimensionality reduction 
 \end{keyword}
 \end{frontmatter}
-
+%
+%	Line numbers for revision
+%
+%
+\linenumbers
+%
 \section{Introduction}
 
 With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in ecology, cybernetics, robotics and other areas.
 
-Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formul\ae\ for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy molding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. This not only illustrates the wide spectrum of applications but, additionally, work in each one of these polynomial models uses, at some point, a genetic algorithm.
+Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formul\ae\ for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy molding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. These examples not only illustrate the wide spectrum of applications but, additionally, work in each one uses, at some point, a genetic algorithm.
 
 \ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{holland1975adaptation}.  
 
@@ -129,11 +129,13 @@ The remainder of this paper is organized as usual: the next section describes th
 
 This section is dedicated to the description of an algorithm to find a polynomial regression from a given dataset. It starts with a brief introduction and outline of the algorithm and proceeds into core details as the encoding used to represent individual polynomial instances in the \ac{GA} populations and the regularization of the cost function.
 
-A usual representation of polynomials is
+An usual representation of polynomials is
 $$
 p\left( x_1, \ldots, x_m\right) = \sum_i \theta_i q_i
 $$
-where each $q_i$ is a monomial, $q_i = \prod_{j} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coefficients are real valued, $\theta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $q_1 = x_1, q_2 = x_2 x_3$ and $q_3 = x_1^2 x_3$, coefficients $\theta_1 = 2, \theta_2 = 1$ and $\theta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$. The exponents alone are a matrix that defines the monomial structure of the polynomial, $A = \left[\alpha_{ij}\right]$. For the example above
+where each $q_i$ is a monomial, $q_i = \prod_{j} x_j^{\alpha_{ij}}$, the exponents are non-negative integers, $\alpha_{ij}\in\mathbb{N}_0$, and the coefficients are real valued, $\theta_i \in \mathbb{R}$. For example $p\left( x_1, x_2, x_3 \right) = 2 x_1 + x_2 x_3 + \frac{1}{2} x_1^2 x_3$ has monomials $q_1 = x_1, q_2 = x_2 x_3$ and $q_3 = x_1^2 x_3$, coefficients $\theta_1 = 2, \theta_2 = 1$ and $\theta_3 = 1/2$ and exponents $\alpha_{1,1} = 1, \alpha_{2,2}=1, \alpha_{2,3} = 1, \alpha_{3,1} = 2, \alpha_{3,3} = 1$ and all other $\alpha_{ij} = 0$. The exponents alone are a matrix that defines the monomial structure of the polynomial, $A = \left[\alpha_{ij}\right]$.
+
+For the example above the matrix of monomials is
 $$
 A = \left[ 
 \begin{array}{ccc}
@@ -204,7 +206,7 @@ by solving the first problem. With a fitness of every instance, a \ac{GA} will a
 	\State $pop \gets pop_0;\: err \gets 1.0+\epsilon$
 	\While{$err > \epsilon$}
 		\State $pop \gets \Call{IterateGA}{pop}$
-		\State $pop \gets \Call{Sort}{pop, key = J}$\Comment{Sort by regression cost, $J$}
+		\State $pop \gets \Call{Sort}{pop, key = J}$\Comment{Sort population by regression error}
 		\State $err \gets J\left(\Call{First}{pop}\right)$
 	\EndWhile
 	\State\Return $\Call{First}{pop}$
