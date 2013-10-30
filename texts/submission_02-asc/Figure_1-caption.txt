@@ -1,0 +1,1 @@
+Error distribution by regularization exponent for the Abalone and Auto MPG datasets. The box plots summarize the error values of 10 runs for each value of $\lambda$. The smallest overall error is shown in gray and, in both cases, was achieved with $\lambda=0.8$.
