@@ -1,5 +1,10 @@
 # Target Journals
 
+* **Proposed**
+* lmr: [Applied Soft Computing (Elsevier)](http://www.journals.elsevier.com/applied-soft-computing/) **IF: 2.140**
+* lmr: [Systems, Men and Cybernetics (IEEE)](http://www.ieeesmc.org/)
+* lmr: [Soft Computing (Springer)](http://link.springer.com/journal/500)
+* **Found**
 1. [Evolutionary Computation](http://www.mitpressjournals.org/loi/evco) **IF: 2.109**
 2. [International Journal of Computer Applications](http://www.ijcaonline.org/) **IF: NA**
 3. Há uma lista enorme de _journals_ "primos entre si" em [Science & Engineering Research Support Society](http://www.sersc.org/journals/), que deve ser uma **editora**. Por exemplo:
@@ -32,6 +37,8 @@ Impact Factor: 2.877
 * [International Journal of Hybrid Intelligent Systems](http://www.iospress.nl/journal/international-journal-of-hybrid-intelligent-systems/) Impact Factor: NA
 
 ## Conferências de 1ª Categoria, Core A
+
+> Vamos evitar conferências, até ficarmos convencidos que não conseguimos publicar num journal :(
 
 * SIGKDD: ACM Knowledge Discovery and Data Mining (since 1995)
 * ICDM: IEEE International Conference on Data Mining (since 2001)
