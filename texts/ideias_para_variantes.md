@@ -1,5 +1,7 @@
 #Ideias para variantes e melhorias
 
+## Melhorias e variantes
+
 1. cross-validation (lambda, elitismo, etc)
 2. fazer classificação
 2. GA ensemble
@@ -10,6 +12,13 @@
     6. a velocidade é importante e
     7. "chegam" novas observações frequentemente
 4. usar dados do kaggle
+5. permitir expoentes negativos e/ou fracionários?
+
+## Notas soltas
+
+1. O problema pode ser formulado pela resolução se um sistema linear e há três formas possíveis de tentar essa resolução: (1) a eliminação de Gauss-Jordan que pode tropeçar na não invertabilidade (2) SVD [não estou a ver como] e (3) usando a pseudo-inversa de Moore-Penrose, que tem a vantagem adicional de proporcionar um método de regularização;
+2. Dado que está na moda, talvez seja interessante considerar a introdução do termo "kernel"
+
 
 ## Tarefas para Revisão
 
@@ -20,6 +29,7 @@
 3. Atender à hipótese de saber se "_this idea could be improved with different parameter tuning methods instead of genetic algorithm_";
 4. Melhorar a escrita atendendo a que "_There are more than necessary use of colloquial style writings_".
 5. <span style ="color: crimson">Ver trabalho prévio em _Advances in data-driven analyses and modelling using EPR-MOGA_.</span>
+    * Há aqui uma diferença significativa em relação ao nosso método (que fica pior colocado). No GAPoly o fitness da forma [Z1 ... Zn] é calculado (e produz o polinómio P = A1Z1 + ... + AnZn, com os coeficentes A1 ... An a resultarem da regressão). No EPR a pesquisa da forma [Z1 ... Zn] e dos coeficientes A1 ... An é feita em simultâneo.
 
 
 ### Comentários à 1ª versão
@@ -35,12 +45,11 @@ Thank you again for considering Pattern Recognition Letters as a forum for your 
 > 
 > * Major comments
 >
-> 1. The most significant issues in this manuscript are two-folds. First, **the proposed method showed only "competitive" result compared to other approaches**. Second, **there is no comparison with previous approaches** using GA for polynomial regressions. For these reasons, it is not easy to find a reason to use the proposed method, and it is not clear what benefit the proposed method has  compared to previous methods using GA for polynomial regressions. This manuscript will have contributions to research community only when such points are revised properly.
-> 
-> Authors claim that (in line 223 - 224) **using GA for polynomial regressions is a meaningful approach. However, that point must have been shown already by other previous approaches using GA for polynomial regressions**. Without additional (and more necessary) comparisons and proven benefits of the proposed method, it is hard to recognize a meaningful contribution from this manuscript.
+>    1. The most significant issues in this manuscript are two-folds. First, **the proposed method showed only "competitive" result compared to other approaches**. Second, **there is no comparison with previous approaches** using GA for polynomial regressions. For these reasons, it is not easy to find a reason to use the proposed method, and it is not clear what benefit the proposed method has  compared to previous methods using GA for polynomial regressions. This manuscript will have contributions to research community only when such points are revised properly.  
+>    Authors claim that (in line 223 - 224) **using GA for polynomial regressions is a meaningful approach. However, that point must have been shown already by other previous approaches using GA for polynomial regressions**. Without additional (and more necessary) comparisons and proven benefits of the proposed method, it is hard to recognize a meaningful contribution from this manuscript.
 >
-> 2. In lines 130 - 131, authors **claimed that considering more complex mappings would negatively impact the performance. Providing specific reasons needs to follow**.
+>    2. In lines 130 - 131, authors **claimed that considering more complex mappings would negatively impact the performance. Providing specific reasons needs to follow**.
 >
 > * Minor comments
 >
->1. There are more than necessary **use of colloquial style writings**.
+>    1. There are more than necessary **use of colloquial style writings**.
