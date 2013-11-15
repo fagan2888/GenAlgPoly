@@ -35,6 +35,7 @@
 \acrodef{GA}{Genetic algorithms}
 \acrodef{rmse}[error]{root-mean-square error}
 \acrodef{GAPoly}[\textsc{GAPoly}]{Genetic Algorithms for Polynomials}
+\acrodef{EPR}{Evolutionary Polynomial Regression}
 %
 
 %
@@ -65,6 +66,7 @@
 %	DOCUMENT COMMANDS
 %
 \newcommand{\sample}[1]{\ensuremath{^{\left(#1\right)}}}
+\newcommand{\note}[1]{\textbf{[~#1~]}}
 %
 
 %
@@ -75,7 +77,7 @@
 \begin{document}
 \begin{frontmatter}
 
-\title{Selection of Polynomial Features by Genetic Algorithms}
+\title{A Method for Regularisation of Evolutionary Polynomial Regressions using Support Vector Machines}
 
 \author[ue,labmag]{Francisco ~Coelho\corref{fc}}
 \ead{fc@di.uevora.pt}
@@ -92,13 +94,13 @@
 %\date{[{\sc draft} \today]}
 %
 \begin{abstract}
-Many applications require models that have no acceptable linear approximation and many nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models is decades old but still poses challenges due to the complexity of the search and different definitions of optimal solution.
+Many applications require models that have no acceptable linear approximation and the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models, \ac{EPR}, provides an automatic method to build such model from data but still poses challenges due to the complexity of the search and different definitions of optimal solution.
 
 This paper describes a two-step method that uses genetic algorithms and linear regression to find empirical polynomial regressions. Experiments on common datasets show that, discounting the training computational effort, this method is quite competitive.
 \end{abstract}
 %
 \begin{keyword}
-polynomial regression \sep genetic algorithm \sep feature extraction \sep dimensionality reduction 
+evolutionary polynomial regression \sep regularization \sep feature extraction \sep dimensionality reduction 
 \end{keyword}
 \end{frontmatter}
 %
@@ -109,7 +111,7 @@ polynomial regression \sep genetic algorithm \sep feature extraction \sep dimens
 %
 \section{Introduction}
 
-With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in ecology, cybernetics, robotics and other areas.
+With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in Support Vector Machines alleviates this problem by allowing a non-linear transformation of  the feature-space. \note{Find references.}
 
 Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formul\ae\ for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy molding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. These examples not only illustrate the wide spectrum of applications but, additionally, work in each one uses, at some point, a genetic algorithm.
 
@@ -117,7 +119,7 @@ Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\
 
 One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \citep{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \citep{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \citep{hofwing2011optimal, cetisli2011polynomial}. In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
+The idea of using \acp{GA} to find a polynomial regression is not new \citep{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \citep{hofwing2011optimal, cetisli2011polynomial}. \note{Insert references and resume of EPR; Redo the purpose of this work.} In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
