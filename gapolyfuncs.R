@@ -292,3 +292,87 @@ monitorEvalFactory <- function(train.set, n.vars, max.monoids) {
     print(eval(bestSolution))
   }
 }
+
+#########################################################################
+# Compare GA.Poly with vs. without normalization
+
+# pre: my.data must have columns named x1...xn and the last one is y (the output)
+test.regularization <- function(my.data, 
+                                population=100,     # GA population
+                                iterations=25,      # GA iterations
+                                runs=10,            # number of runs
+                                mutation.rate=0.05, # GA mutation rate
+                                lambda=1.0,         # regularization variable
+                                verbose=TRUE) {
+  
+  library(genalg)
+  
+  train.p.size <- 0.7 # percentage of training set
+  n.vars       <- ncol(my.data)-1
+  
+  # vectors keeping the rsme errors for each regression method
+  ga.error     <- rep(0,runs)
+  ga.reg.error <- rep(0,runs)
+  
+  best.ga.model <- NULL  # the best GA model 
+  best.ga.error <- 10e10 # & its error
+
+  best.ga.reg.model <- NULL  # the best GA model 
+  best.ga.reg.error <- 10e10 # & its error
+  
+  for (i in 1:runs) {
+    
+    # make train & test set (ie, each run has a different train+test sets)
+    inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
+    train.set <- my.data[inTrain,]
+    test.set  <- my.data[-inTrain,]
+
+    # test GA Poly without regularization
+    
+    GAmodel <- rbga.bin(size = max.monoids + max.degree*n.vars*max.monoids, 
+                        popSize = population, 
+                        iters = iterations, 
+                        mutationChance = mutation.rate, 
+                        elitism = TRUE, 
+                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 0))
+    
+    best.solution <- GAmodel$population[1,]
+    best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
+    ga.model <- lm(best.formula, data=train.set)
+    ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
+    ga.error[i] <- rsme(ga.pred,test.set[,ncol(test.set)])
+    
+    if(ga.error[i] < best.ga.error) { # save best ga.model
+      best.ga.model <- ga.model
+      best.ga.error <- ga.error[i]
+    }
+    
+    # test GA Poly with regularization
+
+    GAmodel.reg <- rbga.bin(size = max.monoids + max.degree*n.vars*max.monoids, 
+                            popSize = population, 
+                            iters = iterations, 
+                            mutationChance = mutation.rate, 
+                            elitism = TRUE, 
+                            evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, lambda))
+    
+    best.solution <- GAmodel.reg$population[1,]
+    best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
+    ga.model <- lm(best.formula, data=train.set)
+    ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
+    ga.reg.error[i] <- rsme(ga.pred,test.set[,ncol(test.set)])
+    
+    if(ga.reg.error[i] < best.ga.reg.error) { # save best ga.reg.model
+      best.ga.reg.model <- ga.model
+      best.ga.reg.error <- ga.reg.error[i]
+    }
+    
+    if (verbose)
+      cat(paste(i,"."))
+  }
+  
+  list(ga.error=ga.error,         # make the errors report into a list
+       ga.reg.error=ga.reg.error,
+       ga.model = best.ga.model,
+       ga.reg.model = best.ga.reg.model)  # also include the best found ga.models
+}

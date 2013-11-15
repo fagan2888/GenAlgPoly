@@ -72,6 +72,15 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
   coord_cartesian(ylim = c(0.2, 0.75))  +
   ggtitle("Housing dataset")
 
+
+########################################################
+# Compare versions of GA.Poly (with vs without regularization)
+
+source("gapolyfuncs.R")
+report <- test.regularization(my.data, population=30, iterations=25, lambda=0.8, runs=5)
+
+save(report, file="Housing300_lambda0.8.vs.no.reg.Rda") # recover with load("Housing300.Rda") 
+
 ########################################################
 # Lambda Test
 lambda.values <- seq(0.5,0.999,length.out=20)
