@@ -77,7 +77,7 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
 # Compare versions of GA.Poly (with vs without regularization)
 
 source("gapolyfuncs.R")
-report <- test.regularization(my.data, population=30, iterations=25, lambda=0.8, runs=5)
+report <- test.regularization(my.data, population=300, iterations=100, lambda=0.8, runs=25)
 
 save(report, file="Housing300_lambda0.8.vs.no.reg.Rda") # recover with load("Housing300.Rda") 
 

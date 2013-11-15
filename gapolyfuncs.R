@@ -368,7 +368,7 @@ test.regularization <- function(my.data,
     }
     
     if (verbose)
-      cat(paste(i,"."))
+      cat(paste0(i,"."))
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
