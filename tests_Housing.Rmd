@@ -72,6 +72,20 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
   coord_cartesian(ylim = c(0.2, 0.75))  +
   ggtitle("Housing dataset")
 
+
+########################################################
+# Compare versions of GA.Poly (with vs without regularization)
+
+source("gapolyfuncs.R")
+report <- test.regularization(my.data, population=300, iterations=100, lambda=0.8, runs=25)
+
+save(report, file="Housing300_lambda0.8.vs.no.reg.Rda") # recover with load("Housing300.Rda") 
+
+df <- data.frame(GA.Poly = report$ga.error,
+                 GA.Poly.reg = report$ga.reg.error)
+
+write.table(df, "Housing300_lambda0.8.vs.no.reg.txt")
+
 ########################################################
 # Lambda Test
 lambda.values <- seq(0.5,0.999,length.out=20)
@@ -102,7 +116,7 @@ source("gapolyfuncs.R")
 follow.fitness(my.data,population=300,iterations=50,mutation.rate=0.15,lambda=0.95)
 
 ########################################################
-# check what attributes Random Forest select has the most importants
+# check what attributes Random Forest select as the most importants
 
 train.p.size <- 0.7 # percentage of training set
 n.vars       <- ncol(my.data)-1
