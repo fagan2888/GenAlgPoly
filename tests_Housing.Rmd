@@ -111,7 +111,7 @@ source("gapolyfuncs.R")
 follow.fitness(my.data,population=300,iterations=50,mutation.rate=0.15,lambda=0.95)
 
 ########################################################
-# check what attributes Random Forest select has the most importants
+# check what attributes Random Forest select as the most importants
 
 train.p.size <- 0.7 # percentage of training set
 n.vars       <- ncol(my.data)-1
