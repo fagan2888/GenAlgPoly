@@ -327,14 +327,13 @@ test.regularization <- function(my.data,
     train.set <- my.data[inTrain,]
     test.set  <- my.data[-inTrain,]
 
-    # test GA Poly without regularization
-    
+    # test GA Poly without regularization    
     GAmodel <- rbga.bin(size = max.monoids + max.degree*n.vars*max.monoids, 
                         popSize = population, 
                         iters = iterations, 
                         mutationChance = mutation.rate, 
                         elitism = TRUE, 
-                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 0))
+                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 1))
     
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
