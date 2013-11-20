@@ -1,9 +1,10 @@
-\documentclass[review,preprint,authoryear,12pt]{elsarticle}
+%\documentclass[review,preprint,authoryear,12pt]{elsarticle}
+\documentclass[preprint,authoryear,12pt]{elsarticle}
 
 %
 %	LINE NUMBERING FOR REVISION
 %
-\usepackage{lineno}
+%\usepackage{lineno}
 %
 
 %
@@ -37,6 +38,7 @@
 \acrodef{GAPoly}[\textsc{GAPoly}]{Genetic Algorithms for Polynomials}
 \acrodef{EPR}{Evolutionary Polynomial Regression}
 \acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularisation}
+\acrodef{SVM}{Support Vector Machine}
 %
 
 %
@@ -67,6 +69,7 @@
 %	DOCUMENT COMMANDS
 %
 \newcommand{\sample}[1]{\ensuremath{^{\left(#1\right)}}}
+\newcommand{\at}[1]{\ensuremath{\!\left(#1\right)}}
 \newcommand{\note}[1]{\textbf{[~#1~]}}
 %
 
@@ -95,9 +98,11 @@
 %\date{[{\sc draft} \today]}
 %
 \begin{abstract}
-While many applications require models that have no acceptable linear approximation the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models, \ac{EPR}, provides an automatic method to build such models from data but still poses challenges due to the complexity of the search and different definitions of optimal solution.
+While many applications require models that have no acceptable linear approximation the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models from data is known as \ac{EPR}.
+%
+This paper introduces \ac{EPRR}, an algorithm that extends the \ac{EPR} method and describes a set of experiences on common datasets that compare both flavours of \ac{EPR} and other methods including Random Forests, Linear and Support Vector Regression.
 
-This paper describes \ac{EPRR}, an algorithm that extends the general \ac{EPR} method with regularisation and a set of experiences to compare both flavours of \ac{EPR} and other usual regression methods including Random Forests, Linear Regression and Support Vector Machines on common datasets. The empiric conclusion of those experiments is that \ac{EPRR} achieves better fitting errors and that, with respect to the plain \ac{EPR}, computation time is shorter.
+The empiric conclusion of those experiments is that \ac{EPRR} achieves better errors than the other non-ensemble methods and shorter computation time than plain \ac{EPR}.
 \end{abstract}
 %
 \begin{keyword}
@@ -108,23 +113,26 @@ evolutionary polynomial regression \sep regularisation \sep feature extraction \
 %	Line numbers for revision
 %
 %
-\linenumbers
+%\linenumbers
 %
 \section{Introduction}
 
-With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in Support Vector Machines alleviates this problem by allowing a non-linear transformation of  the feature-space. \note{Find references.}
+With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques produce linear models. The linearity assumption has many advantages including reduced computational complexity and strong the\-o\-re\-ti\-cal framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in \acp{SVM} (\cite{scholkopf1997kernel,liang2012eigen,Bao:2013aa}) alleviates this problem by allowing special non-linear transformations of the feature-space. The condition such transformations must meet is known as the \emph{kernel trick}, $k\at{x,x'} = \left< \varphi\at{x}, \varphi\at{x'} \right>$, where $\varphi$ is the feature-space transformation and $\left<\cdot,\cdot\right>$ denotes the inner product. The ``trick'' consists on computing the kernel $k\at{x,x'}$ while avoiding the computation of the inner product and the transformations $\varphi\at{x}, \varphi\at{x'}$. A special case of polynomial transformation, the \emph{polynomial kernel}, $k\at{x,x'} = \left<x,x'\right>^d$ is commonly used in regression and classification tasks with \acp{SVM}. However general polynomial transformations do not verify the kernel trick.
 
-Polynomials, one of the most studied subjects in mathematics, generalise li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formul\ae\ for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy moulding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. These examples not only illustrate the wide spectrum of applications but, additionally, work in each one uses, at some point, a genetic algorithm.
+Polynomials, one of the most studied subjects in mathematics, generalise li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{Mendes:2005aa}, explicit formul\ae\ for turbulent pipe flows
+ \citep{Davidson:1999aa}, computational linguistics \citep{Sanchez:2009aa} and more recently analytical techniques for cultural heritage materials \citep{Csefalvayova:2010aa}, liquid epoxy moulding process \citep{Chan:2011aa}, B-spline surface reconstruction \citep{Galvez:2012aa}, product design \citep{Chan:2012aa} or forecasting cyanotoxins presence in water reservoirs \citep{Garcia-Nieto:2013aa}. These examples not only illustrate the wide spectrum of applications but, additionally, work in each one uses, at some point, a genetic algorithm.
 
-\ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{holland1975adaptation}.  
+\ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
 
-One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \citep{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
+One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \citep{Koza:1992aa}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{Bengio:2009aa,Bengio:2013aa}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \citep{maertens2006genetic, yu2008optimal, wu2009novel} but still generates original research \citep{hofwing2011optimal, cetisli2011polynomial}. \note{Insert references and resume of EPR; Redo the purpose of this work.} In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
+The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developements include multi-objective optimizations (\cite{Giustolisi:2009aa}). 
+
+\note{Redo the purpose of this work.} In line with that research this work describes a general method to find a polynomial regression of a given dataset. The optimal regression minimizes a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
-It turns out that, discarding the computational cost of training, the polynomial regression method presented here, \ac{GAPoly}, provides a quite competitive regression method. Indeed, it is only systematically out-performed by random forests, an \emph{ensemble} method.
+It turns out that, discarding the computational cost of training, the polynomial regression method presented here, \acf{EPRR}, provides a quite effective regression method. Indeed, according to the results of common regression methods on several real-world datasets it is only systematically out-performed by random forests, an \emph{ensemble} method.
 
 The remainder of this paper is organized as usual: the next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
 
@@ -379,6 +387,8 @@ The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable er
 \end{figure*}
 
 \section{Conclusion and Future Work}
+
+\note{Discutir a localidade do regressor}
 
 Of all the non-ensemble regression methods considered, the proposed method is the one that shows, with one exception, the lowest error. Only Random Forest outperforms \ac{GAPoly} systematically (it also outperforms all the other regression algorithms). The single non-ensemble exception --- besides the artificial dataset that uses a straightforward polynomial relation --- is the Auto MPG dataset where \ac{GAPoly} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
 
