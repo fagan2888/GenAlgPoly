@@ -36,6 +36,7 @@
 \acrodef{rmse}[error]{root-mean-square error}
 \acrodef{GAPoly}[\textsc{GAPoly}]{Genetic Algorithms for Polynomials}
 \acrodef{EPR}{Evolutionary Polynomial Regression}
+\acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularisation}
 %
 
 %
@@ -94,13 +95,13 @@
 %\date{[{\sc draft} \today]}
 %
 \begin{abstract}
-Many applications require models that have no acceptable linear approximation and the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models, \ac{EPR}, provides an automatic method to build such model from data but still poses challenges due to the complexity of the search and different definitions of optimal solution.
+While many applications require models that have no acceptable linear approximation the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models, \ac{EPR}, provides an automatic method to build such models from data but still poses challenges due to the complexity of the search and different definitions of optimal solution.
 
-This paper describes a two-step method that uses genetic algorithms and linear regression to find empirical polynomial regressions. Experiments on common datasets show that, discounting the training computational effort, this method is quite competitive.
+This paper describes \ac{EPRR}, an algorithm that extends the general \ac{EPR} method with regularisation and a set of experiences to compare both flavours of \ac{EPR} and other usual regression methods including Random Forests, Linear Regression and Support Vector Machines on common datasets. The empiric conclusion of those experiments is that \ac{EPRR} achieves better fitting errors and that, with respect to the plain \ac{EPR}, computation time is shorter.
 \end{abstract}
 %
 \begin{keyword}
-evolutionary polynomial regression \sep regularization \sep feature extraction \sep dimensionality reduction 
+evolutionary polynomial regression \sep regularisation \sep feature extraction \sep dimensionality reduction 
 \end{keyword}
 \end{frontmatter}
 %
@@ -113,9 +114,9 @@ evolutionary polynomial regression \sep regularization \sep feature extraction \
 
 With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques are based on linear models. The linearity assumption has many advantages including reduced computational complexity and strong theoretical framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in Support Vector Machines alleviates this problem by allowing a non-linear transformation of  the feature-space. \note{Find references.}
 
-Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formul\ae\ for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy molding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. These examples not only illustrate the wide spectrum of applications but, additionally, work in each one uses, at some point, a genetic algorithm.
+Polynomials, one of the most studied subjects in mathematics, generalise li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{mendes2005adaptive}, explicit formul\ae\ for turbulent pipe flows \citep{davidson1999method}, computational linguistics \citep{sanchez2009obtaining} and more recently, analytical techniques for cultural heritage materials \citep{csefalvayova2010use}, liquid epoxy moulding process \citep{chan2011modeling}, B-spline surface reconstruction \citep{galvez2012iterative}, product design \citep{chan2012development} or forecasting cyanotoxins presence in water reservoirs \citep{garcia2013hybrid}. These examples not only illustrate the wide spectrum of applications but, additionally, work in each one uses, at some point, a genetic algorithm.
 
-\ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{holland1975adaptation}.  
+\ac{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{barricelli1962numerical} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{holland1975adaptation}.  
 
 One interesting take on genetic algorithms, named \emph{genetic programming} by John Koza \citep{koza1992genetic}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{bengio2013representation, bengio2009learning}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional ``structure" search problem.
 
