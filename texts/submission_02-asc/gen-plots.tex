@@ -322,7 +322,30 @@
 		upper whisker=#5,
 	},][fill=#6!50!white] coordinates {}}
 
+%
+%	FIGURE 0a in MOTIVATION
+%
+\begin{tikzpicture}
+\begin{axis}[width=0.98\textwidth,height=0.98\textheight,
+	boxplot/draw direction=x,
+	ytick={1,2},
+	yticklabels = {EPR$^2$, EPR},
+	ylabel={},
+	xmin=0,
+	xmax=1,
+	xlabel={Error distribution},
+	title={Dataset: \textsc{Housing}},
+	]
+	%
+	%	Original dataset: data/Articial_dataset.dat
+	%	y indexes: 0,4,1,2,3,5
+	%	cols #3 and #5 have the same values
+	%
+	\boxp{0.3684614822}{0.4705566362}{0.5146057586}{0.6393462372}{0.8904364025}{gray};
+	\boxp{0.4271584005}{0.4768887956}{0.5630370465}{0.6212271581}{0.9932751222}{white};	
 
+\end{axis}
+\end{tikzpicture}
 %
 %	FIGURE 1a
 %
@@ -380,30 +403,30 @@
 %
 %	FIGURE 2
 %
-\begin{tikzpicture}
-\begin{axis}[width=0.98\textwidth,height=0.98\textheight,
-	boxplot/draw direction=x,
-	ytick={1,2,3,4,5,6},
-	ylabel={Method index},
-	xmin=-25,
-	xmax=350,
-	xlabel={Error distribution},
-	title={Dataset: \textsc{Artificial}},
-	]
-	%
-	%	Original dataset: data/Articial_dataset.dat
-	%	y indexes: 0,4,1,2,3,5
-	%	cols #3 and #5 have the same values
-	%
-	\boxp{-0.005}{-0.001}{0.0}{0.001}{0.005}{gray};	
-	\boxp{152.18}{195.59}{213.88}{246.72}{314.78}{white};	
-	\boxp{63.69}{82.96}{87.07}{103.68}{134.66}{white};	
-	\boxp{56.10}{81.39}{87.70}{114.82}{157.83}{white};		
-	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
-	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
-
-\end{axis}
-\end{tikzpicture}
+%\begin{tikzpicture}
+%\begin{axis}[width=0.98\textwidth,height=0.98\textheight,
+%	boxplot/draw direction=x,
+%	ytick={1,2,3,4,5,6},
+%	ylabel={Method index},
+%	xmin=-25,
+%	xmax=350,
+%	xlabel={Error distribution},
+%	title={Dataset: \textsc{Artificial}},
+%	]
+%	%
+%	%	Original dataset: data/Articial_dataset.dat
+%	%	y indexes: 0,4,1,2,3,5
+%	%	cols #3 and #5 have the same values
+%	%
+%	\boxp{-0.005}{-0.001}{0.0}{0.001}{0.005}{gray};	
+%	\boxp{152.18}{195.59}{213.88}{246.72}{314.78}{white};	
+%	\boxp{63.69}{82.96}{87.07}{103.68}{134.66}{white};	
+%	\boxp{56.10}{81.39}{87.70}{114.82}{157.83}{white};		
+%	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
+%	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
+%
+%\end{axis}
+%\end{tikzpicture}
 %
 \newcommand{\axpl}[2]{
 \begin{axis}[
