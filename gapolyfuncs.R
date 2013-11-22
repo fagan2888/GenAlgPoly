@@ -308,7 +308,7 @@ test.regularization <- function(my.data,
                                 iterations=25,      # GA iterations
                                 runs=10,            # number of runs
                                 mutation.rate=0.05, # GA mutation rate
-                                lambda=1.0,         # regularization variable
+                                lambda=0.0,         # regularization variable
                                 verbose=TRUE) {
   
   library(genalg)
@@ -339,7 +339,7 @@ test.regularization <- function(my.data,
                         iters = iterations, 
                         mutationChance = mutation.rate, 
                         elitism = TRUE, 
-                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 1))
+                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 0)) # reg v.2
     
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
@@ -373,7 +373,7 @@ test.regularization <- function(my.data,
     }
     
     if (verbose)
-      cat(paste0(i,"."))
+      cat(paste0(i,". non reg: ",ga.error[i], "reg: ", ga.reg.error[i],"\n"))
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
