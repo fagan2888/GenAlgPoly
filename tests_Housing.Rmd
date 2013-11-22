@@ -8,7 +8,7 @@ Testing Housing
 ========================================================
 
 ```{r}
-set.seed(204)
+set.seed(304)
 
 # Read Data
 
@@ -77,14 +77,14 @@ qplot(method,error,data=df,geom=c("jitter","boxplot")) +
 # Compare versions of GA.Poly (with vs without regularization)
 
 source("gapolyfuncs.R")
-report <- test.regularization(my.data, population=300, iterations=100, lambda=0.8, runs=25)
+report <- test.regularization(my.data, population=150, iterations=75, lambda=0.8, runs=50)
 
-save(report, file="Housing300_lambda0.8.vs.no.reg_3.Rda") # recover with load("Housing300.Rda") 
+save(report, file="Housing300_lambda0.8.vs.no.reg_pop200.Rda") # recover with load("Housing300.Rda") 
 
 df <- data.frame(GA.Poly = report$ga.error,
                  GA.Poly.reg = report$ga.reg.error)
 
-write.table(df, "Housing300_lambda0.8.vs.no.reg_3.txt")
+write.table(df, "Housing300_lambda0.8.vs.no.reg_pop200.txt")
 
 ########################################################
 # Lambda Test
