@@ -88,10 +88,16 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
   function(chromosome) {
     formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.monoids))
     model <- lm(formula, data=df)
-    # for regularization: find how many monoids are there:
-    n.monoids <- length(strsplit(formula,"[+]")[[1]]) + 1 # check how many '+' are there
-    # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
-    return( sqrt(mean(residuals(model)^2)) * lambda^n.monoids ) 
+
+#     # These steps refer to the first version of regularization, using #monoids
+#     # for regularization: find how many monoids are there:
+#     n.monoids <- length(strsplit(formula,"[+]")[[1]]) + 1 # check how many '+' are there
+#     # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
+#     return( sqrt(mean(residuals(model)^2)) * lambda^n.monoids ) 
+    
+    # These steps refer to the 2nd version of regularization, using the sum of
+    # squared weigths outputted by lm()
+    return( sqrt(mean(residuals(model)^2)) + lambda * sum(model$coefficients^2) )
   }
 }
 

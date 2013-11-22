@@ -87,7 +87,7 @@ df <- data.frame(GA.Poly = report$ga.error,
 write.table(df, "Housing300_lambda0.8.vs.no.reg_pop200.txt")
 
 ########################################################
-# Lambda Test
+# Lambda Test (1st variant of regularization)
 lambda.values <- seq(0.5,0.999,length.out=20)
 n.runs <- 5
 
@@ -109,6 +109,40 @@ qplot(lambda,error,data=df,geom=c("jitter","boxplot")) +
   xlab("lambda value") +
  # coord_cartesian(ylim = c(0, 50))  +
   ggtitle("Housing dataset")
+
+########################################################
+# Lambda Test (2nd variant of regularization)
+size <- 31
+lambda.values <- rep(NA, size)
+
+val <- 0.001
+for(i in 1:size) {
+  lambda.values[i] = val
+  val = val * 2^(1/3)  # duplicate every three steps
+}
+
+n.runs <- 5
+
+source("gapolyfuncs.R")
+errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=5, iterations=15)
+
+df <- data.frame(error = as.vector(matrix(errors,nrow=1)),
+                 lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
+
+write.table(df, "lambda.errors.Housing.txt")
+
+df <- read.table("lambda.errors.Housing.txt", header=TRUE)
+
+df$lambda <- as.factor(df$lambda)
+
+library(ggplot2)
+qplot(lambda,error,data=df,geom=c("jitter","boxplot")) + 
+  ylab("root-mean-square error") + 
+  xlab("lambda value") +
+ # coord_cartesian(ylim = c(0, 50))  +
+  ggtitle("Housing dataset")
+
+
 ##############################################
 # Check fitness progress
 
