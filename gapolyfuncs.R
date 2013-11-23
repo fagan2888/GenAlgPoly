@@ -89,15 +89,15 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
     formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.monoids))
     model <- lm(formula, data=df)
 
-#     # These steps refer to the first version of regularization, using #monoids
-#     # for regularization: find how many monoids are there:
-#     n.monoids <- length(strsplit(formula,"[+]")[[1]]) + 1 # check how many '+' are there
-#     # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
-#     return( sqrt(mean(residuals(model)^2)) * lambda^n.monoids ) 
+    # These steps refer to the first version of regularization, using #monoids
+    # for regularization: find how many monoids are there:
+    n.monoids <- length(strsplit(formula,"[+]")[[1]]) + 1 # check how many '+' are there
+    # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
+    return( sqrt(mean(residuals(model)^2)) * lambda^n.monoids ) 
     
-    # These steps refer to the 2nd version of regularization, using the sum of
-    # squared weigths outputted by lm()
-    return( sqrt(mean(residuals(model)^2)) + lambda * sum(model$coefficients^2) )
+#     # These steps refer to the 2nd version of regularization, using the sum of
+#     # squared weigths outputted by lm()
+#     return( sqrt(mean(residuals(model)^2)) + lambda * sum(model$coefficients^2) )
   }
 }
 
@@ -180,7 +180,7 @@ make.report <- function(my.data,
     citree.error[i] <- rsme(citree.pred,test.set[,ncol(test.set)])    
     
     if (verbose)
-      cat(i)
+      cat(paste0(i,": error ga: ",ga.error[i]))
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
@@ -339,8 +339,7 @@ test.regularization <- function(my.data,
                         iters = iterations, 
                         mutationChance = mutation.rate, 
                         elitism = TRUE, 
-                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 0)) # reg v.2
-    
+                        evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 1))
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
     ga.model <- lm(best.formula, data=train.set)
