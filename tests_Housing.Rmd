@@ -34,7 +34,7 @@ report <- make.report(my.data, population=300, iterations=100, lambda=1, runs=25
 
 # See Results
 
-save(report, file="Housing300_lambda1.Rda") # recover with load("Housing300.Rda") 
+save(report, file="Housing300_lambda1_allmonoids.Rda") # recover with load("Housing300.Rda") 
 
 coef(report$ga.model)
 report$ga.error
@@ -47,7 +47,7 @@ df <- data.frame(GA.Poly = report$ga.error,
                  Rnd.For = report$rf.error,
                  CI.Tree = report$citree.error)
 
-write.table(df, "Housing300_lambda1.txt")
+write.table(df, "Housing300_lambda1_allmonoids.txt")
 
 library(ggplot2)
 size <- length(report$ga.error)

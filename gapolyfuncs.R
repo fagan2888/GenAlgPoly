@@ -60,6 +60,11 @@ make.formula <- function(bits, n.vars, max.monoids) {
   bits          <- bits[-active.bits]      # the remainder is the info about the monoids
   monoids       <- split(bits, ceiling(seq_along(bits)/(length(bits)/max.monoids)))
   formula <- ""
+  
+  # this next line simulates the EPR using all monoids
+  # it should be uncommented when we want to get results without any type of regulatization
+  active.monoid <- rep(1, max.monoids)
+  
   for(i in 1:length(monoids)) {
     if (active.monoid[i]==1) {
       monoid <- make.monoid(monoids[[i]], n.vars, vars)
@@ -98,6 +103,7 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
 #     # These steps refer to the 2nd version of regularization, using the sum of
 #     # squared weigths outputted by lm()
 #     return( sqrt(mean(residuals(model)^2)) + lambda * sum(model$coefficients^2) )
+#     # However, the results were worse than the 1st version...
   }
 }
 
