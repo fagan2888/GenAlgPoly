@@ -76,11 +76,11 @@ make.formula <- function(bits, n.vars, max.monoids) {
     }
   }
   
-  # This next line adds all the linear terms into the expression
-  formula <- paste(paste0("I(x",1:n.vars,") + "), collapse="") + formula
-  
   if (formula=="")     # the extreme case where the polynomial is empty
     formula = "I(x1)"  # default polynomial formula (by convention)
+
+  # This next line adds all the linear terms into the expression
+  formula <- paste0( paste(paste0("I(x",1:n.vars,") + "), collapse=""), formula)
   
   formula
 }
