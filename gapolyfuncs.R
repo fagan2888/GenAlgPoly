@@ -27,7 +27,7 @@ bin2dec <- function(x)
 # 
 # One possible coding -- for the values in the previous code snippet -- would be:
 # 
-# $$ 1111 011,000,001;000,000,111;001,001,000;000,000,000$$
+# $$ 1111 011,000,001;000,000,111;001,001,000;000,000,000 $$
 # 
 # (the semicolons separate monoids, the commas separate variables)
 # 
@@ -63,7 +63,7 @@ make.formula <- function(bits, n.vars, max.monoids) {
   
   # this next line simulates the EPR using all monoids
   # it should be uncommented when we want to get results without any type of regulatization
-  active.monoid <- rep(1, max.monoids)
+  # active.monoid <- rep(1, max.monoids)
   
   for(i in 1:length(monoids)) {
     if (active.monoid[i]==1) {
@@ -75,8 +75,13 @@ make.formula <- function(bits, n.vars, max.monoids) {
           formula = paste0(formula," + I(", monoid,")")
     }
   }
+  
+  # This next line adds all the linear terms into the expression
+  formula <- paste(paste0("I(x",1:n.vars,") + "), collapse="") + formula
+  
   if (formula=="")     # the extreme case where the polynomial is empty
     formula = "I(x1)"  # default polynomial formula (by convention)
+  
   formula
 }
 
