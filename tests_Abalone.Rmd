@@ -31,7 +31,7 @@ my.data <- as.data.frame(scale(my.data))
 # Execute ML methods
 
 source("gapolyfuncs.R")
-report <- make.report(my.data, population=300, iterations=100, lambda=1, runs=25)
+report <- make.report(my.data, population=300, iterations=100, lambda=0.8, runs=25)
 
 # See Results
 
