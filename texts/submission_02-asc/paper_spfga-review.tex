@@ -36,9 +36,9 @@
 \acrodef{GA}{Genetic algorithms}
 \acrodef{rmse}[error]{root-mean-square error}
 \acrodef{GAPoly}[\textsc{GAPoly}]{Genetic Algorithms for Polynomials}
+\acrodef{GAPolyreg}[\textsc{GAPoly.reg}]{Genetic Algorithms for Polynomials with Regularization}
 \acrodef{EPR}{Evolutionary Polynomial Regression}
 \acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularisation}
-\acrodef{SVM}{Support Vector Machine}
 %
 
 %
@@ -81,7 +81,7 @@
 \begin{document}
 \begin{frontmatter}
 
-\title{A Method for Regularisation of Evolutionary Polynomial Regressions using Support Vector Machines}
+\title{A Method for Regularisation of Evolutionary Polynomial Regressions}
 
 \author[ue,labmag]{Francisco ~Coelho\corref{fc}}
 \ead{fc@di.uevora.pt}
@@ -100,7 +100,7 @@
 \begin{abstract}
 While many applications require models that have no acceptable linear approximation the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models from data is known as \ac{EPR}.
 %
-This paper introduces \ac{EPRR}, an algorithm that extends the \ac{EPR} method and describes a set of experiences on common datasets that compare both flavours of \ac{EPR} and other methods including Random Forests, Linear and Support Vector Regression.
+This paper introduces \ac{EPRR}, an algorithm that extends the \ac{EPR} method and describes a set of experiences on common datasets that compare both flavours of \ac{EPR} and other methods including Linear Regression, Regression Trees and Support Vector Regression.
 
 The empiric conclusion of those experiments is that \ac{EPRR} achieves better fitting than the other non-ensemble methods and shorter computation time than plain \ac{EPR}.
 \end{abstract}
@@ -122,19 +122,19 @@ With notable exceptions (\emph{e.g.} neural networks) machine learning regressio
 Polynomials, one of the most studied subjects in mathematics, generalise li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{Mendes:2005aa}, explicit formul\ae\ for turbulent pipe flows
  \citep{Davidson:1999aa}, computational linguistics \citep{Sanchez:2009aa} and more recently analytical techniques for cultural heritage materials \citep{Csefalvayova:2010aa}, liquid epoxy moulding process \citep{Chan:2011aa}, B-spline surface reconstruction \citep{Galvez:2012aa}, product design \citep{Chan:2012aa} or forecasting cyanotoxins presence in water reservoirs \citep{Garcia-Nieto:2013aa}. These examples not only illustrate the wide spectrum of applications but, additionally, in each one uses, at some point, a \ac{GA}.
 
-\acp{GA} where, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterization \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
+\acp{GA} were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
 
 One interesting variation of genetic algorithms, named \emph{genetic programming} by John Koza \citep{Koza:1992aa}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{Bengio:2009aa,Bengio:2013aa}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional structure search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developements include multi-objective optimizations (\cite{Giustolisi:2009aa}). 
+The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developments include multi-objective optimizations (\cite{Giustolisi:2009aa}). 
 
-\note{Redo the purpose of this work.} This paper describes an extension of the general \ac{EPR} method to find a \emph{regularized} polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. 
+This paper describes an extension of the general \ac{EPR} method to find a \emph{regularized} polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. Another important change is in the coding mechanism which corresponds to two new features: (a) inclusion of the linear terms in the polynomial expression, and (b) the activation/deactivation of monoids during evolution to allow the increase/decrease of polynomial expressions.
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
-It turns out that, discarding the computational cost of training, the regression method presented here, \acf{EPRR}, prooves to be quite effective. Indeed, according to the results of common  methods on several real-world datasets it is only systematically out-performed by random forests, an \emph{ensemble} method.
+% It turns out that, discarding the computational cost of training, the regression method presented here, \acf{EPRR}, proves to be quite effective. Indeed, according to the results of common  methods on several real-world datasets it is only systematically out-performed by random forests, an \emph{ensemble} method.
 
-The remainder of this paper is organized as usual: the next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
+The next section describes the details of our method and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
 
 
 \section{Genetic Algorithms for Polynomials}
@@ -216,7 +216,7 @@ by solving the first problem. With a fitness of every instance, a \ac{GA} will a
 \begin{algorithmic}
 \Function{GAPoly}{$D,pop_0,\epsilon$}
 	\State $pop \gets pop_0;\: err \gets 1.0+\epsilon$
-	\While{$err > \epsilon$}
+	\While{$err > \epsilon \land \neg\Call{limit}{iterations}$}
 		\State $pop \gets \Call{IterateGA}{pop}$
 		\State $pop \gets \Call{Sort}{pop, key = J}$\Comment{Sort population by regression error}
 		\State $err \gets J\left(\Call{First}{pop}\right)$
@@ -224,7 +224,7 @@ by solving the first problem. With a fitness of every instance, a \ac{GA} will a
 	\State\Return $\Call{First}{pop}$
 \EndFunction
 \end{algorithmic}
-\caption{\ac{GAPoly} uses linear regression to find monomial coefficients that minimize the \ac{rmse} over a dataset and \acp{GA} to explore the space of polynomials. The role of the linear regression step is to produce a fitting error that sorts the population. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$.}\label{alg:gapoly}
+\caption{\ac{GAPoly} uses linear regression to find monomial coefficients that minimize the \ac{rmse} over a dataset and \acp{GA} to explore the space of polynomials. The role of the linear regression step is to produce a fitting error that sorts the population. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$ or the maximum number of allowed iterations.}\label{alg:gapoly}
 \end{algorithm} 
 %
 Notice that the properties of \acp{GA} and linear regression entail that
@@ -250,14 +250,15 @@ Let's see an example: consider polynomial $x_1^3 x_3 + x_3^7 + x_1 x_2$ with $k 
 \texttt{110 - 011,000,001 ; 000,000,111 ; 001,001,000 ; 110,010,101}
 \end{center}
 
-
 (for reading purposes the semicolons separate monomials, the commas separate variables)
 
 The first three bits inform that the second and third monomials are active while the fourth is not (as said, the first monomial is always active). This last monomial does not enter neither in the polynomial regression nor in the \ac{rmse} (fitness) evaluation. However, it acts as a kind of junk DNA, becoming active when, in a future mutation or crossover, the third bit of the entire sequence flips from~0 to~1.
 
-Let's interpret the first monomial description, \verb!011,000,001!. It is divided by three since $m=3$. The first triple \verb!011! is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, \verb!000!, means that $x_2$ is not part of the monomial. The third triple \verb!001! says that variable $x_3$ has exponent $1$. The first monomial is~$x_1^3 x_3$.
+% Let's interpret the first monomial description, \verb!011,000,001!. It is divided by three since $m=3$. The first triple \verb!011! is the binary description of the exponent of variable $x_1$ which is 3, so the first monomial includes $x_1^3$. The second triple, \verb!000!, means that $x_2$ is not part of the monomial. The third triple \verb!001! says that variable $x_3$ has exponent $1$. The first monomial is~$x_1^3 x_3$.
 
 Notice that all binary descriptions give rise to valid polynomials. However this is not a bijective mapping. For each polynomial there are multiple representations. For example, $x_1+x_2$ and $x_2+x_1$ have different representations. The authors considered that more complex mappings in order to force a one to one mapping would impact negatively in the algorithm's performance.
+
+In the experiments that led to this article, our tests concluded that the inclusion of the linear terms achieved a significant reduction of the error rates. So, considering the previous example, the final polynomial would be $x_1^3 x_3 + x_3^7 + x_1 x_2 + x_1 + x_2 + x_3$.
 
 % If the coding consists of entirely zeros, by convention, it describes polynomial $x_1$. This has to do with the execution of the polynomial regression that would fail if we interpret it as the zero polynomial. Anyway, for progressive larger  binary descriptions, the chances of getting this zero description decrease exponentially, so it does not impact in any meaningful way in the algorithm's performance.
 
@@ -293,20 +294,22 @@ Somewhat unexpectedly after some experiences it was found that lower values for 
 
 The typical inflection point lies around $\lambda = 0.8$. The dataset results for applying the proposed regression method use the regularization parameter with this value.
 
+We'll denote by \ac{GAPolyreg} the proposed extension of the EPR algorithm which includes the regularized cost function together with the new features in polynomial coding.
+
 \subsection{Genetic Operators}
 
 To perform the genetic algorithm it was used the R package genalg~\citep{willighage2012genalg}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
 
 \section{Experimental Results}
 
-The results were found using \texttt{R} programming language~\citep{R}\footnote{The datasets and the \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: Linear Regression, Support Vector Machines~\citep{Meyer12}, Regression Trees~\citep{Therneau13}, Conditional Inference Trees~\citep{Hothorn06, Strobl07, Strobl08} and Random Forests~\citep{Liaw02}
+The results were found using \texttt{R} programming language~\citep{R}\footnote{The datasets and the \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: the classic \ac{GAPoly}, Linear Regression, Support Vector Machines~\citep{Meyer12}, Regression Trees~\citep{Therneau13} and Conditional Inference Trees~\citep{Hothorn06, Strobl07, Strobl08}.
 
-In order to train and test the performance of \ac{GAPoly} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
+In order to train and test the performance of \ac{GAPolyreg} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
 
 \begin{figure*}[tb]\begin{center}
 \includegraphics[width=0.98\textwidth]{figure_2.pdf}
 
-\caption{Results for Artificial dataset. As shown, \ac{GAPoly} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPoly}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
+\caption{Results for Artificial dataset. As shown, \ac{GAPolyreg} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPolyreg}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
 \label{artificial_dataset1_lambda1.0}
 
 \end{center}\end{figure*}
