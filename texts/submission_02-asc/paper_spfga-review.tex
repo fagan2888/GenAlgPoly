@@ -309,7 +309,7 @@ In order to train and test the performance of \ac{GAPolyreg} several mainstream 
 \begin{figure*}[tb]\begin{center}
 \includegraphics[width=0.98\textwidth]{figure_2.pdf}
 
-\caption{Results for Artificial dataset. As shown, \ac{GAPolyreg} was able to find the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPolyreg}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
+\caption{Results for Artificial dataset. As shown, polynomial regression finds the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{GAPolyreg}, 2. Linear Regression, 3. SVM, 4. Regression Trees and 5. Conditional Inference Trees}
 \label{artificial_dataset1_lambda1.0}
 
 \end{center}\end{figure*}
@@ -332,7 +332,7 @@ In order to train and test the performance of \ac{GAPolyreg} several mainstream 
 %
 \end{tabular}
 
-\caption{Summary results for different regression methods on the Housing, Abalone, Auto MPG and Kinematics datasets. Random Forests, an ensemble method (``2'' in the plots), has the better results. However \ac{GAPoly} achieves similar errors in two of the datasets. For the remaining two \ac{GAPoly} produces similar errors to the other classic regression methods.  The regression methods depicted in these figures are: 1. \ac{GAPoly}, 2. Random Forests, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
+\caption{Summary results for different regression methods on the Housing, Abalone, Auto MPG and Kinematics datasets. Random Forests, an ensemble method (``2'' in the plots), has the better results. However \ac{GAPoly} achieves similar errors in two of the datasets. For the remaining two \ac{GAPoly} produces similar errors to the other classic regression methods.  The regression methods depicted in these figures are: 1. \ac{GAPolyreg}, 2. \ac{GAPoly}, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
 \label{Housing_dataset_lambda0.8_25runs}
 \label{Abalone_dataset_lambda0.8_25runs}
 \label{Auto-Mpg_dataset_lambda0.8_25runs}
@@ -348,16 +348,6 @@ In the next datasets, the population of the genetic algorithm had size~$n=250$ w
 
 \item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's. There are $n=506$ observations.
 
-Just as an example of the model the \ac{GAPoly} algorithm outputs: in this dataset the best polynomial,
-
-$$y = -0.12 x_6 x_9^4 + 0.78 x_6 - 0.4 x_9^2 x_{13} + 0.17 x_{13}^2 - 0.044$$
-
-where the attributes mean:
-$x_6$, RM average number of rooms per dwelling;
-$x_9$, RAD index of accessibility to radial highways;
-$x_{13}$, Lower status of the population.
-
-For comparison, if we access the mean decrease in accuracy found by Random Forests, the most important attributes are --- in decreasing order --- $x_{13}, x_6, x_5$ (but $x_5$ is already considered $4$ times less important than $x_6$). Both algorithms agree in two of their three most important attributes.
 
 \item{\textsc{Abalone}} This dataset can be used to predict the age of a abalone shell using the given $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations. 
 

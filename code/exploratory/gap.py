@@ -15,12 +15,13 @@ from sklearn import cross_validation as cv
 from sklearn import svm
 from sklearn import preprocessing
 from sklearn import datasets
+from sklearn import linear_model
 from deap import algorithms, base, creator, tools
 #
 #   Supress deprecated warnings
 #
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings('ignore')
 #       
 def save_data(filename, data):
     f = open(filename, 'w')
@@ -43,7 +44,7 @@ def load_data(root_folder = '../../datasets/'):
     
     return data
     
-class PolyTransform:
+class PolyTerms:
     '''Represent a set of monomial transformations.
     
     It is assumed that a set of n variables, X1 .. Xn, is fixed.
@@ -60,7 +61,7 @@ class PolyTransform:
         1   1
         2   2
         
-        and the PolyTransform [Z1 = [1,0], Z2 = [2,2], Z3 = [2,0]] we obtain
+        and the PolyTerms [Z1 = [1,0], Z2 = [2,2], Z3 = [2,0]] we obtain
         Z1  Z2  Z3
         0   0   0
         1   1   1
@@ -78,7 +79,7 @@ class PolyTransform:
             dtype (numpy type): the numpy.array type to hold the degrees
             
         Returns:
-            an instance of PolyTransform
+            an instance of PolyTerms
             
         Defines:
             .num_terms (int): the number of monomial terms given in degrees
@@ -116,74 +117,96 @@ class PolyTransform:
         '''
         return self.terms.__repr__()
 
-class AbstractScoreProcess:
-    def __init__(self, dataset):
-        self.dataset = dataset
-        self.score = None
-        self._changed_ = False
+class AbstractPolyScorer:
+    def __init__(self):
+        self.poly = None
+        self.scores = None
         
-    def _compute_score_(self):
-        self.score = cv.cross_val_score(estimator, X_train, y_train, cv = 5)
+    def compute_score(self):
+        return 0.0
         
-    def score(self):
-        if self._changed_:
-            self._compute_score_()
-            self._changed_ = False
-            
-        return score
+    def score(self, poly):
+        self.poly = poly
+        self.scores = None
+        return self.compute_score()
+        
+class Regression_PolyScorer(AbstractPolyScorer):
+    '''Compute the score of SVR after polynomial
+    '''
+    def __init__(self, dataset, estimator):
+        AbstractPolyScorer.__init__(self)
+        self.X = preprocessing.normalize(dataset.data)
+        self.y = (dataset.target - dataset.target.mean())/dataset.target.std()
+        #
+        self.num_samples, self.num_features = self.X.shape
+        self.estimator = estimator
+        self.scores = None
+        
+    def compute_score(self):
+        Z = self.poly(self.X)
+        self.scores = cv.cross_val_score(
+            self.estimator,
+            Z,
+            self.y,
+            cv = 5)
+        return self.scores.mean()
         
 def utest():
-    '''Run a series of tests and checks on PolyTransform instances
+    '''Run a series of tests and checks on PolyTerms instances
     '''
     #
     #
     #
-    print("\nTesting basic evaluation.")
-    nt = PolyTransform([[0,1,0],[2,0,0],[1,1,1],[0.5,3,1]])
-    print("\tPolyTransform\t:\n%s"%nt)
-    print("\tVars\t:\t%d\n\tTerms\t:\t%d"%(nt.num_vars,nt.num_terms))
-    X = np.array([[1,2,1],[2,2,2]])
-    print("\tData\t:\n%s"%X)
-    print("\tTransform\t:\n%s"%nt(X, extend = True))
+    print('\nTesting basic evaluation.')
+    poly = PolyTerms([
+        [0,1,0],
+        [2,0,0],
+        [1,1,1],
+        [0.5,3,1] ])
+    print('\tPolyTerms\t:\n%s'%poly)
+    print('\tVars\t:\t%d\n\tTerms\t:\t%d'%(poly.num_vars,poly.num_terms))
+    X = np.array([
+        [1,2,1],
+        [2,2,2 ]])
+    print('\tData\t:\n%s'%X)
+    print('\tTransform\t:\n%s'%poly(X))
     #
     #
     #
-    print("\nTesting classification.")
-    print("\n\tBoston House Prices\n")
+    print('\nTesting regression.')
+    print('\n\tBoston House Prices\n')
     #
-    d = datasets.load_boston()
-    X = preprocessing.normalize(d.data)
-    y = (d.target - d.target.mean())/d.target.std()
+    ps = Regression_PolyScorer(
+        datasets.load_boston(),
+        linear_model.LinearRegression()
+        )
     #
-    num_samples, num_features = X.shape
-    X_train, X_test, y_train, y_test = cv.train_test_split(X,y)
-    print('\tData set:\n\t\tnum_samples\t:\t%s\n\t\tnum_features\t:\t%s'%(num_samples, num_features))
-    print('\tTrain set:\n\t\tnum_samples\t:\t%s\n\t\tnum_features\t:\t%s'%X_train.shape)
-    print('\tTest set:\n\t\tnum_samples\t:\t%s\n\t\tnum_features\t:\t%s'%X_test.shape)
-    # 
-    p = PolyTransform(np.eye(num_features))
-    Z_train = p(X_train)
-    Z_test = p(X_test)
+    poly = PolyTerms(np.eye(ps.num_features))
+    print('\tPolyTerms\t:\n%s'%poly)
+    #
+    ps.score(poly)
+    print('\tScore:\t%5f ±%5f'%(ps.scores.mean(), ps.scores.std()))
     #
     #
     #
-    estimator = svm.SVR()
-    scores = cv.cross_val_score(estimator, X_train, y_train, cv = 5)
-    print("\tScore:\n\t\t%5f ±%5f"%(scores.mean(), scores.std()))
+    print('\nTesting polynomial search.')
     #
-    #
-    #
-    print("\nTesting genetic algorithms.")
-    #
-    creator.create("PolyTransformFitness", base.Fitness, weights = (1.0,))
-    creator.create("PolyTransformIndividual", PolyTransform, fitness = creator.PolyTransformFitness)
+    creator.create('PolyTermsFitness', base.Fitness, weights = (1.0,))
+    creator.create('PolyTermsIndividual', PolyTerms, fitness = creator.PolyTermsFitness)
     toolbox = base.Toolbox()
-    toolbox.register("crossover", tools.cxOnePoint)
-    toolbox.register("mutate", tools.mutGaussian, mu = 0.0, std = 1.0)
+    toolbox.register('crossover', tools.cxOnePoint)
+    toolbox.register('mutate', tools.mutGaussian, mu = 0.0, std = 1.0)
+    #
+    toolbox.register('attr_polyterm',
+        np.random.choice,
+        a = [0, 1, 2, 3, 0.5, 1.5, 2.5],
+        size = ps.num_features )
+    #
+    
     #
     #
     #
-    print("\nDone.")
+    print('\nDone.')
     #
     
 if __name__ == '__main__':
