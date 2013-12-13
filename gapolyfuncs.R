@@ -27,7 +27,7 @@ bin2dec <- function(x)
 # 
 # One possible coding -- for the values in the previous code snippet -- would be:
 # 
-# $$ 1111 011,000,001;000,000,111;001,001,000;000,000,000$$
+# $$ 1111 011,000,001;000,000,111;001,001,000;000,000,000 $$
 # 
 # (the semicolons separate monoids, the commas separate variables)
 # 
@@ -60,6 +60,11 @@ make.formula <- function(bits, n.vars, max.monoids) {
   bits          <- bits[-active.bits]      # the remainder is the info about the monoids
   monoids       <- split(bits, ceiling(seq_along(bits)/(length(bits)/max.monoids)))
   formula <- ""
+  
+  # this next line simulates the EPR using all monoids
+  # it should be uncommented when we want to get results without any type of regulatization
+  # active.monoid <- rep(1, max.monoids)
+  
   for(i in 1:length(monoids)) {
     if (active.monoid[i]==1) {
       monoid <- make.monoid(monoids[[i]], n.vars, vars)
@@ -70,8 +75,13 @@ make.formula <- function(bits, n.vars, max.monoids) {
           formula = paste0(formula," + I(", monoid,")")
     }
   }
+  
   if (formula=="")     # the extreme case where the polynomial is empty
     formula = "I(x1)"  # default polynomial formula (by convention)
+
+  # This next line adds all the linear terms into the expression
+  formula <- paste0( paste(paste0("I(x",1:n.vars,") + "), collapse=""), formula)
+  
   formula
 }
 
@@ -88,10 +98,17 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
   function(chromosome) {
     formula <- paste0("y ~ ", make.formula(chromosome, n.vars, max.monoids))
     model <- lm(formula, data=df)
+
+    # These steps refer to the first version of regularization, using #monoids
     # for regularization: find how many monoids are there:
     n.monoids <- length(strsplit(formula,"[+]")[[1]]) + 1 # check how many '+' are there
     # rbga.bin() minimizes, so the rmse will be smaller as the interations advance
     return( sqrt(mean(residuals(model)^2)) * lambda^n.monoids ) 
+    
+#     # These steps refer to the 2nd version of regularization, using the sum of
+#     # squared weigths outputted by lm()
+#     return( sqrt(mean(residuals(model)^2)) + lambda * sum(model$coefficients^2) )
+#     # However, the results were worse than the 1st version...
   }
 }
 
@@ -174,7 +191,7 @@ make.report <- function(my.data,
     citree.error[i] <- rsme(citree.pred,test.set[,ncol(test.set)])    
     
     if (verbose)
-      cat(i)
+      cat(paste0(i,": error ga: ",ga.error[i]))
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
@@ -302,7 +319,7 @@ test.regularization <- function(my.data,
                                 iterations=25,      # GA iterations
                                 runs=10,            # number of runs
                                 mutation.rate=0.05, # GA mutation rate
-                                lambda=1.0,         # regularization variable
+                                lambda=0.0,         # regularization variable
                                 verbose=TRUE) {
   
   library(genalg)
@@ -334,7 +351,6 @@ test.regularization <- function(my.data,
                         mutationChance = mutation.rate, 
                         elitism = TRUE, 
                         evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, 1))
-    
     best.solution <- GAmodel$population[1,]
     best.formula <- paste0("y ~ ", make.formula(best.solution, n.vars, max.monoids))
     ga.model <- lm(best.formula, data=train.set)
@@ -367,7 +383,7 @@ test.regularization <- function(my.data,
     }
     
     if (verbose)
-      cat(paste0(i,"."))
+      cat(paste0(i,". non reg: ",ga.error[i], "reg: ", ga.reg.error[i],"\n"))
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
