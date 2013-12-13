@@ -36,6 +36,15 @@ report <- make.report(my.data, population=300, iterations=100, lambda=0.8, runs=
 
 save(report, file="Housing300_lambda0.8_add_linears.Rda") # recover with load("Housing300.Rda") 
 
+load(file="Housing300_lambda0.8_add_linears.Rda")
+
+load(file="Housing300_lambda1_allmonoids.Rda")
+
+
+
+summary(report$ga.error)
+
+
 coef(report$ga.model)
 report$ga.error
 

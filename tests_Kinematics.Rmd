@@ -32,6 +32,10 @@ head(my.data,8)
 source("gapolyfuncs.R")
 report <- make.report(my.data, population=300, iterations=100, runs=25, lambda=0.8)
 
+load(file="Kinematics300_lambda0.8_add_linears.Rda")
+load(file="Kinematics300_lambda1_allmonoids.Rda")
+summary(report$ga.error)
+
 # See Results
 
 save(report, file="Kinematics300_lambda0.8_add_linears.Rda") # recover with load("Kinematics.Rda") 
