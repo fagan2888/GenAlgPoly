@@ -15,6 +15,7 @@ from sklearn import cross_validation as cv
 from sklearn import svm
 from sklearn import preprocessing
 from sklearn import datasets
+from sklearn import metrics
 from sklearn import linear_model
 from deap import algorithms, base, creator, tools
 #
@@ -67,7 +68,7 @@ class PolyTerms:
         1   1   1
         2   16  4
     '''
-    def __init__(self, degrees, dtype = np.int8):
+    def __init__(self, degrees, dtype = None):
         '''Defines a monomial transformation.
         
         Args:
@@ -87,8 +88,13 @@ class PolyTerms:
             
         No check is performed.
         '''
-        self.terms = np.array( degrees, dtype = dtype)
+        if dtype is None:
+            self.terms = np.array( degrees )
+        else:
+            self.terms = np.array( degrees, dtype = dtype)
         self.num_terms, self.num_vars = self.terms.shape
+        
+        self.coef_ = None
                 
     def __call__(self, X, extend = False):
         '''Evaluates the transformation on a given dataset, X.
@@ -116,7 +122,34 @@ class PolyTerms:
                 a string with the exponents matrix.
         '''
         return self.terms.__repr__()
+        
+def mutate_polyterm(p, num_mutations = 1, valid_degrees = [0,1,2]):
+    z = np.copy(p.terms)
+    rows, cols = z.shape
+    for _ in range(num_mutations):
+        r = np.random.randint(rows)
+        c = np.random.randint(cols)
+        z[r,c] = np.random.choice(a = valid_degrees)
+    return PolyTerms(z)
+        
 
+    
+def random_matrix(num_terms = 2, num_vars = 2, valid_degrees = [0,1,2]):
+    z = np.zeros( (num_terms, num_vars) )
+    for r in range(num_terms):
+        for c in range(num_vars):
+            z[r,c] = np.random.choice(a = valid_degrees)
+    
+    return z
+    
+def random_polyterm(num_terms = 2, num_vars = 2, valid_degrees = [0,1,2]):        
+    return PolyTerms(random_matrix(num_terms, num_vars, valid_degrees))
+        
+class RandomPolyTerms(PolyTerms):
+    def __init__(self,num_terms, num_vars, valid_degrees):
+        PolyTerms.__init__(self, np.zeros( (num_terms, num_vars)))
+        self.terms = random_polyterm(num_terms, num_vars, valid_degrees).terms
+        
 class AbstractPolyScorer:
     def __init__(self):
         self.poly = None
@@ -130,13 +163,22 @@ class AbstractPolyScorer:
         self.scores = None
         return self.compute_score()
         
-class Regression_PolyScorer(AbstractPolyScorer):
+def test_loss(x,y):
+    return -np.dot(x - y, x - y)
+    
+rms_loss = metrics.make_scorer( test_loss,
+    greater_is_better = False,
+    needs_threshold = False
+)
+
+class PolyRegression_Scorer(AbstractPolyScorer):
     '''Compute the score of SVR after polynomial
     '''
     def __init__(self, dataset, estimator):
         AbstractPolyScorer.__init__(self)
-        self.X = preprocessing.normalize(dataset.data)
-        self.y = (dataset.target - dataset.target.mean())/dataset.target.std()
+        self.X = np.copy(dataset.data)
+        self.y = np.copy(dataset.target)
+        #
         #
         self.num_samples, self.num_features = self.X.shape
         self.estimator = estimator
@@ -144,70 +186,236 @@ class Regression_PolyScorer(AbstractPolyScorer):
         
     def compute_score(self):
         Z = self.poly(self.X)
+        Z_train, Z_test, y_train, y_test = cv.train_test_split(Z,self.y)
+        self.estimator.fit(Z_train, y_train)
+        self.poly.coef_ = self.estimator.coef_
         self.scores = cv.cross_val_score(
             self.estimator,
-            Z,
-            self.y,
-            cv = 5)
-        return self.scores.mean()
+            Z_test,
+            y_test,
+            cv = 3,
+            scoring = rms_loss)
+        return self.scores
         
-def utest():
+
+class PolyDataset:
+    def __init__(self, data_features, target_feature):
+        num_samples = len(data_features[0])
+        num_features = len(data_features)
+        self.data = np.zeros( (num_samples, num_features) )
+        for i,f in enumerate(data_features):
+            self.data[:,i] = f
+        self.target = np.array(target_feature)
+#
+#######################################################################################
+#
+#######################################################################################
+#
+#######################################################################################
+#
+#######################################################################################
+#
+        
+def test(tests = ['basic', 'regression', 'search']):
     '''Run a series of tests and checks on PolyTerms instances
     '''
     #
+    #######################################################################################
     #
+    #######################################################################################
     #
-    print('\nTesting basic evaluation.')
-    poly = PolyTerms([
-        [0,1,0],
-        [2,0,0],
-        [1,1,1],
-        [0.5,3,1] ])
-    print('\tPolyTerms\t:\n%s'%poly)
-    print('\tVars\t:\t%d\n\tTerms\t:\t%d'%(poly.num_vars,poly.num_terms))
-    X = np.array([
-        [1,2,1],
-        [2,2,2 ]])
-    print('\tData\t:\n%s'%X)
-    print('\tTransform\t:\n%s'%poly(X))
+    if 'basic' in tests:
+        print('\nTesting basic evaluation.')
+        poly = PolyTerms([
+            [0,1,0],
+            [2,0,0],
+            [1,1,1],
+            [0.5,3,1] ])
+        print('\tPolyTerms:\n%s'%poly)
+        print('\tVars:\t%d\n\tTerms\t:\t%d'%(poly.num_vars,poly.num_terms))
+        X = np.array([
+            [1,2,1],
+            [2,2,2 ]])
+        print('\tData:\n%s'%X)
+        print('\tTransform:\n%s'%poly(X))
+        #
+        print('\nTesting random polyterm generator.')
+        print('\tRandom PolyTerm:\n%s'%random_polyterm(4,2,[0,1,2,0.5]))
     #
+    #######################################################################################
     #
+    #######################################################################################
     #
-    print('\nTesting regression.')
-    print('\n\tBoston House Prices\n')
-    #
-    ps = Regression_PolyScorer(
-        datasets.load_boston(),
-        linear_model.LinearRegression()
-        )
-    #
-    poly = PolyTerms(np.eye(ps.num_features))
-    print('\tPolyTerms\t:\n%s'%poly)
-    #
-    ps.score(poly)
-    print('\tScore:\t%5f ±%5f'%(ps.scores.mean(), ps.scores.std()))
-    #
-    #
-    #
-    print('\nTesting polynomial search.')
-    #
-    creator.create('PolyTermsFitness', base.Fitness, weights = (1.0,))
-    creator.create('PolyTermsIndividual', PolyTerms, fitness = creator.PolyTermsFitness)
-    toolbox = base.Toolbox()
-    toolbox.register('crossover', tools.cxOnePoint)
-    toolbox.register('mutate', tools.mutGaussian, mu = 0.0, std = 1.0)
-    #
-    toolbox.register('attr_polyterm',
-        np.random.choice,
-        a = [0, 1, 2, 3, 0.5, 1.5, 2.5],
-        size = ps.num_features )
-    #
+    if 'regression' in tests:
+        print('\nTesting regression.')
+        print('\n\tBoston House Prices\n')
+        #
+        scorer = PolyRegression_Scorer(
+            datasets.load_boston(),
+            linear_model.LinearRegression()
+            )
+        #
+        poly = random_polyterm(4, scorer.num_features, [0,1,2,0.5])
+        print('\tPolyTerms:\n%s'%poly)
+        #
+        scorer.score(poly)
+        print('\tEstimator coefs:\t%s'%(scorer.estimator.coef_))
+        print('\tEstimator intercept:\t%s'%(scorer.estimator.intercept_))
+        print('\tExpected score (error):\t%5f ±%5f'%(scorer.scores.mean(), scorer.scores.std()))
     
+    if 'deap' in tests:
+        import array
+        import random
+
+        from deap import algorithms
+        from deap import base
+        from deap import creator
+        from deap import tools
+
+        creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+        creator.create("Individual", array.array, typecode='b', fitness=creator.FitnessMax)
+
+        toolbox = base.Toolbox()
+
+        # Attribute generator
+        toolbox.register("attr_bool", random.randint, 0, 1)
+
+        # Structure initializers
+        toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 100)
+        toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+        def evalOneMax(individual):
+            return sum(individual),
+
+        toolbox.register("evaluate", evalOneMax)
+        toolbox.register("mate", tools.cxTwoPoints)
+        toolbox.register("mutate", tools.mutFlipBit, indpb = 0.05)
+        toolbox.register("select", tools.selTournament, tournsize = 3)
+    
+        pop = toolbox.population(n=100)
+        hof = tools.HallOfFame(1)
+        stats = tools.Statistics(lambda ind: ind.fitness.values)
+        stats.register("avg", tools.mean)
+        stats.register("std", tools.std)
+        stats.register("min", min)
+        stats.register("max", max)
+
+        algorithms.eaSimple(pop, toolbox,
+            cxpb = 0.5,
+            mutpb = 0.2,
+            ngen = 10,
+            stats = stats,
+            halloffame = hof,
+            verbose = True )
     #
+    #######################################################################################
+    #
+    #######################################################################################
+    #
+    if 'search' in tests:        
+        print('\nTesting polynomial search.')
+        #
+        from deap import algorithms
+        from deap import base
+        from deap import creator
+        from deap import tools
+        #
+        max_num_terms = 4
+        valid_degrees = [0, 1, 2, 3, 4]
+        #        
+        num_samples = 400
+        x1 = np.random.uniform(0,0.5, num_samples)
+        #x2 = np.random.uniform(0,1, num_samples)
+        e = np.random.uniform(0,0.001, num_samples)
+        
+        y = np.exp(x1) + e
+
+        pd = PolyDataset([x1], y)
+        
+        scorer = PolyRegression_Scorer(
+            pd,
+            linear_model.LinearRegression() )
+        #    
+        creator.create('PolyTerms_Fitness', base.Fitness, weights = (-1.0,))
+        creator.create('PolyTerms_Individual', PolyTerms, fitness = creator.PolyTerms_Fitness)
+        #
+        toolbox = base.Toolbox()
+        #
+        #   Individual and Population creation
+        #
+        #
+        toolbox.register('individual', creator.PolyTerms_Individual,
+            random_matrix(
+                num_terms = max_num_terms,
+                num_vars = scorer.num_features,
+                valid_degrees = valid_degrees
+            )
+        )
+        #
+        toolbox.register('population', tools.initRepeat, 
+            list,
+            toolbox.individual
+        )
+        #
+        #   Genetic operators
+        #
+        def mate(x,y):
+
+            x_ = x.terms.copy()
+            y_ = y.terms.copy()
+            n,m = x_.shape
+            nm = n*m
+            
+            a = x_.reshape( (1, nm) ).tolist()[0]
+            b = y_.reshape( (1, nm) ).tolist()[0]
+            c = np.array( tools.cxOnePoint(a,b) )
+            a = creator.PolyTerms_Individual( c[0,:].reshape( (n,m) ) )
+            b = creator.PolyTerms_Individual( c[1,:].reshape( (n,m) ) )
+            return (a,b)
+
+        def mutate(p, num_mutations = 1, valid_degrees = [0,1,2]):
+            z = np.copy(p.terms)
+            
+            rows, cols = z.shape
+            for _ in range(num_mutations):
+                r = np.random.randint(rows)
+                c = np.random.randint(cols)
+                z[r,c] = np.random.choice(a = valid_degrees)
+                
+            return (creator.PolyTerms_Individual(z), )
+                        
+        toolbox.register('mate', mate )
+        toolbox.register('mutate', mutate,
+            num_mutations = 1,
+            valid_degrees = valid_degrees )
+        #
+        #   Fitness
+        #
+        toolbox.register('evaluate', scorer.score)
+        toolbox.register('select', tools.selTournament, tournsize = 13)
+        #
+        #   Evolution
+        #
+        pop = toolbox.population(n = 130)
+        hof = tools.HallOfFame(1)
+        stats = tools.Statistics(lambda x: x.fitness.values)
+        stats.register('min', min)
+        stats.register('mean', tools.mean)
+        stats.register('max', max)
+        stats.register('std', tools.std)        
+        algorithms.eaSimple( pop, toolbox,
+            cxpb = 0.7,
+            mutpb = 0.3,
+            ngen = 20,
+            stats = stats, halloffame = hof, verbose = True )
+            
+        print(hof[0])
+        print(hof[0].coef_)    
+    #    
     #
     #
     print('\nDone.')
     #
     
 if __name__ == '__main__':
-    utest()        
+    test(['search'])        

@@ -14,6 +14,7 @@
 4. usar dados do kaggle
 5. permitir expoentes negativos e/ou fracionários?
 
+
 ## Notas soltas
 
 1. O problema pode ser formulado pela resolução se um sistema linear e há três formas possíveis de tentar essa resolução: (1) a eliminação de Gauss-Jordan que pode tropeçar na não invertabilidade (2) SVD [não estou a ver como] e (3) usando a pseudo-inversa de Moore-Penrose, que tem a vantagem adicional de proporcionar um método de regularização;
