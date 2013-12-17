@@ -105,6 +105,40 @@ source("gapolyfuncs.R")
 follow.fitness(my.data,population=300,iterations=50,mutation.rate=0.15,lambda=0.95)
 
 ########################################################
+# Tuning SVM & RPART
+
+rsme <- function(v1, v2=c(0)) {
+  sqrt(mean((v1-v2)^2))
+}
+
+library(e1071)
+
+head(my.data,8)
+
+n.runs <- 25
+train.p.size <- 0.7 # percentage of training set
+
+svm.error <- rep(NA,n.runs)
+rpart.error <- rep(NA,n.runs)
+
+for (i in 1:n.runs) {
+  inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
+  train.set <- my.data[inTrain,]
+  test.set  <- my.data[-inTrain,]
+
+  svm.tune <- tune.svm(y ~ ., data=train.set)
+  svm.pred  <- predict(svm.tune$best.model, test.set[,-ncol(test.set)]) 
+  svm.error[i] <- rsme(svm.pred,test.set[,ncol(test.set)])
+  
+  rpart.tune <- tune.rpart(y ~ ., data=train.set)
+  rpart.pred  <- predict(rpart.tune$best.model, test.set[,-ncol(test.set)]) 
+  rpart.error[i] <- rsme(rpart.pred,test.set[,ncol(test.set)])
+}
+
+summary(svm.error)
+summary(rpart.error)
+
+########################################################
 
 # print(xtable(res.df), include.rownames = FALSE, floating = FALSE, type = "latex")
 ```

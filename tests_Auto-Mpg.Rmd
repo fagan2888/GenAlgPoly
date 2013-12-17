@@ -121,7 +121,7 @@ n.runs <- 25
 train.p.size <- 0.7 # percentage of training set
 
 svm.error <- rep(NA,n.runs)
-rpart.error <- rep(NA,runs)
+rpart.error <- rep(NA,n.runs)
 
 for (i in 1:n.runs) {
   inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
@@ -137,6 +137,8 @@ for (i in 1:n.runs) {
   rpart.error[i] <- rsme(rpart.pred,test.set[,ncol(test.set)])
 }
 
+summary(svm.error)
+summary(rpart.error)
 
 ########################################################
 

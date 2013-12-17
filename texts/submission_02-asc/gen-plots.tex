@@ -5,7 +5,7 @@
 %
 \usepackage{geometry}
 \geometry{
-	paperwidth=15cm, %7cm, %7cm, % 15cm
+	paperwidth=7cm, %7cm, %7cm, % 15cm
 	paperheight=4cm,
 	layouthoffset=0cm,
 	layoutvoffset=0cm,
@@ -403,29 +403,29 @@
 %
 %	FIGURE 2
 %
-\begin{tikzpicture}
-\begin{axis}[width=0.98\textwidth,height=0.98\textheight,
-	boxplot/draw direction=x,
-	ytick={1,2,3,4,5},
-	ylabel={Method index},
-	xmin=-25,
-	xmax=350,
-	xlabel={Error distribution},
-	title={Dataset: \textsc{Artificial}},
-	]
-	%
-	%	Original dataset: data/Articial_dataset.dat
-	%	y indexes: 0,4,1,2,3,5
-	%	cols #3 and #5 have the same values
-	%
-	\boxp{-0.005}{-0.001}{0.0}{0.001}{0.005}{gray};
-	\boxp{63.69}{82.96}{87.07}{103.68}{134.66}{white};	
-	\boxp{56.10}{81.39}{87.70}{114.82}{157.83}{white};		
-	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
-	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
-
-\end{axis}
-\end{tikzpicture}
+%\begin{tikzpicture}
+%\begin{axis}[width=0.98\textwidth,height=0.98\textheight,
+%	boxplot/draw direction=x,
+%	ytick={1,2,3,4,5},
+%	ylabel={Method index},
+%	xmin=-25,
+%	xmax=350,
+%	xlabel={Error distribution},
+%	title={Dataset: \textsc{Artificial}},
+%	]
+%	%
+%	%	Original dataset: data/Articial_dataset.dat
+%	%	y indexes: 0,4,1,2,3,5
+%	%	cols #3 and #5 have the same values
+%	%
+%	\boxp{-0.005}{-0.001}{0.0}{0.001}{0.005}{gray};
+%	\boxp{63.69}{82.96}{87.07}{103.68}{134.66}{white};	
+%	\boxp{56.10}{81.39}{87.70}{114.82}{157.83}{white};		
+%	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
+%	\boxp{137.46}{166.65}{196.00}{225.99}{284.15}{white};
+%
+%\end{axis}
+%\end{tikzpicture}
 %
 \newcommand{\axpl}[2]{
 \begin{axis}[
@@ -448,40 +448,44 @@
 %
 %\begin{tikzpicture}
 %	\axpl{Housing}{
-%	\boxp{0.33}{0.41}{0.45}{0.57}{0.85}{gray};
-%	\boxp{0.41}{0.50}{0.53}{0.55}{0.75}{white};
-%	\boxp{0.46}{0.51}{0.55}{0.56}{0.61}{white};
-%	\boxp{0.46}{0.53}{0.57}{0.60}{0.67}{white};
-%	\boxp{0.40}{0.48}{0.54}{0.57}{0.66}{white};
-%	\boxp{0.41}{0.46}{0.51}{0.55}{0.62}{white};
+%	\boxp{0.33}{0.41}{0.45}{0.57}{0.76}{gray};   % ga.poly.reg 
+%	\boxp{0.41}{0.50}{0.53}{0.55}{0.75}{white};  % ga.poly     
+%	\boxp{0.46}{0.51}{0.55}{0.56}{0.61}{white};  % linear reg  
+%	\boxp{0.31}{0.36}{0.44}{0.49}{0.57}{white};  % svm  (tuned)
+%	\boxp{0.42}{0.49}{0.53}{0.56}{0.63}{white};  % rpart (tuned)
+%%	\boxp{0.46}{0.53}{0.57}{0.60}{0.67}{white};  % svm         
+%%	\boxp{0.40}{0.48}{0.54}{0.57}{0.66}{white};  % rpart       
+%	\boxp{0.41}{0.46}{0.51}{0.55}{0.62}{white};  % cnd trees   
 %	}
 %\end{tikzpicture}
 
 %
 %	FIGURE 3b
 %
-%\begin{tikzpicture}
-%	\axpl{Abalone}{
-%	\boxp{0.6173}{0.6510}{0.6539}{0.6613}{0.6825}{gray};
-%	\boxp{0.6389}{0.6776}{0.6819}{0.7044}{0.7437}{white};
-%	\boxp{0.6797}{0.6874}{0.6937}{0.6966}{0.7092}{white};
-%	\boxp{0.6736}{0.6959}{0.7043}{0.7111}{0.7249}{white};
-%	\boxp{0.7201}{0.7459}{0.7551}{0.7638}{0.7876}{white};
-%	\boxp{0.6829}{0.7038}{0.7179}{0.7274}{0.7587}{white};
-%	}
-%\end{tikzpicture}
+\begin{tikzpicture}
+	\axpl{Abalone}{
+	\boxp{0.6173}{0.6510}{0.6539}{0.6613}{0.6825}{gray};  % ga.poly.reg
+	\boxp{0.6389}{0.6776}{0.6819}{0.7044}{0.7437}{white}; % ga.poly
+	\boxp{0.6797}{0.6874}{0.6937}{0.6966}{0.7092}{white}; % linear reg
+	\boxp{0.6258}{0.6561}{0.6592}{0.6730}{0.7025}{white}; % svm (tuned)
+	\boxp{0.7041}{0.7382}{0.7486}{0.7588}{0.7901}{white}; % rpart (tuned)
+%	\boxp{0.6736}{0.6959}{0.7043}{0.7111}{0.7249}{white}; % svm
+%	\boxp{0.7201}{0.7459}{0.7551}{0.7638}{0.7876}{white}; % rpart
+	\boxp{0.6829}{0.7038}{0.7179}{0.7274}{0.7587}{white}; % cnd trees
+	}
+\end{tikzpicture}
 
 %
 %	FIGURE 3c
 %
 %\begin{tikzpicture}
 %	\axpl{Auto MPG}{
-%	\boxp{0.3188}{0.3641}{0.3960}{0.4234}{0.7071}{gray};
-%	\boxp{0.3179}{0.3568}{0.3856}{0.3928}{0.4451}{white};
-%	\boxp{0.371}{0.4042}{0.4153}{0.4341}{0.4763}{white};
-%	\boxp{0.3696}{0.4122}{0.4286}{0.4476}{0.491}{white};
-%	\boxp{0.3887}{0.4234}{0.445}{0.479}{0.5106}{white};
-%	\boxp{0.3636}{0.3927}{0.4245}{0.4635}{0.4969}{white};
+%	\boxp{0.3188}{0.3641}{0.3960}{0.4234}{0.7071}{gray};   % ga.poly.reg 
+%	\boxp{0.3179}{0.3568}{0.3856}{0.3928}{0.4451}{white};  % ga.poly     
+%	\boxp{0.371}{0.4042}{0.4153}{0.4341}{0.4763}{white};   % linear reg  
+%	\boxp{0.3032}{0.3404}{0.3614}{0.3893}{0.4402}{white};  % svm (tuned)       
+%	\boxp{0.3611}{0.4114}{0.4414}{0.4726}{0.5032}{white};  % rpart (tuned) 
+%	\boxp{0.3636}{0.3927}{0.4245}{0.4635}{0.4969}{white};  % cnd trees   
 %	}
 %\end{tikzpicture}
 
@@ -490,12 +494,14 @@
 %
 %\begin{tikzpicture}
 %	\axpl{Kinematics}{
-%	\boxp{0.6462}{0.6598}{0.6703}{0.6729}{0.6848}{gray};
-%	\boxp{0.7513}{0.7518}{0.7592}{0.7777}{0.7975}{white};
-%	\boxp{0.7473}{0.7625}{0.7676}{0.776}{0.7821}{white};
-%	\boxp{0.7535}{0.7697}{0.7781}{0.7827}{0.792}{white};
-%	\boxp{0.7974}{0.8097}{0.8211}{0.8292}{0.8377}{white};
-%	\boxp{0.7328}{0.744}{0.7555}{0.7633}{0.778}{white};
+%	\boxp{0.6462}{0.6598}{0.6703}{0.6729}{0.6848}{gray};   % ga.poly.reg 
+%	\boxp{0.7513}{0.7518}{0.7592}{0.7777}{0.7975}{white};  % ga.poly     
+%	\boxp{0.7473}{0.7625}{0.7676}{0.776}{0.7821}{white};   % linear reg  
+%	\boxp{0.3122}{0.3193}{0.3226}{0.3262}{0.3356}{white};  % svm (tuned)
+%	\boxp{0.8021}{0.8130}{0.8201}{0.8250}{0.8349}{white};  % rpart (tuned) 
+%%	\boxp{0.7535}{0.7697}{0.7781}{0.7827}{0.792}{white};   % svm       
+%%	\boxp{0.7974}{0.8097}{0.8211}{0.8292}{0.8377}{white};  % rpart 
+%	\boxp{0.7328}{0.744}{0.7555}{0.7633}{0.778}{white};    % cnd trees   
 %	}
 %\end{tikzpicture}
 
