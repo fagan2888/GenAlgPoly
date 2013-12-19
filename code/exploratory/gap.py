@@ -434,7 +434,7 @@ def test(tests = ['basic', 'regression', 'search']):
     #    
     #
     #
-    print('\nDone.')
+    print('\nAll Done.')
     #
     
 if __name__ == '__main__':
