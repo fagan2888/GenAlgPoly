@@ -95,6 +95,7 @@ class PolyTerms:
         self.num_terms, self.num_vars = self.terms.shape
         
         self.coef_ = None
+        self.intercept_ = None
                 
     def __call__(self, X, extend = False):
         '''Evaluates the transformation on a given dataset, X.
@@ -114,15 +115,21 @@ class PolyTerms:
             return np.c_[X,Z]
         else:
             return Z
-            
+    def __termrepr__(self, t):
+        return "".join(["X_{%d}^{%d}"%(i+1,d) for (i,d) in enumerate(t) if not(d == 0)])
+        
     def __repr__(self):
         '''Computes a string representation of the instance.
             
             Returns:
                 a string with the exponents matrix.
         '''
-        return self.terms.__repr__()
-        
+        if self.coef_ is None:
+            return self.terms.__repr__()
+        else:
+            terms_str = [self.__termrepr__(t) for t in self.terms]
+            return "".join( ['%+5.2f%s'%p for p in zip(self.coef_, terms_str)]) + '%+5.2f'%self.intercept_
+                    
 def mutate_polyterm(p, num_mutations = 1, valid_degrees = [0,1,2]):
     z = np.copy(p.terms)
     rows, cols = z.shape
@@ -164,7 +171,7 @@ class AbstractPolyScorer:
         return self.compute_score()
         
 def test_loss(x,y):
-    return -np.dot(x - y, x - y)
+    return np.dot(x - y, x - y)
     
 rms_loss = metrics.make_scorer( test_loss,
     greater_is_better = False,
@@ -186,9 +193,10 @@ class PolyRegression_Scorer(AbstractPolyScorer):
         
     def compute_score(self):
         Z = self.poly(self.X)
-        Z_train, Z_test, y_train, y_test = cv.train_test_split(Z,self.y)
+        Z_train, Z_test, y_train, y_test = cv.train_test_split(Z,self.y, train_size = 0.05)
         self.estimator.fit(Z_train, y_train)
         self.poly.coef_ = self.estimator.coef_
+        self.poly.intercept_ = self.estimator.intercept_
         self.scores = cv.cross_val_score(
             self.estimator,
             Z_test,
@@ -321,24 +329,32 @@ def test(tests = ['basic', 'regression', 'search']):
         from deap import tools
         #
         max_num_terms = 4
-        valid_degrees = [0, 1, 2, 3, 4]
+        valid_degrees = [0, 1, 2]
         #        
-        num_samples = 400
-        x1 = np.random.uniform(0,0.5, num_samples)
-        #x2 = np.random.uniform(0,1, num_samples)
-        e = np.random.uniform(0,0.001, num_samples)
+        num_samples = 100
+        x1 = np.random.uniform(0,1, num_samples)
+        x2 = np.random.uniform(0,1, num_samples)
+        e = np.random.uniform(0,0.0001, num_samples)    
+        y = 1 * x1 * x2 + 3 * x1 ** 2 + x2 ** 2 + e
+        pd = PolyDataset([x1, x2], y)
         
-        y = np.exp(x1) + e
-
-        pd = PolyDataset([x1], y)
+        #num_samples = 100
+        #x1 = np.random.poisson(size = num_samples)
+        #x2 = np.random.poisson(size = num_samples)
+        #x3 = np.random.uniform(0,1, num_samples)
+        #x4 = np.random.uniform(0,1, num_samples)
+        #y = x2 * (x4 ** 2) + (x1 ** 2) * x3 + 5
+        #pd = PolyDataset( [x1, x2, x3, x4], y)
+        
         
         scorer = PolyRegression_Scorer(
             pd,
             linear_model.LinearRegression() )
         #    
-        creator.create('PolyTerms_Fitness', base.Fitness, weights = (-1.0,))
+        creator.create('PolyTerms_Fitness', base.Fitness, weights = (1.0,))
         creator.create('PolyTerms_Individual', PolyTerms, fitness = creator.PolyTerms_Fitness)
         #
+        
         toolbox = base.Toolbox()
         #
         #   Individual and Population creation
@@ -392,25 +408,29 @@ def test(tests = ['basic', 'regression', 'search']):
         #   Fitness
         #
         toolbox.register('evaluate', scorer.score)
-        toolbox.register('select', tools.selTournament, tournsize = 13)
+        toolbox.register('select', tools.selTournament, tournsize = 6)
         #
         #   Evolution
         #
-        pop = toolbox.population(n = 130)
+        pop = toolbox.population(n = 400)
         hof = tools.HallOfFame(1)
         stats = tools.Statistics(lambda x: x.fitness.values)
         stats.register('min', min)
         stats.register('mean', tools.mean)
         stats.register('max', max)
         stats.register('std', tools.std)        
-        algorithms.eaSimple( pop, toolbox,
-            cxpb = 0.7,
-            mutpb = 0.3,
-            ngen = 20,
+        algorithms.eaMuPlusLambda( pop, toolbox,
+            mu = 30,
+            lambda_ = 70,
+            cxpb = 0.25,
+            mutpb = 0.05,
+            ngen = 50,
             stats = stats, halloffame = hof, verbose = True )
             
         print(hof[0])
-        print(hof[0].coef_)    
+        print(hof[0].coef_)
+        print(hof[0].intercept_)
+        print(hof[0].fitness)    
     #    
     #
     #

@@ -128,13 +128,13 @@ With notable exceptions (\emph{e.g.} neural networks) machine learning regressio
 Polynomials, one of the most studied subjects in mathematics, generalise li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{Mendes:2005aa}, explicit formul\ae\ for turbulent pipe flows
  \citep{Davidson:1999aa}, computational linguistics \citep{Sanchez:2009aa} and more recently analytical techniques for cultural heritage materials \citep{Csefalvayova:2010aa}, liquid epoxy moulding process \citep{Chan:2011aa}, B-spline surface reconstruction \citep{Galvez:2012aa}, product design \citep{Chan:2012aa} or forecasting cyanotoxins presence in water reservoirs \citep{Garcia-Nieto:2013aa}. These examples not only illustrate the wide spectrum of applications but, additionally, in each one uses, at some point, a \ac{GA}.
 
-\acp{GA} were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
+\acp{GA} were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimisation scheme easy to conceptualise and with very broad application. If a nonlinear (or otherwise) model requires parameterisation, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
 
 One interesting variation of genetic algorithms, named \emph{genetic programming} by John Koza \citep{Koza:1992aa}, proposed the use of \acp{GA} to search the syntactic structure of complex functions. This syntactic structure search is keen to the central ideas of deep learning \citep{Bengio:2009aa,Bengio:2013aa}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional structure search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developments include multi-objective optimizations (\cite{Giustolisi:2009aa}). 
+The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematisation can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developments include multi-objective optimisations (\cite{Giustolisi:2009aa}). 
 
-This paper describes an extension of the general \ac{EPR} method to find a \emph{regularized} polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid over-fitting. Another important change is in the coding mechanism which introduces two new features: (a) inclusion of the linear terms in the polynomial expression, and (b) the activation/deactivation of monoids during evolution to allow the increase/decrease of polynomial expressions.
+This paper describes an extension of the general \ac{EPR} method to find a \emph{regularized} polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularisation factor to avoid over-fitting. Another important change is in the coding mechanism which introduces two new features: (a) inclusion of the linear terms in the polynomial expression, and (b) the activation/deactivation of monoids during evolution to allow the increase/decrease of polynomial expressions.
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
@@ -144,7 +144,7 @@ The next section describes the method's details and is followed by a presentatio
 
 \section{Genetic Algorithms for Polynomials}
 
-This section is dedicated to the description of an algorithm to find a polynomial regression from a given dataset. It starts with a brief introduction and outline of the algorithm and proceeds into core details as the encoding used to represent individual polynomial instances in the \ac{GA} populations and the regularization of the cost function.
+This section is dedicated to the description of an algorithm to find a polynomial regression from a given dataset. It starts with a brief introduction and outline of the algorithm and proceeds into core details as the encoding used to represent individual polynomial instances in the \ac{GA} populations and the regularisation of the cost function.
 
 An usual representation of polynomials is
 $$
@@ -237,7 +237,7 @@ the composition of \acp{GA} with linear regression, as defined in Algorithm \ref
 %
 
 %
-Subsection \ref{subs:polynomial.encoding} describes the encoding of individual polynomial instances as chromosomes and other parameters of the utilized \ac{GA} implementation. The regularization of the cost function is discussed in subsection \ref{subs:cost.function}.
+Subsection \ref{subs:polynomial.encoding} describes the encoding of individual polynomial instances as chromosomes and other parameters of the utilised \ac{GA} implementation. The regularisation of the cost function is discussed in subsection \ref{subs:cost.function}.
 
 %
 \subsection{Polynomial Encoding}\label{subs:polynomial.encoding}
@@ -269,7 +269,7 @@ In the experiments that led to this article, the tests showed that the inclusion
 
 The polynomial regression \ac{rmse} considered so far is based on the ability to predict the test set after the polynomial regression has found the appropriate coefficients $\theta_i$ for each one of the monomials $q_i$.
 
-This \ac{rmse} function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularization term into the \ac{rmse} function. The article's proposal is to include a multiplicative factor proportional to the number of monomials. Thus, the error from equation \ref{eq:rmse} defines
+This \ac{rmse} function tends to prefer more complex polynomials, namely in the number of monomials which provides the regression algorithm for more fitting possibilities. One way to balance this is to provide a regularisation term into the \ac{rmse} function. The article's proposal is to include a multiplicative factor proportional to the number of monomials. Thus, the error from equation \ref{eq:rmse} defines
 \begin{eqnarray}
 J_{\textrm{reg}}\left(\Theta;\mathcal{P},\mathcal{D}\right) &=& \lambda^{k} J_{\textrm{fit}}\left(\Theta;\mathcal{P},\mathcal{D}\right)\label{eq:rmse-reg}
 \end{eqnarray}
@@ -288,22 +288,22 @@ where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polyn
 \includegraphics[width=0.49\textwidth]{figure_1b.pdf}
 \end{tabular}
 
-\caption{Error distribution by regularization exponent for the Abalone and Auto MPG datasets. The box plots summarize the error values of 10 runs for each value of $\lambda$. The smallest overall error is shown in gray and, in both cases, was achieved with $\lambda=0.8$.}
+\caption{Error distribution by regularisation exponent for the Abalone and Auto MPG datasets. The box plots summarise the error values of 10 runs for each value of $\lambda$. The smallest overall error is shown in grey and, in both cases, was achieved with $\lambda=0.8$.}
 \label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
 
 \end{center}\end{figure*}
 
-Figure~\ref{Abalone_dataset_lambdas} shows regularization results for the Abalone and Auto MPG datasets with ten runs for each $\lambda$ (the following section  includes information about these datasets). The typical inflection point lies around $\lambda = 0.8$. This somewhat paradoxical result -- since regularization tries to minimize the model's complexity in order to prevent overfitting -- is somewhat justified by the inclusion of the linear terms mentioned in the previous section. The linear terms `pushes' the model to linearity while a regularization term $\lambda < 1$ tries to add non-linearity terms. Within this tension, the algorithm is able to reduce the overall error, compared to the typical implementation \ac{EPR} found in the literature.
+Figure~\ref{Abalone_dataset_lambdas} shows regularisation results for the Abalone and Auto MPG datasets with ten runs for each $\lambda$ (the following section  includes information about these datasets). The typical inflection point lies around $\lambda = 0.8$. This somewhat paradoxical result -- since regularisation tries to minimize the model's complexity in order to prevent overfitting -- is somewhat justified by the inclusion of the linear terms mentioned in the previous section. The linear terms `pushes' the model to linearity while a regularisation term $\lambda < 1$ tries to add non-linearity terms. Within this tension, the algorithm is able to reduce the overall error, compared to the typical implementation \ac{EPR} found in the literature.
 
-We'll denote by \ac{GAPolyreg} the proposed extension of the EPR algorithm which includes the regularized cost function together with the new features in polynomial coding.
+We'll denote by \ac{GAPolyreg} the proposed extension of the EPR algorithm which includes the regularised cost function together with the new features in polynomial coding.
 
 \subsection{Genetic Operators}
 
-To perform the genetic algorithm it was used the R package genalg~\citep{willighage2012genalg}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
+To perform the genetic algorithm it was used the R package genalg~\citep{Willighagen:2012aa}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
 
 \section{Experimental Results}
 
-The results were found using \texttt{R} programming language~\citep{R}\footnote{The datasets and the \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: the classic \ac{GAPoly}, Linear Regression, Support Vector Machines~\citep{Meyer12}, Regression Trees~\citep{Therneau13} and Conditional Inference Trees~\citep{Hothorn06, Strobl07, Strobl08}. To achieve better error results, the \ac{SVM} and Regression Tree algorithms had their parameters tuned.
+The results were found using \texttt{R} programming language~\citep{R-Core-Team:2013aa}\footnote{The datasets and the \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: the classic \ac{GAPoly}, Linear Regression, Support Vector Machines~\citep{Meyer:2012aa}, Regression Trees~\citep{Therneau:2013aa} and Conditional Inference Trees~\citep{Hothorn:2006aa,Strobl:2007aa,Strobl:2008aa}. To achieve better error results, the \ac{SVM} and Regression Tree algorithms had their parameters tuned.
 
 In order to train and test the performance of \ac{GAPolyreg} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
 
@@ -320,7 +320,7 @@ In order to train and test the performance of \ac{GAPolyreg} several mainstream 
 
 This dataset was used in order to verify if \ac{GAPoly} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). The genetic algorithm run with a population of $n=100$~solutions with $50$~iterations for each run.
 
-In the next datasets, the population of the genetic algorithm had size~$n=300$ with 100~iterations for each run. \ac{GAPolyreg} was run with regularization parameter $lambda = 0.8$.
+In the next datasets, the population of the genetic algorithm had size~$n=300$ with 100~iterations for each run. \ac{GAPolyreg} was run with regularisation parameter $lambda = 0.8$.
 
 \begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
@@ -369,12 +369,12 @@ In the next datasets, the population of the genetic algorithm had size~$n=300$ w
 
 \subsection{Convergence speed}
 
-The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given a regularized version ($\lambda = 0.975$) and a non-regularized ($\lambda = 1.0$).
+The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given a regularised version ($\lambda = 0.975$) and a non-regularized ($\lambda = 1.0$).
 
 \begin{figure*}[tb]
 \begin{center}
 \includegraphics[width=0.98\textwidth]{figure_4.pdf}
-\caption{Error progress for Abalone dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularization values. The population for both consisted of $200$ polynomials. The error values seem to stabilize around iteration~250.}
+\caption{Error progress for Abalone dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularisation values. The population for both consisted of $200$ polynomials. The error values seem to stabilise around iteration~250.}
 \label{Abalone_fitnessProgress}
 
 \end{center}
@@ -390,9 +390,9 @@ Of the regression methods considered, \ac{SVM} achieved the best results in 3 ou
 
 Comparing \ac{GAPoly} and \ac{GAPolyreg} -- which is the main article's topic -- the regularized version achieved much better results at Abalone and especially Kinematics. The Housing improved errors when compared with \ac{GAPoly} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to [0.001, 0.119] which, while borderline, achieves statistical significance. Only in the Auto MOG dataset \ac{GAPoly} achieved better results, even if not that different from \ac{GAPolyreg}.
 
-For complexity considerations \ac{GAPoly} and \ac{GAPolyreg} demands some processing time. On a quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded between one to two orders in magnitude if the process is implemented in a low level programming language like \texttt{C++}. However, speed optimization was not the focus of this article.
+For complexity considerations \ac{GAPoly} and \ac{GAPolyreg} demands some processing time. On a quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded between one to two orders in magnitude if the process is implemented in a low level programming language like \texttt{C++}. However, speed optimisation was not the focus of this article.
 
-A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{GAPoly} and were not considered.
+A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularisation parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{GAPoly} and were not considered.
 
 \section*{Acknowledgements}
 
@@ -405,7 +405,7 @@ The authors wish to thank professor André Falcão for motivation and useful dis
 %\section{Bibliography}
 
 \bibliographystyle{model2-names}
-\bibliography{fullbib}
+\bibliography{fullbib2}
     
 \end{document}
 
