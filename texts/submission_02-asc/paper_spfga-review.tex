@@ -283,12 +283,14 @@ There is one final remark concerning this encoding method. As it is, the activat
 
 \subsection{Cost Function}\label{subs:cost.function}
 
-The polynomial regression \ac{rmse} considered so far accounts for the ability to predict the transformed test-set. A known problem of using a cost function based only in the dataset \ac{rmse} (and of polynomial regressions in general) is the tendency to overfit  training data. This excessive variance can be reduced by regularizing the \ac{rmse} function and one possible method is the inclusion of a penalty factor proportional to the number of monomials. In this line the error from equation \ref{eq:rmse} defines a regularized version
+The polynomial regression \ac{rmse} considered so far accounts for the ability to predict the transformed test-set. A known problem of using a cost function based only in the dataset \ac{rmse} (and of polynomial regressions in general) is the tendency to overfit  training data.
+
+Excessive variance of the estimation method can be reduced by regularizing the \ac{rmse} function with a penalty factor. Thus, to reduce polynomial complexity and variance by regularizing the size of the monomial set the \ac{rmse} function from equation \ref{eq:rmse} is multiplied by a factor $\lambda^{k}$
 \begin{eqnarray}
 J_{\textrm{reg}}\left(\Theta, \lambda;\mathcal{Q},\mathcal{D}\right) &=& \lambda^{k} J_{\textrm{fit}}\left(\Theta;\mathcal{Q},\mathcal{D}\right)\label{eq:rmse-reg}
 \end{eqnarray}
 %
-where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized. The regularized extension of \ac{EPR}, denoted by \ac{EPRR}, includes the regularized cost function. 
+where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized. The regularized extension of \ac{EPR} is denoted by \acf{EPRR}. 
 
 \begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
@@ -308,9 +310,9 @@ where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polyn
 
 A simple exploration on the effect of the regularization parameter is depicted in Figure~\ref{fig:lambda.error-distribution} where it is possible to observe that the typical inflection point lies around $\lambda = 0.8$. This value, favoring ``larger'' polynomials is justified by the balance of the data's non-linearity and polynomial complexity: below $\lambda = 0.8$, even penalized, larger monomial sets achieve better \ac{rmse} performance than smaller ones while above that value the size of the monomial set is excessive. Within this tension the overall error results reduced when compared to the non-regularized \ac{EPR} version.
 
-\subsection{Genetic Operators}
+\subsection{Genetic Algorithm Parameterization}
 
-To perform the genetic algorithm it was used the R package genalg~\citep{Willighagen:2012aa}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
+In general \acp{GA} offer many possibilities with respect to the choice of genetic operators and respective application rates, population evolution, \emph{etc}. The results found here where obtained using the package \texttt{genalg}~\citep{Willighagen:2012aa} with default parameters, standard operators (crossover and mutation) and population evolution with 20\% elitism between generations.
 
 \section{Experimental Results}
 
@@ -321,7 +323,7 @@ In order to train and test the performance of \ac{EPRR} several mainstream datas
 \begin{figure*}[tb]\begin{center}
 \includegraphics[width=0.98\textwidth]{figure_2.pdf}
 \note{Plots of ``Regression Trees'' and ``Conditional Inference Trees'' look the same!}
-\caption{Results for Artificial dataset. As shown, polynomial regression finds the exact polynomial structure that generates the dataset, reducing the test set prediction error to zero.  The regression methods depicted are: 1. \ac{EPRR}, 2. Linear Regression, 3. SVM, 4. Regression Trees and 5. Conditional Inference Trees}
+\caption{Results for Artificial dataset. As shown, polynomial regression finds the exact polynomial structure that generates the dataset: in line 1, the error box is centered in $0$ and has width $0$.  The regression methods depicted are: 1. \ac{EPRR}, 2. Linear Regression, 3. SVM, 4. Regression Trees and 5. Conditional Inference Trees}
 \label{artificial_dataset1_lambda1.0}
 \end{center}\end{figure*}
 
@@ -398,7 +400,7 @@ The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable er
 
 Of the regression methods considered, \ac{SVM} achieved the best results in 3 out of 4 datasets. However, \ac{SVM} was tuned for each particular dataset while \ac{EPRR} was executed with its parameters preset. Even so, \ac{EPRR} had the best error in the Abalone dataset, and achieved competitive results in the Housing and Auto MPG datasets. 
 
-Comparing \ac{EPR} and \ac{EPRR} -- which is the main article's topic -- the regularized version achieved much better results at Abalone and especially Kinematics. The Housing improved errors when compared with \ac{EPR} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to [0.001, 0.119] which, while borderline, achieves statistical significance. Only in the Auto MOG dataset \ac{EPR} achieved better results, even if not that different from \ac{EPRR}.
+Comparing \ac{EPR} and \ac{EPRR} -- which is the main article's topic -- the regularized version achieved much better results at Abalone and especially Kinematics. The Housing improved errors when compared with \ac{EPR} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to [0.001, 0.119] which, while borderline, achieves statistical significance. Only in the Auto MPG dataset \ac{EPR} achieved better results, even if not that different from \ac{EPRR}.
 
 For complexity considerations \ac{EPR} and \ac{EPRR} demands some processing time. On a quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded between one to two orders in magnitude if the process is implemented in a low level programming language like \texttt{C++}. However, speed optimization was not the focus of this article.
 
