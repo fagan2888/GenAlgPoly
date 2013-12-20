@@ -182,7 +182,7 @@ where each row defines a monomial and each column represents a variable. Changin
 %\right].
 %$$
 
-This representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentially with either $n$ or $d$. But more importantly, by separating the set of monomials from the coefficients, the polynomial regression problem can be naturally split into two subproblems:
+This partial representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentially with either $n$ or $d$. But more importantly, by separating the set of monomials from the coefficients, the polynomial regression problem can be naturally split into two subproblems:
 %
 \begin{enumerate}
 \item For a given set of monomials $\mathcal{Q} = \left\lbrace q_1, \ldots, q_k\right\rbrace$ find the regression coefficients $\Theta = \left\lbrace \theta_1,\ldots,\theta_k \right\rbrace$ that minimize the \ac{rmse} on a given dataset;
@@ -208,7 +208,9 @@ the usual \acf{rmse} function. Now the first problem can be stated as:
 \emph{Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{Q}$ find parameters $\Theta$ that minimize the cost $J_{\textrm{fit}}\left(\Theta;\mathcal{Q},\mathcal{D}\right)$.}
 
 %
-This is a simple linear regression problem obtained by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{Q}$. The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{P}$ a set of polynomials. For each polynomial $p\in \mathcal{P}$ let $\mathcal{Q}_p$ be the set of monomials in $p$ (without the coefficients) and define the (anti) fitness
+This is a simple linear regression problem obtained by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{Q}$. The resulting dataset, $\mathcal{D} \cup \mathcal{Q}\left( \mathcal{D} \right)$, adds the monomial transformations in $\mathcal{Q}$ to the original dataset $\mathcal{D}$. An alternative formulation would just replace $\mathcal{D}$ by $\mathcal{Q}\left( \mathcal{D} \right)$. It turns out that the first formulation is a special case of the second (by including the variables in the monomial set) and has better \ac{rmse} performance --- what is not surprising because it uses more features.
+
+The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{P}$ a set of polynomials. For each polynomial $p\in \mathcal{P}$ let $\mathcal{Q}_p$ be the set of monomials in $p$ (without the coefficients) and define the (anti) fitness
 %
 \begin{eqnarray*}
 \phi_p &=& \min_\Theta J_{\textrm{fit}}\left(\Theta;\mathcal{Q}_p,\mathcal{D}\right)
@@ -228,7 +230,7 @@ by solving the first problem. With a fitness of every instance, the \ac{GA} gene
 	\State\Return $\Call{First}{pop}$
 \EndFunction
 \end{algorithmic}
-\caption{This \ac{EPR} algorithm uses linear regression in the calculation of the \ac{rmse} $J$ and the space of polynomials is searched by the \acp{GA} iteration step. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$ or the maximum number of allowed iterations.}\label{alg:gapoly}
+\caption{This \ac{EPR} algorithm uses linear regression for the calculation of the \ac{rmse} $J$ and the space of polynomials is searched in the \acp{GA} iteration step. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$ or the maximum number of allowed iterations.}\label{alg:gapoly}
 \end{algorithm} 
 %
 Notice that the properties of \acp{GA} and linear regression entail that Algorithm \ref{alg:gapoly} converges to a polynomial that is a local minimum of the fitness function, encapsulated in the \ac{rmse} function $J_{\textrm{fit}}$.
@@ -253,7 +255,7 @@ Let  $\left\lbrace q_1, \ldots, q_k\right\rbrace$ be a set of monomials over the
 \item the remaining bits are split into $k$ segments of size $m\times d$, each representing a monomial;
 \item the bits in each monomial segment are split into $m$ sub-segments of size $d$. The $j\nth$ sub-segment is the binary representation of the degree of the variable $X_j$ in the enclosing monomial segment;
 \end{enumerate}
-This encoding can also be viewed as the flattening of the binary exponents in the matrix representation prefixed by the activation segment. The set $\left\lbrace x_1^3 x_3, x_3^7, x_1 x_2\right\rbrace$ (then $m = 3$) has matrix representation
+This encoding can also be viewed as the flattening of the binary exponents in the matrix representation prefixed by the activation segment. The set $\left\lbrace x_1^3 x_3, x_3^7, x_1 x_2\right\rbrace$ (with $m = 3$) has matrix representation
 $$\left[ 
 \begin{array}{ccc}
 3 & 0 & 1 \\
@@ -268,7 +270,7 @@ $$\left[
 \end{array}
 \right]_{\left( 2 \right)}
 $$
-where the right matrix is in binary form with  $d = 3$ bits. An encoding of this set of monomials with the extra monomial $x_1^6x_2^2x_3^5$ inactive, setting $k = 4$, would be
+where the right matrix is in binary form using $d = 3$ bits. An encoding of this set of monomials with the extra monomial $x_1^6x_2^2x_3^5$ inactive, setting $k = 4$, would be
 \begin{center}
 1110;~011, 000, 001;~000,000,111;~001,001,000;~110,010,101
 \end{center}
@@ -281,13 +283,12 @@ There is one final remark concerning this encoding method. As it is, the activat
 
 \subsection{Cost Function}\label{subs:cost.function}
 
-The polynomial regression \ac{rmse} considered so far accounts for the ability to predict the transformed testset. A known problem of using a cost function based only in the dataset \ac{rmse} (and of polynomial regressions in general) is a tendency to overfit the training data. This excessive variance can be reduced by regularizing the \ac{rmse} function and one possible method is the inclusion of a penalty factor proportional to the number of monomials. Thus, the error from equation \ref{eq:rmse} defines the regularized version
+The polynomial regression \ac{rmse} considered so far accounts for the ability to predict the transformed test-set. A known problem of using a cost function based only in the dataset \ac{rmse} (and of polynomial regressions in general) is the tendency to overfit  training data. This excessive variance can be reduced by regularizing the \ac{rmse} function and one possible method is the inclusion of a penalty factor proportional to the number of monomials. In this line the error from equation \ref{eq:rmse} defines a regularized version
 \begin{eqnarray}
-J_{\textrm{reg}}\left(\Theta;\mathcal{Q},\mathcal{D}\right) &=& \lambda^{k} J_{\textrm{fit}}\left(\Theta;\mathcal{Q},\mathcal{D}\right)\label{eq:rmse-reg}
+J_{\textrm{reg}}\left(\Theta, \lambda;\mathcal{Q},\mathcal{D}\right) &=& \lambda^{k} J_{\textrm{fit}}\left(\Theta;\mathcal{Q},\mathcal{D}\right)\label{eq:rmse-reg}
 \end{eqnarray}
 %
-where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized.
-
+where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polynomials with more monomials are penalized. The regularized extension of \ac{EPR}, denoted by \ac{EPRR}, includes the regularized cost function. 
 
 \begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
@@ -300,24 +301,18 @@ where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polyn
 \includegraphics[width=0.49\textwidth]{figure_1b.pdf}
 \end{tabular}
 
-\caption{Error distribution by regularization exponent for two common datasets. The box plots summarize error values of ten simulations for each value of $\lambda$. The smallest overall error, in grey, is achieved in both datasets when $\lambda=0.8$.}
-\label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
+\caption{Error distribution by regularization exponent for two common datasets. The box plots summarize error values of ten simulations for each value of $\lambda$. The smallest overall error, in grey, is achieved in both datasets when $\lambda=0.8$. Performance of the non-regularized \ac{EPR} is plotted in the line $\lambda = 1$.}
+\label{fig:lambda.error-distribution}\label{Abalone_dataset_lambdas}\label{Auto-MPG_dataset_lambdas}
 
 \end{center}\end{figure*}
 
-Figure~\ref{Abalone_dataset_lambdas} shows regularization results for the Abalone and Auto MPG datasets with ten runs for each $\lambda$ (the following section  includes information about these datasets). The typical inflection point lies around $\lambda = 0.8$. This somewhat paradoxical result -- since regularization tries to minimize the model's complexity in order to prevent overfitting -- is somewhat justified by the inclusion of the linear terms mentioned in the previous section. The linear terms `pushes' the model to linearity while a regularization term $\lambda < 1$ tries to add non-linearity terms. Within this tension, the algorithm is able to reduce the overall error, compared to the typical implementation \ac{EPR} found in the literature.
-
-We'll denote by \ac{EPRR} the proposed extension of the EPR algorithm which includes the regularized cost function together with the new features in polynomial coding.
+A simple exploration on the effect of the regularization parameter is depicted in Figure~\ref{fig:lambda.error-distribution} where it is possible to observe that the typical inflection point lies around $\lambda = 0.8$. This value, favoring ``larger'' polynomials is justified by the balance of the data's non-linearity and polynomial complexity: below $\lambda = 0.8$, even penalized, larger monomial sets achieve better \ac{rmse} performance than smaller ones while above that value the size of the monomial set is excessive. Within this tension the overall error results reduced when compared to the non-regularized \ac{EPR} version.
 
 \subsection{Genetic Operators}
 
 To perform the genetic algorithm it was used the R package genalg~\citep{Willighagen:2012aa}. The operators were the standard ones: (a)~crossover, \emph{i.e.}, a pair of solutions from the previous generations are combined by splitting and mixing their respective representations, and (b)~mutation, changing the values of single bits; the mutation chance applied in the datasets was 5\%. There was also elitism between generations, \emph{i.e.}, 20\% of the best solutions survive to the next generation.
 
 \section{Experimental Results}
-
-\begin{quotation}
-\note{Moved from previous section.} In the experiments that led to this article, the tests showed that the inclusion of the linear terms achieved a significant reduction of error rates. So, considering the previous example, the final set of monomials would be $\left\lbrace x_1^3 x_3, x_3^7, x_1 x_2, x_1, x_2, x_3 \right\rbrace$. The next section discusses this feature.
-\end{quotation}
 
 The results were found using \texttt{R} programming language~\citep{R-Core-Team:2013aa}\footnote{The datasets and the \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: the classic \ac{EPR}, Linear Regression, Support Vector Machines~\citep{Meyer:2012aa}, Regression Trees~\citep{Therneau:2013aa} and Conditional Inference Trees~\citep{Hothorn:2006aa,Strobl:2007aa,Strobl:2008aa}. To achieve better error results, the \ac{SVM} and Regression Tree algorithms had their parameters tuned.
 
