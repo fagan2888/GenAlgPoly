@@ -76,7 +76,7 @@
 %
 \newcommand{\sample}[1]{\ensuremath{^{\left(#1\right)}}}
 \newcommand{\at}[1]{\ensuremath{\!\left(#1\right)}}
-\newcommand{\note}[1]{\textbf{\small [Note\footnote{\textbf{Note:} #1}]}}
+\newcommand{\note}[1]{\textbf{\small{[Note: {#1}]}}}
 \newcommand{\nth}{\ensuremath{^{th}}}
 %
 
@@ -127,15 +127,15 @@ evolutionary polynomial regression \sep regularization \sep feature extraction \
 With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques produce linear models. The linearity assumption has many advantages including reduced computational complexity and strong the\-o\-re\-ti\-cal framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in \ac{SVM} (\cite{scholkopf1997kernel, liang2012eigen, Bao:2013aa}) alleviates this problem by allowing special non-linear transformations of the feature-space. The condition such transformations must meet is known as the \emph{kernel trick}, $k\at{x,x'} = \left< \varphi\at{x}, \varphi\at{x'} \right>$, where $\varphi$ is the feature-space transformation and $\left<\cdot,\cdot\right>$ denotes inner product. The ``trick'' consists on computing the kernel $k\at{x,x'}$ while avoiding the computation of the inner product and the transformations $\varphi\at{x}, \varphi\at{x'}$. A special case of polynomial transformation, the \emph{polynomial kernel}, $k\at{x,x'} = \left<x,x'\right>^d$ is commonly used in regression and classification tasks with \acp{SVM}. However general polynomial transformations do not verify the kernel trick.
 
 Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{Mendes:2005aa}, explicit formul\ae\ for turbulent pipe flows
- \citep{Davidson:1999aa}, computational linguistics \citep{Sanchez:2009aa} and more recently analytical techniques for cultural heritage materials \citep{Csefalvayova:2010aa}, liquid epoxy moulding process \citep{Chan:2011aa}, B-spline surface reconstruction \citep{Galvez:2012aa}, product design \citep{Chan:2012aa} or forecasting cyanotoxins presence in water reservoirs \citep{Garcia-Nieto:2013aa}. These examples not only illustrate the wide spectrum of applications but, additionally, in each one uses, at some point, a \ac{GA}.
+ \citep{Davidson:1999aa}, computational linguistics \citep{Sanchez:2009aa} and more recently analytical techniques for cultural heritage materials \citep{Csefalvayova:2010aa}, liquid epoxy moulding process \citep{Chan:2011aa}, B-spline surface reconstruction \citep{Galvez:2012aa}, product design \citep{Chan:2012aa} or forecasting cyanotoxins presence in water reservoirs \citep{Garcia-Nieto:2013aa}. These examples not only illustrate the wide spectrum of applications but, additionally, each one uses, at some point, \ac{GA}.
 
-\acp{GA} were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Research related to genetic algorithms abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
+Evolutionary algorithms, including \ac{GA}, were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Related research abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
 
 One interesting variation of genetic algorithms, named \emph{genetic programming} by John Koza \citep{Koza:1992aa}, proposes the use of \acp{GA} to search the syntactic structure of complex functions. Syntactic structure search is also keen to the central ideas of deep learning \citep{Bengio:2009aa,Bengio:2013aa}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional structure search problem.
 
 The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developments include multi-objective optimizations (\cite{Giustolisi:2009aa}). 
 
-This paper describes an extension of the general \ac{EPR} method to find a regularized polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid overfitting. \note{Explain a bit more the overfitting avoiding method.}
+This paper describes an extension of the general \ac{EPR} method to find a regularized polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid overfit by penalysing polynomial complexity.
 
 %A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
 
@@ -233,7 +233,7 @@ by solving the first problem. With a fitness of every instance, the \ac{GA} gene
 \caption{This \ac{EPR} algorithm uses linear regression for the calculation of the \ac{rmse} $J$ and the space of polynomials is searched in the \acp{GA} iteration step. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$ or the maximum number of allowed iterations.}\label{alg:gapoly}
 \end{algorithm} 
 %
-Notice that the properties of \acp{GA} and linear regression entail that Algorithm \ref{alg:gapoly} converges to a polynomial that is a local minimum of the fitness function, encapsulated in the \ac{rmse} function $J_{\textrm{fit}}$.
+The properties of \acp{GA} and linear regression entail that Algorithm \ref{alg:gapoly} converges to a polynomial that is a local minimum of the fitness function, encapsulated in the \ac{rmse} function $J_{\textrm{fit}}$.
 %
 
 %
@@ -283,9 +283,7 @@ There is one final remark concerning this encoding method. As it is, the activat
 
 \subsection{Cost Function}\label{subs:cost.function}
 
-The polynomial regression \ac{rmse} considered so far accounts for the ability to predict the transformed test-set. A known problem of using a cost function based only in the dataset \ac{rmse} (and of polynomial regressions in general) is the tendency to overfit  training data.
-
-Excessive variance of the estimation method can be reduced by regularizing the \ac{rmse} function with a penalty factor. Thus, to reduce polynomial complexity and variance by regularizing the size of the monomial set the \ac{rmse} function from equation \ref{eq:rmse} is multiplied by a factor $\lambda^{k}$
+The polynomial regression \ac{rmse} considered so far accounts for the ability to predict the transformed testset. A known problem of using a cost function based only in the dataset \ac{rmse} (and of polynomial regressions in general) is the tendency to overfit  training data. Excessive variance of the estimation method can be reduced by regularizing the \ac{rmse} function with a penalty factor. Thus, to reduce polynomial complexity and variance by regularizing the size of the monomial set the \ac{rmse} function from equation \ref{eq:rmse} is multiplied by a factor $\lambda^{k}$
 \begin{eqnarray}
 J_{\textrm{reg}}\left(\Theta, \lambda;\mathcal{Q},\mathcal{D}\right) &=& \lambda^{k} J_{\textrm{fit}}\left(\Theta;\mathcal{Q},\mathcal{D}\right)\label{eq:rmse-reg}
 \end{eqnarray}
@@ -316,81 +314,79 @@ In general \acp{GA} offer many possibilities with respect to the choice of genet
 
 \section{Experimental Results}
 
-The results were found using \texttt{R} programming language~\citep{R-Core-Team:2013aa}\footnote{The datasets and the \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. To compare this paper's proposed algorithm we applied the exact same train and test samples using several well-known learning algorithms for regression, namely: the classic \ac{EPR}, Linear Regression, Support Vector Machines~\citep{Meyer:2012aa}, Regression Trees~\citep{Therneau:2013aa} and Conditional Inference Trees~\citep{Hothorn:2006aa,Strobl:2007aa,Strobl:2008aa}. To achieve better error results, the \ac{SVM} and Regression Tree algorithms had their parameters tuned.
+Here is described the experiment setup used to gather and summarize the empirical evidence that supports this comparative study of \ac{EPR} and \ac{EPRR}. Evaluation is focused in \ac{rmse} distribution and, besides \ac{EPR} and \ac{EPRR}, also uses several common regression methods and datasets easily accessible in \texttt{R}, the free software environment for statistical computing and graphics~\citep{R-Core-Team:2013aa}\footnote{The datasets and \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. A small consideration on the convergence speed concludes this section.
 
-In order to train and test the performance of \ac{EPRR} several mainstream datasets were used. For each dataset, we selected 70\% for training purposes and the remaining observations to make a test set in order to compute the estimated \ac{rmse}. To achieve more robust results, each dataset were processed $25$~times, each one with different samples for the train and test sets. For the datasets with attribute values of different magnitudes, a preliminary scaling was executed. The results below are box plots for the test set error predictions over these different runs.
+\subsection{Regression Methods and Datasets}
+
+The \ac{EPRR} method is ranked against several well-known learning algorithms for regression, namely: non-regularized \ac{EPR}, Linear Regression, Support Vector Machines~\citep{Meyer:2012aa}, Regression Trees~\citep{Therneau:2013aa} and Conditional Inference Trees~\citep{Hothorn:2006aa,Strobl:2007aa,Strobl:2008aa}. To achieve better error results the \ac{SVM} and Regression Tree parameters are tuned in each dataset.
+
+The performance of each method is evaluated on several common datasets. From each dataset 70\% of the observations are reserved for training purposes and the remaining observations used to estimate the \ac{rmse}. To enhance the robustness of results this process is repeated $25$~times, each time with different shuffling of the samples in the train and test sets. Some datasets with attribute values of different magnitudes have a pre-processing scaling transformation. The box plots in figures \ref{artificial_dataset1_lambda1.0} and \ref{fig:four.datasets.summary} resume the test set error distributions over these different runs.
+
+One of the used datasets, \textsc{Artificial}, has a special role: it is used to test if \ac{EPRR} is able to discover a polynomial model. The idea of this test is to generate a polynomial dependent variable and measure the \ac{EPRR} \ac{rmse} after fitting the dataset. The genetic algorithm parameterization for this dataset uses a population with size $n=100$ and evolves for $50$~generations. For the remaining datasets the population has size~$n=300$ and evolves for $100$~generations.
 
 \begin{figure*}[tb]\begin{center}
 \includegraphics[width=0.98\textwidth]{figure_2.pdf}
-\note{Plots of ``Regression Trees'' and ``Conditional Inference Trees'' look the same!}
-\caption{Results for Artificial dataset. As shown, polynomial regression finds the exact polynomial structure that generates the dataset: in line 1, the error box is centered in $0$ and has width $0$.  The regression methods depicted are: 1. \ac{EPRR}, 2. Linear Regression, 3. SVM, 4. Regression Trees and 5. Conditional Inference Trees}
+\caption{Testing polynomial discovery. The dataset is generated from a polynomial expression and, as shown, \ac{EPRR} finds the exact generator structure: in line 1, the error box is centered in $0$ and has width $0$.  The regression methods depicted are: 1. \ac{EPRR}, 2. Linear Regression, 3. SVM, 4. Regression Trees and 5. Conditional Inference Trees}
+\note{Plots of ``Regression Trees'' and ``Conditional Inference Trees'' look the same!} 
 \label{artificial_dataset1_lambda1.0}
-\end{center}\end{figure*}
+\end{center}
+\end{figure*}
 
 \begin{description}
-\item{\textsc{Artificial}} this is an artificial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable~$y$ is given by expression $x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$~observations.
+\item{\textsc{Artificial}} is a polynomial dataset with four numeric features, $x_1, \ldots x_4$, where $x_1,x_3$ are outcomes from Poisson random variables, and $x_2,x_4$ from Normal random variables. The dependent variable is given by the polynomial expression $y = x_2x_4^2 + x_1^2x_3 + 5$. The dataset includes $n=50$~observations;
 
-This dataset was used in order to verify if \ac{EPR} was able to find the polynomial relation, which the algorithm did (cf. figure~\ref{artificial_dataset1_lambda1.0}). The genetic algorithm run with a population of $n=100$~solutions with $50$~iterations for each run.
+\item{\textsc{Housing}} concerns the task of predicting housing values in areas of Boston. There are $n=506$ observations of $m=13$ continuous attributes and one dependent variable, the median value of owner-occupied homes in thousands of USD;
 
-In the next datasets, the population of the genetic algorithm had size~$n=300$ with 100~iterations for each run. \ac{EPRR} was run with regularization parameter $lambda = 0.8$.
 
+\item{\textsc{Abalone}} is used to predict the age of a abalone shell using $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations;
+
+% best polynomial, rsme 0.65
+% $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
+
+\item{\textsc{Auto MPG}} gathers fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations;
+
+% best polynomial, \ac{rmse} 0.32
+%$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
+
+\item{\textsc{Kinematics}} results from a realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using $m=8$ continuous attributes. There are $n=8192$ observations;
+
+% best polynomial, \ac{rmse} 0.74
+% $$ y = 0.24 x_5 - 0.23 x_5 x_6 x_7 - 0.19 x_4 x_7 - 0.5 x_3 $$
+
+\end{description}
+%
 \begin{figure*}[tb]\begin{center}
 \begin{tabular}{cc}
 \includegraphics[width=0.48\textwidth]{figure_3a.pdf}
-%
 &
-%
 \includegraphics[width=0.48\textwidth]{figure_3b.pdf}
-%
 \\
-%
 \includegraphics[width=0.48\textwidth]{figure_3c.pdf}
-%
 &
-%
 \includegraphics[width=0.48\textwidth]{figure_3d.pdf}
-%
 \end{tabular}
-
-\caption{Summary results for different regression methods on the Housing, Abalone, Auto MPG and Kinematics. Although \ac{EPRR} not always achieves the smallest error, performance is on-par with more sophisticated methods.  The regression methods depicted in these figures are: 1. \ac{EPRR}, 2. \ac{EPR}, 3. Linear Regression, 4. SVM, 5. Regression Trees and 6. Conditional Inference Trees}
+%
+\caption{Summary results for different regression methods on diverse datasets. Although \ac{EPRR} not always achieves the smallest expected error, performance is on-par with more sophisticated methods.  The regression methods depicted in these figures are: 1. \ac{EPRR}; 2. \ac{EPR}; 3. Linear Regression; 4. \ac{SVM}; 5. Regression Trees; 6. Conditional Inference Trees;}
+\label{fig:four.datasets.summary}
 \label{Housing_dataset_lambda0.8_25runs}
 \label{Abalone_dataset_lambda0.8_25runs}
 \label{Auto-Mpg_dataset_lambda0.8_25runs}
 \label{Kinematics300_lambda0.8_25runs}
 \end{center}\end{figure*}
 
-\item{\textsc{Housing}}: This data set concerns the task of predicting housing values in areas of Boston. There are $m=13$ continuous attributes and the dependent variable is the median value of owner-occupied homes in \$1000's. There are $n=506$ observations.
-
-
-\item{\textsc{Abalone}} This dataset can be used to predict the age of a abalone shell using the given $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations. 
-
-% best polynomial, rsme 0.65
-% $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
-
-\item{\textsc{Auto MPG}} This dataset is used to predict fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations.
-
-% best polynomial, \ac{rmse} 0.32
-%$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
-
-\item{\textsc{Kinematics}} This dataset is concerned with the realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using $m=8$ continuous attributes. There are $n=8192$ observations. 
-
-% best polynomial, \ac{rmse} 0.74
-% $$ y = 0.24 x_5 - 0.23 x_5 x_6 x_7 - 0.19 x_4 x_7 - 0.5 x_3 $$
-
-\end{description}
-
 \subsection{Convergence speed}
-
-The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable error rates. Then, it proceeds slower achieving best solutions with marginal error reduction. Since the entire learning process takes some time, in the current R implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset Abalone given a regularized version ($\lambda = 0.975$) and a non-regularized ($\lambda = 1.0$).
-
+%
 \begin{figure*}[tb]
 \begin{center}
 \includegraphics[width=0.98\textwidth]{figure_4.pdf}
-\caption{Error progress for Abalone dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularization values. The population for both consisted of $200$ polynomials. The error values seem to stabilize around iteration~250.}
+\caption{Error progress for the \textsc{Abalone} dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularization values. The population for both consists of $200$ polynomials. The error values seem to stabilize around iteration~250.}
 \label{Abalone_fitnessProgress}
-
 \end{center}
 \end{figure*}
+%
+Since this work is oriented to the \ac{rmse} of the \ac{EPRR} model it is necessary to assess how this depends on the number of generations of the \ac{GA}. As illustrated in Figure~\ref{Abalone_fitnessProgress}, the \ac{rmse} quickly drops during the initial $50$ to $100$ generations. Then, it proceeds slower achieving better solutions only with marginal error reduction.
+
+%Since the entire learning process takes some time, in the current \texttt{R} implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset \textsc{Abalone} given a regularized version ($\lambda = 0.975$) and a non-regularized ($\lambda = 1.0$).\note{Why not $\lambda=0.8$?}
 
 \section{Conclusion and Future Work}
 
@@ -398,11 +394,11 @@ The \ac{GA} quickly proceeds in the first~50 to~100 generations to reasonable er
 
 % Of all the regression methods considered, the proposed method is the one that shows, with one exception, the lowest error. Only Random Forest outperforms \ac{EPR} systematically (it also outperforms all the other regression algorithms). The single non-ensemble exception --- besides the artificial dataset that uses a straightforward polynomial relation --- is the Auto MPG dataset where \ac{EPR} has comparable results. This is evidence that applying standard genetic operators for polynomial model searching is a viable tool for regression purposes.
 
-Of the regression methods considered, \ac{SVM} achieved the best results in 3 out of 4 datasets. However, \ac{SVM} was tuned for each particular dataset while \ac{EPRR} was executed with its parameters preset. Even so, \ac{EPRR} had the best error in the Abalone dataset, and achieved competitive results in the Housing and Auto MPG datasets. 
+Of the regression methods considered, \ac{SVM} achieved the best results in 3 out of 4 datasets. However, \ac{SVM} was tuned for each particular dataset while \ac{EPRR} was executed with its parameters preset. Even so, \ac{EPRR} had the best error in the \textsc{Abalone} dataset, and achieved competitive results in the \textsc{Housing} and \textsc{Auto MPG} datasets. 
 
-Comparing \ac{EPR} and \ac{EPRR} -- which is the main article's topic -- the regularized version achieved much better results at Abalone and especially Kinematics. The Housing improved errors when compared with \ac{EPR} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to [0.001, 0.119] which, while borderline, achieves statistical significance. Only in the Auto MPG dataset \ac{EPR} achieved better results, even if not that different from \ac{EPRR}.
+Comparing \ac{EPR} and \ac{EPRR} -- which is the main article's topic -- the regularized version achieved much better results at \textsc{Abalone} and especially \textsc{Kinematics}. The \textsc{Housing} dataset improved errors when compared with \ac{EPR} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to [0.001, 0.119] which, while borderline, achieves statistical significance. Only in the \textsc{Auto MPG} dataset \ac{EPR} achieved better results, even if not that different from \ac{EPRR}.
 
-For complexity considerations \ac{EPR} and \ac{EPRR} demands some processing time. On a quad-core computer, processing the Kinematics dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded between one to two orders in magnitude if the process is implemented in a low level programming language like \texttt{C++}. However, speed optimization was not the focus of this article.
+For complexity considerations \ac{EPR} and \ac{EPRR} demands some processing time. On a quad-core computer, processing the \textsc{Kinematics} dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded between one to two orders in magnitude if the process is implemented in a low level programming language like \texttt{C++}. However, speed optimization was not the focus of this article.
 
 A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{EPR} and were not considered.
 
