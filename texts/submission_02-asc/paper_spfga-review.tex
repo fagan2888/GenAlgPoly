@@ -42,7 +42,7 @@
 \acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularization}
 
 \acrodef{EPR}{Evolutionary Polynomial Regression}
-\acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularization}
+\acrodef{EPRR}[EPRR]{Evolutionary Polynomial Regression with Regularization}
 
 \acrodef{SVM}[SVM]{Support Vector Machines}
 %
@@ -379,7 +379,7 @@ One of the used datasets, \textsc{Artificial}, has a special role: it is used to
 \begin{figure*}[tb]
 \begin{center}
 \includegraphics[width=0.98\textwidth]{figure_4.pdf}
-\caption{Error progress for the \textsc{Abalone} dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularization values. The population for both consists of $200$ polynomials. The error values seem to stabilize around iteration~250.}
+\caption{Learning curve: Error progress for the \textsc{Abalone} dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for two different regularization values. The population for both consists of $200$ polynomials. The error values seem to stabilize around iteration~250.}
 \label{Abalone_fitnessProgress}
 \end{center}
 \end{figure*}
@@ -390,21 +390,19 @@ Since this work is oriented to the \ac{rmse} of the \ac{EPRR} model it is necess
 
 \section{Conclusion and Future Work}
 
-\note{Discutir a localidade do regressor}
+Of the regression methods considered \ac{SVM} achieves the best results in three out of four datasets. However \ac{SVM} and Conditional Inference Trees are pre-trained, having parameters tuned for each particular dataset unlike \ac{EPRR}, that runs with the same parameterization on all datasets. Even so it is the best estimator for the \textsc{Abalone} dataset and in the remaining datasets it outperforms most of the other estimators. 
 
-Of the regression methods considered \ac{SVM} achieves the best results in 3 out of 4 datasets. However \ac{SVM} and Conditional Inference Trees are pre-trained, with parameters tuned for each particular dataset unlike \ac{EPRR}. Even so it is the best estimator for the \textsc{Abalone} dataset and in the remaining datasets it outperforms most of the other estimators. 
+Comparing \ac{EPR} and \ac{EPRR} --- the main article's topic --- the regularized version achieves much better results at \textsc{Abalone} and especially \textsc{Kinematics}. On the \textsc{Housing} dataset errors are improved  wrt \ac{EPR} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to $\left\lbrack 0.001, 0.119 \right\rbrack$ which, while borderline, achieves statistical significance. Only in the \textsc{Auto MPG} dataset \ac{EPR} achieves better results, even if not that different from \ac{EPRR}.
 
-Comparing \ac{EPR} and \ac{EPRR} --- the main article's topic --- the regularized version achieved much better results at \textsc{Abalone} and especially \textsc{Kinematics}. The \textsc{Housing} dataset improved errors when compared with \ac{EPR} in a difference in means, resulted in a 95\% HDI (Highest Density Interval) equal to [0.001, 0.119] which, while borderline, achieves statistical significance. Only in the \textsc{Auto MPG} dataset \ac{EPR} achieved better results, even if not that different from \ac{EPRR}.
+For complexity considerations \ac{EPR} and \ac{EPRR} demand some processing time. On a quad-core computer, processing the \textsc{Kinematics} dataset (with near $8K$~observations) takes approximately 5~minutes. Probably processing time can be reduced by one to two orders in magnitude if the algorithm is implemented with computational speed in mind. However, speed optimization is not the focus of this article.
 
-For complexity considerations \ac{EPR} and \ac{EPRR} demand some processing time. On a quad-core computer, processing the \textsc{Kinematics} dataset (with 8k~observations) takes approximately 5~minutes. The processing time can probably be speeded between one to two orders in magnitude if the process is implemented with computational speed in mind. However, errospeed optimization is not the focus of this article.
-
-A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism could also be tested. However, these type of tests need a low-level, fast implementation of \ac{EPR} and were not considered.
+A cross-validation procedure can be implemented to refine the appropriate parameter values to achieve better errors. Namely, the regularization parameter, $\lambda$, can be tested with several values, instead of being fixed at $0.8$. Other parameters like mutation chance or the amount of elitism can also be tested. However, these type of tests need a low-level, fast implementation of \ac{EPR} and are postponed to future investigation.
 
 \section*{Acknowledgements}
 
 The authors are grateful to the Fundação para a Ciência e Tecnologia (FCT) and the  R\&D laboratory LabMAg for the financial support given to this work, under the strategic project \textsc{PEst-OE/EEI/UI0434/2011}.
 
-Datasets used herein were selected from Luís Torgo's data repository, \url{http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html}. Most can also be found in the UCI ML repository at \url{http://archive.ics.uci.edu/ml/}.
+Datasets used herein are selected from Luís Torgo's data repository, \url{http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html}. Most can also be found in the UCI ML repository at \url{http://archive.ics.uci.edu/ml/}.
 
 The authors wish to thank professor André Falcão for motivation and useful discussions around the article.
 
