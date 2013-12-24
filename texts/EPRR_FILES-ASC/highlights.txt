@@ -1,0 +1,4 @@
+* this paper describes a method that adds regression to polynomial regression
+* polynomial structure is searched by genetic algorithm
+* coefficient adjustment is optimized with linear regression
+* besides computational cost error is smaller than most common methods

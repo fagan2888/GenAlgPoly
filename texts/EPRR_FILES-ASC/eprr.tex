@@ -1,76 +1,24 @@
-\documentclass[review,preprint,authoryear,12pt]{elsarticle}
-%\documentclass[preprint,authoryear,12pt]{elsarticle}
+%% Use the option review to obtain double line spacing
+\documentclass[times,review,preprint]{elsarticle}
 
-%
-%	LINE NUMBERING FOR REVISION
-%
-\usepackage{lineno}
-%
+%% Use the options `twocolumn,final' to obtain the final layout
+%\documentclass[times,twocolumn,final,authoryear]{elsarticle}
 
-%
-%	FILE ENCODING
-%
 \usepackage[utf8]{inputenc}
-%
-
-%
-%	PAGE GEOMETRY
-%
-%\usepackage{geometry}
-%\geometry{a4paper}
-%
-
-%
-%	AMS STUFF
-%
-\usepackage{amsfonts}
-%\usepackage{amsthm}
-\newtheorem{theorem}{Theorem}
-%
-
-%
-%	ACRONYMS
-%
-\usepackage{acronym}
-%
-\acrodef{GA}{Genetic algorithms}
-\acrodef{rmse}[error]{root-mean-square}
-%\acrodef{EPR}[\textsc{EPR}]{Genetic Algorithms for Polynomials}
-%\acrodef{EPRR}[\textsc{EPR.reg}]{Genetic Algorithms for Polynomials with Regularization}
-
-\acrodef{EPR}[EPR]{Evolutionary Polynomial Regression}
-\acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularization}
-
-\acrodef{EPR}{Evolutionary Polynomial Regression}
-\acrodef{EPRR}[EPRR]{Evolutionary Polynomial Regression with Regularization}
-
-\acrodef{SVM}[SVM]{Support Vector Machines}
-%
-
-%
-%	FIGURE AND STUFF ENVIRONMENT
-%
 \usepackage{graphicx}
-%
-
 %
 %	ALGORITHMS PACKAGES
 %
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 %
-
-%
 %	HYPERREFERENCES
 %
-\usepackage{hyperref}
+\usepackage{url}
 %
-
-
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-
 %
 %	DOCUMENT COMMANDS
 %
@@ -79,51 +27,86 @@
 \newcommand{\note}[1]{\textbf{\small{[Note: {#1}]}}}
 \newcommand{\nth}{\ensuremath{^{th}}}
 %
+\usepackage{lineno}
+%
+%	ACRONYMS
+%
+\usepackage{acronym}
+%
+%
+%
+\def\TM{$^{\rm TM}$}
+
+\journal{Applied Soft Computing}
+
+\begin{document}
 
 %
-%
-%%% BEGIN DOCUMENT
-%
-%
-\begin{document}
+\acrodef{GA}{Genetic algorithms}
+\acrodef{rmse}[error]{root-mean-square}
+\acrodef{EPR}[EPR]{Evolutionary Polynomial Regression}
+\acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularization}
+\acrodef{EPR}{Evolutionary Polynomial Regression}
+\acrodef{EPRR}[EPRR]{Evolutionary Polynomial Regression with Regularization}
+\acrodef{SVM}[SVM]{Support Vector Machines}
+
+\setcounter{page}{0}
+
 \begin{frontmatter}
 
-\title{A Method for Regularization of Evolutionary Polynomial Regressions}
+%% Title, authors and addresses
 
-\author[ue,labmag]{Francisco ~Coelho\corref{fc}}
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{A method for regularization of evolutionary polynomial regressions}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[1]{Francisco Coelho\corref{cor1}} 
+\cortext[cor1]{Corresponding author: 
+  Tel.: +351-919-006-379}
 \ead{fc@di.uevora.pt}
-\cortext[fc]{Corresponding author}
+\author[2]{Jo\~{a}o Pedro Neto}
 
-\author[fcul,labmag]{João ~Pedro ~Neto}
-\ead{jpn@di.fc.ul.pt}
+\address[1]{Departamento de Informática, Universidade de Évora, Rua Romão Ramalho 58, 7000-671 Évora, Portugal}
+\address[2]{Departamento de Informática, Faculdade de Ciências da Universidade de Lisboa, Campo Grande, 1749-016 Lisboa, Portugal}
 
-
-\address[ue]{Dept. Informática, Universidade de Évora, Rua Romão Ramalho 58, 7000-671 Évora}
-\address[fcul]{Dept. Informática, Faculdade de Ciências da Universidade de Lisboa, Campo Grande 1749-016 Lisboa}
-\address[labmag]{Laboratory of Agent Modelling (LabMAg)}
-%
-%\date{[{\sc draft} \today]}
-%
 \begin{abstract}
-While many applications require models that have no acceptable linear approximation, the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models from data is known as \ac{EPR}.
+While many applications require models that have no acceptable linear approximation, the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models from data is known as Evolutionary Polynomial Regression.
 %
-This paper introduces \ac{EPRR}, an algorithm that extends the \ac{EPR} method and describes a set of experiences on common datasets that compare both flavors of \ac{EPR} and other methods including Linear Regression, Regression Trees and Support Vector Regression.
+This paper introduces Evolutionary Polynomial Regression with Regularization, an algorithm that extends the EPR method and describes a set of experiences on common datasets that compare both flavors of EPR and other methods including Linear Regression, Regression Trees and Support Vector Regression.
 
-The empiric conclusion of those experiments is that \ac{EPRR} is able to achieve better fitting than other non-ensemble methods and it has shorter computation time than plain \ac{EPR}.
+The empiric conclusion of those experiments is that EPR with regularization is able to achieve better fitting than other non-ensemble methods and it has shorter computation time than plain EPR.
 \end{abstract}
-%
-\begin{keyword}
-evolutionary polynomial regression \sep regularization \sep feature extraction \sep dimensionality reduction 
-\end{keyword}
-\end{frontmatter}
-%
-%	Line numbers for revision
-%
-%
-\linenumbers
-%
-\section{Introduction}
 
+\begin{keyword}
+evolutionary polynomial regression \sep regularization \sep feature extraction \end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+\section{Introduction}
 With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques produce linear models. The linearity assumption has many advantages including reduced computational complexity and strong the\-o\-re\-ti\-cal framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in \ac{SVM} (\cite{scholkopf1997kernel, liang2012eigen, Bao:2013aa}) alleviates this problem by allowing special non-linear transformations of the feature-space. The condition such transformations must meet is known as the \emph{kernel trick}, $k\at{x,x'} = \left< \varphi\at{x}, \varphi\at{x'} \right>$, where $\varphi$ is the feature-space transformation and $\left<\cdot,\cdot\right>$ denotes inner product. The ``trick'' consists on computing the kernel $k\at{x,x'}$ while avoiding the computation of the inner product and the transformations $\varphi\at{x}, \varphi\at{x'}$. A special case of polynomial transformation, the \emph{polynomial kernel}, $k\at{x,x'} = \left<x,x'\right>^d$ is commonly used in regression and classification tasks with \acp{SVM}. However general polynomial transformations do not verify the kernel trick.
 
 Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{Mendes:2005aa}, explicit formul\ae\ for turbulent pipe flows
@@ -133,18 +116,13 @@ Evolutionary algorithms, including \ac{GA}, were, arguably, one of the hottest t
 
 One interesting variation of genetic algorithms, named \emph{genetic programming} by John Koza \citep{Koza:1992aa}, proposes the use of \acp{GA} to search the syntactic structure of complex functions. Syntactic structure search is also keen to the central ideas of deep learning \citep{Bengio:2009aa,Bengio:2013aa}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional structure search problem.
 
-The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters (\cite{Davidson:2003aa}). Further developments include multi-objective optimizations (\cite{Giustolisi:2009aa}). 
+The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters \cite{Davidson:2003aa}. Further developments include multi-objective optimizations \cite{Giustolisi:2009aa}. 
 
 This paper describes an extension of the general \ac{EPR} method to find a regularized polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid overfit by penalysing polynomial complexity.
-
-%A method that produces \emph{adequate} models from observed complex data has many uses. For example by a scientist to better understand the source of the data or by an autonomous agents adapting to the environment.  
-
-% It turns out that, discarding the computational cost of training, the regression method presented here, \acf{EPRR}, proves to be quite effective. Indeed, according to the results of common  methods on several real-world datasets it is only systematically out-performed by random forests, an \emph{ensemble} method.
 
 The next section describes the method's details and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
 
 \section{Genetic Algorithms for Polynomials}
-
 This section starts with a brief introduction and outline of the evolutionary polynomial regression algorithm, \ac{EPR}, and proceeds into core details as the encoding used to represent individual polynomial instances in the \ac{GA} populations and the regularization of the cost function.
 
 An usual representation of polynomials is through expressions of the form
@@ -171,16 +149,6 @@ x_1^2 x_3
 \right]
 $$
 where each row defines a monomial and each column represents a variable. Changing the order of the rows doesn't change the polynomial whereas changing the order of the columns corresponds to changing the respective variables.
-%Notice that if we interpret matrix $A$ as a single column of monomials and set the coefficients $T = \left[ \begin{array}{ccc} 2 & 1 & \frac{1}{2} \end{array} \right ]$ then
-%$$
-%p\left( x_1, x_2, x_3 \right) = TA = \left[ \begin{array}{ccc} 2 & 1 & \frac{1}{2} \end{array} \right ]\left[ 
-%\begin{array}{ccc}
-%x_1 \\
-%x_2 x_3 \\
-%x_1^2 x_3
-%\end{array}
-%\right].
-%$$
 
 This partial representation of polynomials makes the problem of structure search very clear: except for the trivial cases, the number of possible monomials given $n$ variables and a maximum joint degree $d$ grows exponentially with either $n$ or $d$. But more importantly, by separating the set of monomials from the coefficients, the polynomial regression problem can be naturally split into two subproblems:
 %
@@ -241,12 +209,7 @@ Subsection \ref{subs:polynomial.encoding} describes the encoding of individual p
 
 %
 \subsection{Polynomial Encoding}\label{subs:polynomial.encoding}
-%
-%\begin{quotation}
-%\note{Next paragraph moved here from the introduction.}
-%Another important change is in the coding mechanism which introduces two new features: (a) inclusion of the linear terms in the polynomial expression, and (b) the activation/deactivation of monomials during evolution to allow the increase/decrease of polynomial expressions.
-%\end{quotation}
-%
+
 The specific encoding (representation) of a set of monomials is an important aspect in the implementation of \ac{EPR}. The choice described below permits active and inactive monomials for regression purposes. The active (or inactive) state of a monomial might change through mutation or crossover. This simple mechanism enhances variation in the complexity of polynomial expressions by evolutionary operations.
 
 Let  $\left\lbrace q_1, \ldots, q_k\right\rbrace$ be a set of monomials over the variables $X_1, \ldots, X_m$. The encoding of that set using $d$ bits per exponent is a binary list such that
@@ -279,7 +242,6 @@ where, for reading purposes, semicolons separate segments and commas separate va
 While each valid encoding represents a set of monomials the map is not bijective: each set of monomials has multiple encodings, for example by changing $d$ or the order of monomial segments. However, considering the \ac{EPR} task, this is a minor issue and a bijective map would add computational complexity and negative impact to the algorithm's performance.
 
 There is one final remark concerning this encoding method. As it is, the activation segment can become all zeros, representing the empty set of monomials. This situation can be avoided with a simple hack: Given an encoding, the first monomial is always considered active, thus restricting the syntactic form of encodings to binary strings starting with $1$. In practice, this means that the implementation of the encoding can omit the first bit.
-% If the coding consists of entirely zeros, by convention, it describes polynomial $x_1$. This has to do with the execution of the polynomial regression that would fail if we interpret it as the zero polynomial. Anyway, for progressive larger  binary descriptions, the chances of getting this zero description decrease exponentially, so it does not impact in any meaningful way in the algorithm's performance.
 
 \subsection{Cost Function}\label{subs:cost.function}
 
@@ -339,18 +301,9 @@ One of the used datasets, \textsc{Artificial}, has a special role: it is used to
 
 \item{\textsc{Abalone}} is used to predict the age of a abalone shell using $m=8$ numeric attributes concerning several physical measurements. There are $n=4177$ observations;
 
-% best polynomial, rsme 0.65
-% $$y = 0.52 s_1^2 x_5 - 0.13 x_2 x_8 -0.75 x_1^2 x_6 + 0.78 x_8 + 0.18 $$
-
 \item{\textsc{Auto MPG}} gathers fuel consumption in miles per gallon, based on two discrete and five continuous attributes ($m=7$). There are $n=398$ observations;
 
-% best polynomial, \ac{rmse} 0.32
-%$$ y = 0.4 x_6 + 0.02 x_5^3 x_6 - 0.85 x_4 + 0.23 x_4^2 - 0.26 $$
-
 \item{\textsc{Kinematics}} results from a realistic simulation of the forward kinematics of an 8 link robot arm. The task is to predict the distance of the end-effector from a target using $m=8$ continuous attributes. There are $n=8192$ observations;
-
-% best polynomial, \ac{rmse} 0.74
-% $$ y = 0.24 x_5 - 0.23 x_5 x_6 x_7 - 0.19 x_4 x_7 - 0.5 x_3 $$
 
 \end{description}
 %
@@ -385,8 +338,6 @@ One of the used datasets, \textsc{Artificial}, has a special role: it is used to
 %
 Since this work is oriented to the \ac{rmse} of the \ac{EPRR} model it is necessary to assess how this depends on the number of generations of the \ac{GA}. As illustrated in Figure~\ref{Abalone_fitnessProgress}, the \ac{rmse} quickly drops during the initial $50$ to $100$ generations. Then, it proceeds slower achieving better solutions only with marginal error reduction.
 
-%Since the entire learning process takes some time, in the current \texttt{R} implementation, placing a limit between 50 to 100 generations already achieves good results, relative to higher iteration values. Figure~\ref{Abalone_fitnessProgress} shows a typical error evolution for the dataset \textsc{Abalone} given a regularized version ($\lambda = 0.975$) and a non-regularized ($\lambda = 1.0$).\note{Why not $\lambda=0.8$?}
-
 \section{Conclusion and Future Work}
 
 Of the regression methods considered \ac{SVM} achieves the best results in three out of four datasets. However \ac{SVM} and Conditional Inference Trees are pre-trained, having parameters tuned for each particular dataset unlike \ac{EPRR}, that runs with the same parameterization on all datasets. Even so it is the best estimator for the \textsc{Abalone} dataset and in the remaining datasets it outperforms most of the other estimators. 
@@ -405,10 +356,7 @@ Datasets used herein are selected from Luís Torgo's data repository, \url{http:
 
 The authors wish to thank professor André Falcão for motivation and useful discussions around the article.
 
-\section*{Bibliography}
-
-\bibliographystyle{model2-names}
+\bibliographystyle{elsarticle-num}
 \bibliography{fullbib2}
     
 \end{document}
-
