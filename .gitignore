@@ -240,3 +240,5 @@ pip-log.txt
 .mr.developer.cfg
 texts/paper-draft.dvi
 texts/paper-draft.auxlock
+code/exploratory/pstats
+code/exploratory/stats
