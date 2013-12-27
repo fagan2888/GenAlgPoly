@@ -33,6 +33,11 @@ head(my.data,8)
 source("gapolyfuncs.R")
 report <- make.report(my.data, population=100, iterations=50, mutation.rate=0.15)
 
+summary(report$lm.error)
+summary(report$svm.error)
+summary(report$rpart.error)
+summary(report$citree.error)
+
 # See Results
 
 coef(report$ga.model)

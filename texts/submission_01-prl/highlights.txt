@@ -1,4 +1,0 @@
-* this paper describes a two-step method to polynomial regression
-* polynomial structure is searched by genetic algorithm
-* coefficient adjustment is optimized with linear regression
-* besides computational cost error is competitive with common methods
