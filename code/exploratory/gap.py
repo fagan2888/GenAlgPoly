@@ -124,7 +124,7 @@ class PolyTerms:
         closed_terms = list()
         t_ = list()
         c_ = list()
-        while len(open_terms) > 0:
+        while open_terms:
             i = open_terms.pop()
             si = c[i]
             closed_terms.append(i)
@@ -208,7 +208,6 @@ class Regression_PolyScorer(AbstractPolyScorer):
         #
         self.num_samples, self.num_features = self.X.shape
         self.estimator = estimator
-        self.scores = None
         
     def get_loss(self):
         def loss(x,y):
@@ -243,7 +242,7 @@ class PolyDataset:
             self.data[:,i] = f
         self.target = np.array(target_feature)
 #        
-def get_dataset():
+def get_dataset_fc():
     num_samples = 100
     x1 = np.random.uniform(0,1, num_samples)
     x2 = np.random.uniform(0,1, num_samples)
@@ -254,7 +253,7 @@ def get_dataset():
     return pd    
 
 #
-def get_dataset_alt():    
+def get_dataset_jpn():    
     num_samples = 100
     x1 = np.random.poisson(1, num_samples)
     x2 = np.random.poisson(1, num_samples)

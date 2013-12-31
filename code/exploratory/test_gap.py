@@ -99,10 +99,10 @@ def test_deap():
         verbose = True )
 
 def test_search():
-    s = PolySearcher(get_dataset_alt(),
+    s = PolySearcher(get_dataset_fc(),
         {   'verbose': True,
             'pop_size': 750,
-            'num_generations': 35,
+            'num_generations': 50,
             'mutpb': 0.1
         } )
     hof = s()
