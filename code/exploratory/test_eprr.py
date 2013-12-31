@@ -56,13 +56,13 @@ def get_dataset_jpn():
 #
 @test
 def test_search():
-    X,y = get_dataset_fc()
+    X,y = get_dataset_jpn()
     print('\tX shape:\t%s'%str(X.shape))
     print('\ty shape:\t%s'%str(y.shape))
 
     e = eprr.EPRR(
             verbose = True,
-            maxnum_terms = 3,
+            maxnum_terms = 4,
             pop_size = 750,
             num_generations = 50,
             mutpb = 0.1)

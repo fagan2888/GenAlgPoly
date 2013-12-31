@@ -99,7 +99,7 @@ def test_deap():
         verbose = True )
 
 def test_search():
-    s = PolySearcher(get_dataset_fc(),
+    s = PolySearcher(get_dataset_jpn(),
         {   'verbose': True,
             'pop_size': 750,
             'num_generations': 50,
