@@ -138,7 +138,7 @@ class PolyTerms:
             [ np.prod(np.power(x, t)) for t in self.terms ]
             for x in X])
         if extend:
-            return np.c_[X,Z]
+            return np.c_[Z,X]
         else:
             return Z
 
@@ -172,6 +172,7 @@ class EPRR:
         maxnum_terms = 4,
         train_size = 0.05,
         cross_validations = 3,
+        include_dataset = False,
         pop_size = 400,
         num_generations = 50,
         num_mutations = 1,
@@ -192,6 +193,7 @@ class EPRR:
         self.maxnum_terms = maxnum_terms
         self.train_size = train_size
         self.cross_validations = cross_validations
+        self.include_dataset = include_dataset
         self.pop_size = pop_size
         self.num_generations = num_generations
         self.num_mutations = num_mutations
@@ -203,7 +205,7 @@ class EPRR:
         self.hof_size = hof_size
         self.verbose = verbose
 
-        
+        #
         #   Attributes
         #
         self.ga_toolbox_ = None
@@ -258,11 +260,11 @@ class EPRR:
             return None
 
         def poly_scorer(p):
-            Z = p(X)
+            Z = p(X, self.include_dataset)
             Z_train, Z_test, y_train, y_test = cv.train_test_split( Z, y,
                     train_size = self.train_size )
             self.ga_estimator_.fit(Z_train, y_train)
-            p.coef_ = self.ga_estimator_.coef_
+            p.coef_ = self.ga_estimator_.coef_[:p.num_terms]
             p.intercept_ = self.ga_estimator_.intercept_
             #
             #   Compute number of significative terms
@@ -354,11 +356,11 @@ class EPRR:
     def create_ga_hall_of_fame(self):
         self.show('Create population')
         pop = self.ga_toolbox_.population(n = self.pop_size)
-        self.show('\tpropulation: OK')
+        self.show('\tpopulation: OK')
         self.show('Create hof')
         hof = tools.HallOfFame(self.hof_size)
         self.show('\thof: OK')
-        self.show('*****\nSTART GA SEARCH')
+        self.show('\nSTART GA SEARCH')
         algorithms.eaMuCommaLambda( pop, self.ga_toolbox_,
             mu = self.mu,
             lambda_ = self.lambda_,

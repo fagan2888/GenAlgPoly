@@ -1,16 +1,19 @@
 #!/opt/local/bin/python
 
+import sklearn as sk
 import numpy as np
 import eprr
+import os
+import glob
 
-def test(f):
+def tester(f):
     def deco():
         print('\n********** START TESTING [%s] **********\n'%f.__name__)
         f()
         print('\n********** END TESTING [%s] **********\n'%f.__name__)
     return deco
 
-@test
+@tester
 def test_polyterms():
     poly = PolyTerms([
         [0,1,0],
@@ -54,11 +57,10 @@ def get_dataset_jpn():
     
     return X,y       
 #
-@test
-def test_search():
+@tester
+def test_polysearch():
+    print("Search JPN poly")
     X,y = get_dataset_jpn()
-    print('\tX shape:\t%s'%str(X.shape))
-    print('\ty shape:\t%s'%str(y.shape))
 
     pop_size = 100
     mu_rate = 30.0/pop_size
@@ -66,7 +68,7 @@ def test_search():
     e = eprr.EPRR(
             regularization_penalty = 0.8,
             epsilon = 1E-1,
-            verbose = True,
+            verbose = False,
             maxnum_terms = 2,
             pop_size = pop_size,
             mu = int(mu_rate * pop_size),
@@ -75,9 +77,80 @@ def test_search():
             mutpb = 0.75,
             cxpb = 0.25,
             )
-    print('\tSTART "fit"...')
     e = e.fit(X,y)
-    print('\tEND "fit"')
+    error = e.poly_.fitness
+    p = e.poly_.simplify()
+    print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
+
+    print("Search FC poly")
+    X,y = get_dataset_fc()
+
+    pop_size = 100
+    mu_rate = 30.0/pop_size
+    lambda_rate = 30.0/pop_size
+    e = eprr.EPRR(
+            regularization_penalty = 0.8,
+            epsilon = 1E-1,
+            verbose = False,
+            maxnum_terms = 3,
+            pop_size = pop_size,
+            mu = int(mu_rate * pop_size),
+            lambda_ = int(lambda_rate * pop_size),
+            num_generations = 20,
+            mutpb = 0.75,
+            cxpb = 0.25,
+            )
+    e = e.fit(X,y)
+    error = e.poly_.fitness
+    p = e.poly_.simplify()
+    print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
+
+
+def get_dataset_abalone():
+    datafolder = '../../datasets'
+    dataset_name = 'Abalone'
+    datafile = glob.glob(os.path.join(
+        datafolder, dataset_name, '*.data'))[0]
+    D = np.loadtxt( open(datafile, 'r'), delimiter = ',', skiprows = 0, usecols = (1,2,3,4,5,6,7,8) )
+
+    D = sk.preprocessing.scale(D)
+    X = D[:,:-1]
+    y = D[:,-1]
+
+    return X,y
+
+@tester
+def test_abalone():
+    X,y = get_dataset_abalone()
+    num_samples, _ = X.shape
+    rand_rows = np.random.choice(num_samples, 100, replace = False)
+
+    X = X[rand_rows,:]
+    y = y[rand_rows]
+
+    pop_size = 100
+    mu_rate = 0.1
+    lambda_rate = 0.50
+    mutpb = 0.25
+    cxpb = 0.125
+    num_generations = 50
+
+    e = eprr.EPRR(
+            verbose = True,
+            regularization_penalty = 0.8,
+            epsilon = 1E-1,
+            maxnum_terms = 5,
+            train_size = 0.7,
+            cross_validations = 3,
+            include_dataset = True,
+            pop_size = pop_size,
+            mu = int(mu_rate * pop_size),
+            lambda_ = int(lambda_rate * pop_size),
+            num_generations = num_generations,
+            mutpb = mutpb,
+            cxpb = cxpb,
+            )
+    e = e.fit(X,y)
     error = e.poly_.fitness
     p = e.poly_.simplify()
     print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
@@ -86,8 +159,10 @@ def test_search():
 def test(x):
     if 'polyterms' in x:
         test_polyterms()
-    if 'search' in x:
-        test_search()
+    if 'polysearch' in x:
+        test_polysearch()
+    if 'abalone' in x:
+        test_abalone()
 
 if __name__ == '__main__':
-   test(['search'])
+   test(['abalone'])
