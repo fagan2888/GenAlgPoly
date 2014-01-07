@@ -17,7 +17,7 @@ from deap import algorithms, base, creator, tools
 import warnings
 warnings.filterwarnings('ignore')
 
-#
+
 #   Represent a set of monomial transformations
 #
 class PolyTerms:
@@ -114,8 +114,12 @@ class PolyTerms:
                     si += c[j]
             t_.append(list(ti))
             c_.append(si)
-        p = PolyTerms(np.array(t_))
-        p.coef_ = c_
+        if len(c_) > 0:
+            p = PolyTerms(np.array(t_))
+            p.coef_ = c_
+        else:
+            p = PolyTerms(np.zeros( (1,self.num_vars) ) )
+            p.coef_ = [0.0]
         p.intercept_ = self.intercept_
         return p
 
@@ -159,8 +163,11 @@ class PolyTerms:
             if not(self.intercept_ is None):
                 s = s + ' %+5.4f'%self.intercept_
             return s
+
 class EPRR:
     def __init__(self,
+        regularization_penalty = 1.0,
+        epsilon = 1E-7,
         valid_degrees = (0,1,2),
         maxnum_terms = 4,
         train_size = 0.05,
@@ -179,6 +186,8 @@ class EPRR:
         #
         #   Parameters
         #
+        self.regularization_penalty = regularization_penalty
+        self.epsilon = epsilon
         self.valid_degrees = valid_degrees
         self.maxnum_terms = maxnum_terms
         self.train_size = train_size
@@ -211,6 +220,10 @@ class EPRR:
         self.__num_train_features = None
         self.__num_train_samples = None
         self.__trained__ = False
+
+    def show(self, t):
+        if self.verbose:
+            print(t)
 
     def __random_matrix(self):
         '''Initializes a matrix with random degrees, compatible with the dataset.
@@ -251,13 +264,22 @@ class EPRR:
             self.ga_estimator_.fit(Z_train, y_train)
             p.coef_ = self.ga_estimator_.coef_
             p.intercept_ = self.ga_estimator_.intercept_
+            #
+            #   Compute number of significative terms
+            #
+            ps = p.simplify(epsilon = self.epsilon)
+            k = ps.num_terms
+            penalty = self.regularization_penalty ** k
+            #
+            #   Evaluate (regularized) score by cross validation
+            #
             scores = cv.cross_val_score(
                     self.ga_estimator_,
                     Z_test,
                     y_test,
                     cv = self.cross_validations,
                     scoring = metrics.make_scorer(
-                        lambda x,y: np.dot(x-y,x-y),
+                        lambda x,y: penalty * np.dot(x-y,x-y),
                         greater_is_better = False,
                         needs_threshold = False ) )
             return scores
@@ -330,9 +352,14 @@ class EPRR:
         return stats
 
     def create_ga_hall_of_fame(self):
+        self.show('Create population')
         pop = self.ga_toolbox_.population(n = self.pop_size)
+        self.show('\tpropulation: OK')
+        self.show('Create hof')
         hof = tools.HallOfFame(self.hof_size)
-        algorithms.eaMuPlusLambda( pop, self.ga_toolbox_,
+        self.show('\thof: OK')
+        self.show('*****\nSTART GA SEARCH')
+        algorithms.eaMuCommaLambda( pop, self.ga_toolbox_,
             mu = self.mu,
             lambda_ = self.lambda_,
             cxpb = self.cxpb,
@@ -356,11 +383,21 @@ class EPRR:
             return None
 
     def fit(self, X, y):
+        self.show('Create GA estimator')
         self.ga_estimator_ = self.create_ga_estimator()
+        self.show('\tGA estimator: OK')
+        self.show('Create GA scorer')
         self.ga_scorer_ = self.create_ga_scorer(X,y)
+        self.show('\tGA scorer: OK')
+        self.show('Create GA toolbox')
         self.ga_toolbox_ = self.create_ga_toolbox()
+        self.show('\tGA toolbox: OK')
+        self.show('Create GA stats')
         self.ga_stats_ = self.create_ga_stats()
+        self.show('\tGA stats: OK')
+        self.show('Create GA hall of fame')
         self.ga_hall_of_fame_ = self.create_ga_hall_of_fame()
+        self.show('\tGA hall of fame: OK')
         self.poly_ = self.ga_hall_of_fame_[0]
         self.__trained__ = True
         return self

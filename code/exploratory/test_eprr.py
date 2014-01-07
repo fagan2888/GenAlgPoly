@@ -60,13 +60,24 @@ def test_search():
     print('\tX shape:\t%s'%str(X.shape))
     print('\ty shape:\t%s'%str(y.shape))
 
+    pop_size = 100
+    mu_rate = 30.0/pop_size
+    lambda_rate = 30.0/pop_size
     e = eprr.EPRR(
+            regularization_penalty = 0.8,
+            epsilon = 1E-1,
             verbose = True,
-            maxnum_terms = 4,
-            pop_size = 750,
-            num_generations = 50,
-            mutpb = 0.1)
+            maxnum_terms = 2,
+            pop_size = pop_size,
+            mu = int(mu_rate * pop_size),
+            lambda_ = int(lambda_rate * pop_size),
+            num_generations = 20,
+            mutpb = 0.75,
+            cxpb = 0.25,
+            )
+    print('\tSTART "fit"...')
     e = e.fit(X,y)
+    print('\tEND "fit"')
     error = e.poly_.fitness
     p = e.poly_.simplify()
     print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
