@@ -64,7 +64,6 @@ make.formula <- function(bits, n.vars, max.monoids) {
   # this next line simulates the EPR using all monoids
   # it should be uncommented when we want to get results without any type of regulatization
   # active.monoid <- rep(1, max.monoids)
-  
   for(i in 1:length(monoids)) {
     if (active.monoid[i]==1) {
       monoid <- make.monoid(monoids[[i]], n.vars, vars)
@@ -391,3 +390,7 @@ test.regularization <- function(my.data,
        ga.model = best.ga.model,
        ga.reg.model = best.ga.reg.model)  # also include the best found ga.models
 }
+
+
+# cf: 
+# http://stats.stackexchange.com/questions/3328/given-a-10d-mcmc-chain-how-can-i-determine-its-posterior-modes-in-r
