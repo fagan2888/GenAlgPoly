@@ -335,7 +335,7 @@ tune.gapoly.iterative <- function(my.data,population=100,iterations=50,runs=10) 
   report
 }
 
-report <- tune.gapoly.iterative(my.data, population=10, iterations=8, runs=3)
+report <- tune.gapoly.iterative(my.data, population=75, iterations=60, runs=5)
 report
 
 write.table(report, "grid.iterative.search.Housing.txt")
