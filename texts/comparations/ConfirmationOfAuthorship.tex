@@ -1,0 +1,210 @@
+%% This is file `prletters-template.tex',
+%% 
+%% Copyright 2013 Elsevier Ltd
+%% 
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+%%
+%% $Id: prletters-template-with-authorship.tex 69 2013-07-15 10:15:25Z rishi $
+%%
+%% Use the option review to obtain double line spacing
+\documentclass[times,review,preprint,authoryear]{elsarticle}
+
+%% Use the options `twocolumn,final' to obtain the final layout
+%\documentclass[times,twocolumn,final,authoryear]{elsarticle}
+\usepackage[utf8]{inputenc}
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+\usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% Stylefile to load PR Letters template
+%\usepackage{prletters}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+\usepackage{latexsym}
+
+% Following three lines are needed for this document.
+% If you are not loading colors or url, then these are
+% not required.
+\usepackage{url}
+\usepackage{xcolor}
+\definecolor{newcolor}{rgb}{.8,.349,.1}
+
+
+%
+%	ALGORITHMS PACKAGES
+%
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+%
+
+%
+%	HYPERREFERENCES
+%
+\usepackage{hyperref}
+%
+
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+%
+%	DOCUMENT COMMANDS
+%
+\newcommand{\sample}[1]{\ensuremath{^{\left(#1\right)}}}
+\newcommand{\at}[1]{\ensuremath{\!\left(#1\right)}}
+\newcommand{\note}[1]{\textbf{\small{[Note: {#1}]}}}
+\newcommand{\nth}{\ensuremath{^{th}}}
+%
+
+
+\usepackage{lineno}
+
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon (default)
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   authoryear - selects author-year citations (default)
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%   longnamesfirst  -  makes first citation full author list
+%%
+%% \biboptions{longnamesfirst,comma}
+
+% \biboptions{}
+
+
+%
+%	ACRONYMS
+%
+\usepackage{acronym}
+%
+\acrodef{GA}{Genetic algorithms}
+\acrodef{rmse}[error]{root-mean-square}
+\acrodef{EPR}[EPR]{Evolutionary Polynomial Regression}
+\acrodef{EPRR}[EPR$^2$]{Evolutionary Polynomial Regression with Regularization}
+\acrodef{EPR}{Evolutionary Polynomial Regression}
+\acrodef{EPRR}[EPRR]{Evolutionary Polynomial Regression with Regularization}
+\acrodef{SVM}[SVM]{Support Vector Machines}
+%
+%
+%
+\def\TM{$^{\rm TM}$}
+
+\journal{Applied Soft Computing}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\begin{table*}%[!t]
+
+\begin{minipage}{.9\textwidth}
+\vspace*{-16pc}
+
+\noindent {\LARGE\itshape Pattern Recognition Letters}
+\vskip6pt
+
+\noindent {\Large\bfseries Authorship Confirmation}
+
+\vskip1pc
+
+
+{\bf Please save a copy of this file, complete and upload as the 
+``Confirmation of Authorship'' file.}
+
+\vskip1pc
+
+As corresponding author 
+I, Francisco Manuel Gon\c{c}alves Coelho, 
+hereby confirm on behalf of all authors that:
+
+\vskip1pc
+
+\begin{enumerate}
+\itemsep=3pt
+\item This manuscript, or a large part of it, \underline {has not been
+published,  was not, and is not being submitted to} any other journal. 
+
+\item If \underline {presented} at or \underline {submitted} to or
+\underline  {published }at a conference(s), the conference(s) is (are)
+identified and  substantial \underline {justification for
+re-publication} is presented  below. A \underline {copy of
+conference paper(s) }is(are) uploaded with the  manuscript.
+
+\item If the manuscript appears as a preprint anywhere on the web, e.g.
+arXiv,  etc., it is identified below. The \underline {preprint should
+include a  statement that the paper is under consideration at Pattern
+Recognition  Letters}.
+
+\item All text and graphics, except for those marked with sources, are
+\underline  {original works} of the authors, and all necessary
+permissions for  publication were secured prior to submission of the
+manuscript.
+
+\item All authors each made a significant contribution to the research
+reported  and have \underline {read} and \underline {approved} the
+submitted  manuscript. 
+\end{enumerate}
+
+Signature\underline{\hphantom{\hspace*{7cm}}} Date 2013-12-23 
+\vskip1pc
+
+\rule{\textwidth}{2pt}
+\vskip1pc
+
+{\bf List any pre-prints:}
+\vskip5pc
+
+
+\rule{\textwidth}{2pt}
+\vskip1pc
+
+{\bf Relevant Conference publication(s) (submitted, accepted, or
+published):}
+\vskip5pc
+
+
+
+{\bf Justification for re-publication:}
+
+\end{minipage}
+\end{table*}
+\end{document}

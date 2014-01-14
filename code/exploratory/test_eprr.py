@@ -9,7 +9,8 @@ import glob
 def tester(f):
     def deco():
         print('\n********** START TESTING [%s] **********\n'%f.__name__)
-        f()
+        (p,s,e) = f()
+        print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p, s, e))
         print('\n********** END TESTING [%s] **********\n'%f.__name__)
     return deco
 
@@ -34,6 +35,7 @@ def test_polyterms():
     p0.coef_ = [2, 3, 1E-6, 2]
     p1 = p0.simplify()
     print('\tReduced PolyTerms:\n%s'%p1)
+    return (p1,0,0)
  
 #        
 def get_dataset_fc():
@@ -56,10 +58,10 @@ def get_dataset_jpn():
     X = np.c_[x1,x2,x3,x4]
     
     return X,y       
+
 #
 @tester
-def test_polysearch():
-    print("Search JPN poly")
+def test_polysearch_jpn():
     X,y = get_dataset_jpn()
 
     pop_size = 100
@@ -80,9 +82,10 @@ def test_polysearch():
     e = e.fit(X,y)
     error = e.poly_.fitness
     p = e.poly_.simplify()
-    print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
+    return (p,p.score(X,y), error)
 
-    print("Search FC poly")
+@tester
+def test_polysearch_fc():
     X,y = get_dataset_fc()
 
     pop_size = 100
@@ -103,7 +106,7 @@ def test_polysearch():
     e = e.fit(X,y)
     error = e.poly_.fitness
     p = e.poly_.simplify()
-    print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
+    return (p,p.score(X,y), error)
 
 
 def get_dataset_abalone():
@@ -123,10 +126,13 @@ def get_dataset_abalone():
 def test_abalone():
     X,y = get_dataset_abalone()
     num_samples, _ = X.shape
-    rand_rows = np.random.choice(num_samples, 100, replace = False)
+    rand_rows = np.random.choice(num_samples, 200, replace = False)
 
-    X = X[rand_rows,:]
-    y = y[rand_rows]
+    X_train = X[rand_rows,:]
+    y_train = y[rand_rows]
+
+    X_test = X [-rand_rows,:]
+    y_test = y [-rand_rows]
 
     pop_size = 100
     mu_rate = 0.1
@@ -150,19 +156,113 @@ def test_abalone():
             mutpb = mutpb,
             cxpb = cxpb,
             )
-    e = e.fit(X,y)
+    e = e.fit(X_train,y_train)
     error = e.poly_.fitness
     p = e.poly_.simplify()
-    print('\n\tbest poly:\t%s\n\twith score:\t%s\n\tand error:\t%s'%(p,p.score(X,y), error))
-
+    return (p, p.score(X_test,y_test), error)
     
+
+def make_dataset_scorer(X_train, y_train, X_test = None, y_test = None ):
+
+    if X_test is None:
+        X_test = X_train
+    if y_test is None:
+        y_test = y_train
+
+    def __tester__(estimator):
+        e = estimator.fit(X_train, y_train)
+        error = e.poly_.fitness.values[0]
+        p = e.poly_.simplify()
+        return (p, p.score(X_test, y_test), error)
+
+    return __tester__
+
+def scorer(dataset_scorer, estimator, cols = 1, n = 25, verbose = False):
+    '''
+        cols is the column mask in the scores array that provides the statistics;
+            cols == 0 ==> score (r1)
+            cols == 1 ==> error (rmse)
+    '''
+    s = np.zeros( (n,2) )
+    for row in range(n):
+        if verbose:
+            print("Evaluating #%d of %d"%(row+1,n))
+        sc = dataset_scorer(estimator)[1:]
+        s[row,:] = sc
+
+    return np.percentile(s[:,cols], [0, 25, 50, 75, 100], axis = 0)
+
+
+def test_scorer():
+    X,y = get_dataset_jpn()
+    ds = make_dataset_scorer(X,y)
+
+    pop_size = 100
+    mu_rate = 30.0/pop_size
+    lambda_rate = 30.0/pop_size
+    estimator = eprr.EPRR(
+            regularization_penalty = 0.8,
+            epsilon = 1E-1,
+            verbose = False,
+            maxnum_terms = 3,
+            pop_size = pop_size,
+            mu = int(mu_rate * pop_size),
+            lambda_ = int(lambda_rate * pop_size),
+            num_generations = 20,
+            mutpb = 0.75,
+            cxpb = 0.25,
+            )
+    scores = scorer(ds, estimator, n = 3, cols = 1, verbose = True)
+    print(scores)
+
+def score_dataset_jpn():
+    X,y = get_dataset_jpn()
+    dataset_scorer = make_dataset_scorer(X,y)
+
+    estimator_eprr = get_estimator_eprr_dataset_jpn()
+    
+    estimators = [estimator_eprr]
+    for estimator in estimators:
+        print( scorer(
+            dataset_scorer,
+            estimator,
+            verbose = True ) )
+
+def get_estimator_eprr_dataset_jpn():
+    pop_size = 100
+    mu_rate = 30.0/pop_size
+    lambda_rate = 30.0/pop_size
+    return eprr.EPRR(
+            regularization_penalty = 0.8,
+            epsilon = 1E-1,
+            verbose = False,
+            maxnum_terms = 3,
+            pop_size = pop_size,
+            mu = int(mu_rate * pop_size),
+            lambda_ = int(lambda_rate * pop_size),
+            num_generations = 20,
+            mutpb = 0.75,
+            cxpb = 0.25,
+            )
+
+
+
+
 def test(x):
-    if 'polyterms' in x:
-        test_polyterms()
-    if 'polysearch' in x:
-        test_polysearch()
-    if 'abalone' in x:
-        test_abalone()
+    while x:
+        t = x.pop(0)
+        if t == 'polyterms':
+            test_polyterms()
+        if t == 'polysearch_fc':
+            test_polysearch_fc()
+        if t == 'polysearch_jpn':
+            test_polysearch_jpn()        
+        if t == 'abalone':
+            test_abalone()
+        if t == 'scorer':
+            test_scorer()
+        if t == 'score_dataset_jpn':
+            score_dataset_jpn()
 
 if __name__ == '__main__':
-   test(['abalone'])
+   test(['score_dataset_jpn'])

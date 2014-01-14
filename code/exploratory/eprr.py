@@ -1,6 +1,3 @@
-#
-#   TODO add regularisation to error
-#
 import numpy as np
 from sklearn import cross_validation as cv
 from sklearn import svm
@@ -8,6 +5,7 @@ from sklearn import preprocessing
 from sklearn import datasets
 from sklearn import metrics
 from sklearn import linear_model
+#import math
 
 from deap import algorithms, base, creator, tools
 
@@ -142,13 +140,16 @@ class PolyTerms:
         else:
             return Z
 
+    def poly_call(self, X):
+        return np.dot( self(X), self.coef_) + self.intercept_
+
     def score(self, X, y):
-        Z = self(X)
-        y_hat = np.dot(Z, self.coef_) + self.intercept_
-        y_mean = np.mean(y)
-        u = np.dot(y - y_hat, y - y_hat)
-        v = np.dot(y - y_mean, y - y_mean )
-        return (1. - u/v)
+        y_pred = self.poly_call(X)
+        #y_mean = np.mean(y)
+        #u = np.dot(y - y_hat, y - y_hat)
+        #v = np.dot(y - y_mean, y - y_mean )
+        #return (1. - u/v)
+        return metrics.r2_score(y, y_pred)
 
     def __repr__(self):
         '''Computes a string representation of the instance.
@@ -281,7 +282,8 @@ class EPRR:
                     y_test,
                     cv = self.cross_validations,
                     scoring = metrics.make_scorer(
-                        lambda x,y: penalty * np.dot(x-y,x-y),
+                        #lambda x,y: penalty * np.dot(x-y,x-y),
+                        lambda x,y: penalty * metrics.mean_squared_error(x,y),
                         greater_is_better = False,
                         needs_threshold = False ) )
             return scores
@@ -380,7 +382,7 @@ class EPRR:
 
     def predict(self, X):
         if self.__trained__:
-            return self.poly_(X)
+            return self.poly_.poly_call(X)
         else:
             return None
 
