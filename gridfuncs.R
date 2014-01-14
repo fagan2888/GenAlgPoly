@@ -62,7 +62,7 @@ tune.gapoly.params <- function(my.data,population=100,iterations=50,runs=10) {
                         iters = iterations, 
                         popSize = population, 
                         mutationChance = mutation.rate, 
-                        elitism = TRUE,#elitism.perc * population, 
+                        elitism = round(elitism.perc * population), 
                         evalFunc = evalFuncFactory(train.set, n.vars, max.monoids, lambda))
     
     best.solution <- GAmodel$population[1,]
@@ -109,3 +109,6 @@ head(my.data,8)
 
 report <- tune.gapoly.params(my.data, population=80, iterations=60, runs=25)
 report
+
+# cf: 
+# http://stats.stackexchange.com/questions/3328/given-a-10d-mcmc-chain-how-can-i-determine-its-posterior-modes-in-r

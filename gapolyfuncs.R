@@ -392,5 +392,3 @@ test.regularization <- function(my.data,
 }
 
 
-# cf: 
-# http://stats.stackexchange.com/questions/3328/given-a-10d-mcmc-chain-how-can-i-determine-its-posterior-modes-in-r
