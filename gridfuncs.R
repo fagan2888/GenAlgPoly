@@ -110,5 +110,7 @@ head(my.data,8)
 report <- tune.gapoly.params(my.data, population=80, iterations=60, runs=25)
 report
 
+write.table(report, "grid.search.Housing.txt")
+
 # cf: 
 # http://stats.stackexchange.com/questions/3328/given-a-10d-mcmc-chain-how-can-i-determine-its-posterior-modes-in-r
