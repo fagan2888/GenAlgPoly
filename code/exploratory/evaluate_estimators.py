@@ -62,7 +62,7 @@ def get_dataset_jpn():
 
 #########################################################################################
 #
-#   GET ESTIMATOR
+#   GET ESTIMATORS
 #
 #########################################################################################
 
@@ -142,7 +142,8 @@ def get_estimator_eprr_dataset_housing():
 #
 #########################################################################################
 
-def make_dataset_scorer(X_train, y_train, X_test = None, y_test = None, score_fn = sk.metrics.r2_score ):
+def make_dataset_scorer(X_train, y_train, X_test = None, y_test = None,
+        score_fn = sk.metrics.r2_score ):
     '''
     Make a dataset based scorer that accepts a estimator
     '''
@@ -160,9 +161,7 @@ def make_dataset_scorer(X_train, y_train, X_test = None, y_test = None, score_fn
 
 def scorer(dataset_scorer, estimator, n = 10, verbose = True):
     '''
-        cols is the column mask in the scores array that provides the statistics;
-            cols == 0 ==> score (r1)
-            cols == 1 ==> error (rmse)
+        Evaluate the score of estimator using the given dataset.
     '''
     s = np.zeros( (n,1) )
     for row in range(n):
@@ -242,13 +241,13 @@ def score_housing_svr():
 if __name__ == '__main__':
     # FC POLYNOMIAL SET
     #show(score_fc_eprr)
-    #show(score_fc_svr)
+    show(score_fc_svr)
     # JPN POLYNOMIAL SET
     #show(score_jpn_eprr)
-    #show(score_jpn_svr)
+    show(score_jpn_svr)
     # ABALONE SET
-    show(score_abalone_eprr)
+    #show(score_abalone_eprr)
     show(score_abalone_svr)
     # HOUSING SET
-    show(score_housing_eprr)
+    #show(score_housing_eprr)
     show(score_housing_svr)
