@@ -1,14 +1,15 @@
 %% Use the option review to obtain double line spacing
-\documentclass[times,review,preprint]{elsarticle}
+\documentclass[review,preprint]{elsarticle}
+
 
 %% Use the options `twocolumn,final' to obtain the final layout
 %\documentclass[times,twocolumn,final,authoryear]{elsarticle}
 
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage{prletters}
-%\usepackage{amssymb}
-%\usepackage{latexsym}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{amssymb}
+\usepackage{latexsym}
 %
 %	ALGORITHMS PACKAGES
 %
@@ -29,6 +30,7 @@
 \newcommand{\at}[1]{\ensuremath{\!\left(#1\right)}}
 \newcommand{\note}[1]{\textbf{\small{[Note: {#1}]}}}
 \newcommand{\nth}{\ensuremath{^{th}}}
+\newcommand{\review}[1]{\textcolor{blue}{~---~#1}}
 %
 \usepackage{lineno}
 %
@@ -41,9 +43,10 @@
 \def\TM{$^{\rm TM}$}
 
 \journal{Applied Soft Computing}
+\bibliographystyle{elsarticle-num}
 
 \begin{document}
-
+%
 %
 \acrodef{GA}{Genetic algorithms}
 \acrodef{rmse}[error]{root-mean-square}
@@ -52,55 +55,27 @@
 \acrodef{EPR}{Evolutionary Polynomial Regression}
 \acrodef{EPRR}[EPRR]{Evolutionary Polynomial Regression with Regularization}
 \acrodef{SVM}[SVM]{Support Vector Machines}
-
+%
 \setcounter{page}{0}
-
+%
 \begin{frontmatter}
-
-%% Title, authors and addresses
-
-%% use the tnoteref command within \title for footnotes;
-%% use the tnotetext command for the associated footnote;
-%% use the fnref command within \author or \address for footnotes;
-%% use the fntext command for the associated footnote;
-%% use the corref command within \author for corresponding author footnotes;
-%% use the cortext command for the associated footnote;
-%% use the ead command for the email address,
-%% and the form \ead[url] for the home page:
-%%
-%% \title{Title\tnoteref{label1}}
-%% \tnotetext[label1]{}
-%% \author{Name\corref{cor1}\fnref{label2}}
-%% \ead{email address}
-%% \ead[url]{home page}
-%% \fntext[label2]{}
-%% \cortext[cor1]{}
-%% \address{Address\fnref{label3}}
-%% \fntext[label3]{}
-
+%
 \title{A method for regularization of evolutionary polynomial regressions}
-
+%
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
-
-\author[1]{Francisco \snm{Coelho}\corref{cor1}} 
-\cortext[cor1]{Corresponding author: 
-  Tel.: +351-919-006-379}
+%
+\author{Francisco Coelho\corref{corfc}} 
+\cortext[corfc]{Corresponding author: Tel.: +351-919-006-379}
 \ead{fc@di.uevora.pt}
-\author[2]{Jo\~{a}o Pedro \snm{Neto}}
-
-\address[1]{Departamento de Informática, Universidade de Évora, Rua Romão Ramalho 58, 7000-671 Évora, Portugal}
-\address[2]{Departamento de Informática, Faculdade de Ciências da Universidade de Lisboa, Campo Grande, 1749-016 Lisboa, Portugal}
-
-\received{ }
-\finalform{}
-\accepted{ }
-\availableonline{ }
-\communicated{ }
-
-
+\address{Departamento de Inform\'{a}tica, Universidade de \'{E}vora, Rua Rom\~{a}o Ramalho 58, 7000-671 \'{E}vora, Portugal}
+%
+\author{Jo\~{a}o Pedro Neto}
+\ead{jpn@di.fc.ul.pt}
+\address{Departamento de Inform\'{a}tica, Faculdade de Ci\^{e}ncias da Universidade de Lisboa, Campo Grande, 1749-016 Lisboa, Portugal}
+%
 \begin{abstract}
 While many applications require models that have no acceptable linear approximation, the simpler nonlinear models are defined by polynomials. The use of genetic algorithms to find polynomial models from data is known as Evolutionary Polynomial Regression.
 %
@@ -108,35 +83,47 @@ This paper introduces Evolutionary Polynomial Regression with Regularization, an
 
 The empiric conclusion of those experiments is that EPR with regularization is able to achieve better fitting than other non-ensemble methods and it has shorter computation time than plain EPR.
 \end{abstract}
-
+%
 \begin{keyword}
+evolutionary polynomial regression \sep regularization \sep feature extraction
+\end{keyword}
 %\MSC 41A05\sep 41A10\sep 65D05\sep 65D17
-\KWD evolutionary polynomial regression \sep regularization \sep feature extraction \end{keyword}
-
+%\KWD
+%
 \end{frontmatter}
+%
+%
+\review{ GAs are repeatedly mentioned as an approach to search for locally optimal parameters, this is simply incorrect and is a very surprising statement.  GAs are NOT a local optimizer in any shape or form.}
 
+\review{What is the reference for the GA encoding used?}
+
+\review{The penalty term introduces is the main contribution of this work, this should be clearly stated in the text. It is basically a complexity based penalty which is really not so novel, there are even several cases in literature of penalty based GA functions.  Please dig up further in the state of the art to back up better your claim of novelty.  }
+
+\review{In some box plots only ten simulations are performed, in others 25.  These numbers are too low.}
+%
+%
 \linenumbers
 
 \section{Introduction}
-With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques produce linear models. The linearity assumption has many advantages including reduced computational complexity and strong the\-o\-re\-ti\-cal framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in \ac{SVM} (\cite{scholkopf1997kernel, liang2012eigen, Bao:2013aa}) alleviates this problem by allowing special non-linear transformations of the feature-space. The condition such transformations must meet is known as the \emph{kernel trick}, $k\at{x,x'} = \left< \varphi\at{x}, \varphi\at{x'} \right>$, where $\varphi$ is the feature-space transformation and $\left<\cdot,\cdot\right>$ denotes inner product. The ``trick'' consists on computing the kernel $k\at{x,x'}$ while avoiding the computation of the inner product and the transformations $\varphi\at{x}, \varphi\at{x'}$. A special case of polynomial transformation, the \emph{polynomial kernel}, $k\at{x,x'} = \left<x,x'\right>^d$ is commonly used in regression and classification tasks with \acp{SVM}. However general polynomial transformations do not verify the kernel trick.
+With notable exceptions (\emph{e.g.} neural networks) machine learning regression techniques produce linear models. The linearity assumption has many advantages including reduced computational complexity and strong the\-o\-re\-ti\-cal framework. However nonlinearity is unavoidable in many application scenarios, specially those with phase transitions or feedback loops, so common in engineering, ecology, cybernetics and other areas. The kernel trick in \ac{SVM} (\cite{scholkopf1997kernel, liang2012eigen, Bao:2013aa}) alleviates this problem by allowing special non-linear transformations of the feature-space. The condition such transformations must meet is known as the \emph{kernel trick}, $k\at{x,x'} = \left< \varphi\at{x}, \varphi\at{x'} \right>$, where $\varphi$ is the feature-space transformation and $\left<\cdot,\cdot\right>$ denotes inner product. The ``trick'' consists on computing the kernel $k\at{x,x'}$ while avoiding the computation of the inner product and the transformations $\varphi\at{x}, \varphi\at{x'}$. A special case of polynomial transformation, the \emph{polynomial kernel}, $k\at{x,x'} = \left<x,x'\right>^d$ is commonly used in regression and classification tasks with \acp{SVM}. However general polynomial transformations do not verify the kernel trick.\review{do not verify does not seem like the proper term.}
 
 Polynomials, one of the most studied subjects in mathematics, generalize li\-ne\-ar functions and define, perhaps, the simplest and most used nonlinear models. Applications include colorimetric calibration \citep{Mendes:2005aa}, explicit formul\ae\ for turbulent pipe flows
  \citep{Davidson:1999aa}, computational linguistics \citep{Sanchez:2009aa} and more recently analytical techniques for cultural heritage materials \citep{Csefalvayova:2010aa}, liquid epoxy moulding process \citep{Chan:2011aa}, B-spline surface reconstruction \citep{Galvez:2012aa}, product design \citep{Chan:2012aa} or forecasting cyanotoxins presence in water reservoirs \citep{Garcia-Nieto:2013aa}. These examples not only illustrate the wide spectrum of applications but, additionally, each one uses, at some point, \ac{GA}.
 
-Evolutionary algorithms, including \ac{GA}, were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Related research abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} come from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
+Evolutionary algorithms, including \ac{GA}, were, arguably, one of the hottest topics of research in the recent decades and with good reason since they outline an optimization scheme easy to conceptualize and with very broad application. If a nonlinear (or otherwise) model requires parameterization, \acp{GA} provide a simple and often effective approach to search for locally optimal parameters. Related research abound and spans from the 1950s seminal work of Nils Aall Barricelli \citep{Barricelli:1962aa} in the Institute for Advanced Study of Princeton to today's principal area of study for thousands of researchers, covered in hundreds of conferences, workshops and other meetings. Perhaps the key impulse to \acp{GA} came from John Holland's work and his book ``Adaptation in Natural and Artificial Systems'' \citep{Holland:1975aa}. 
 
 One interesting variation of genetic algorithms, named \emph{genetic programming} by John Koza \citep{Koza:1992aa}, proposes the use of \acp{GA} to search the syntactic structure of complex functions. Syntactic structure search is also keen to the central ideas of deep learning \citep{Bengio:2009aa,Bengio:2013aa}, a subarea of machine learning actually producing quite promising results (\emph{e.g.} in \cite{Tarlow:2013fk}). It is also related to the work presented in this paper in the sense that, unlike linear models that have a simple structure, $y=\sum_i \beta_i x_i$, nonlinear (in particular polynomial) models pose an additional structure search problem.
 
 The idea of using \acp{GA} to find a polynomial regression is not new \citep{Maertens:2006aa, Yu:2008aa, Wu:2009aa} but still generates original research \citep{Hofwing:2011aa,Cetisli:2011aa}. The modern formulation of the use of \ac{GA} to find polynomial models is known as \acf{EPR} and systematization can be traced back to the work of Davidson, Savic and Walters \cite{Davidson:2003aa}. Further developments include multi-objective optimizations \cite{Giustolisi:2009aa}. 
 
-This paper describes an extension of the general \ac{EPR} method to find a regularized polynomial regression of a given dataset. The optimal regression results from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid overfit by penalysing polynomial complexity.
+This paper describes an extension of the general \ac{EPR} method to find a regularized polynomial regression of a given dataset. The optimal regression results come from a cost function that accounts for both the \ac{rmse} and a regularization factor to avoid overfit by penalysing polynomial complexity.
 
 The next section describes the method's details and is followed by a presentation of some performance results. The last section draws some conclusions and points future research tasks.
 
 \section{Genetic Algorithms for Polynomials}
 This section starts with a brief introduction and outline of the evolutionary polynomial regression algorithm, \ac{EPR}, and proceeds into core details as the encoding used to represent individual polynomial instances in the \ac{GA} populations and the regularization of the cost function.
 
-An usual representation of polynomials is through expressions of the form
+A usual representation of polynomials is through expressions of the form
 $$
 p\left( x_1, \ldots, x_m\right) = \sum_i \theta_i q_i
 $$
@@ -171,9 +158,9 @@ This partial representation of polynomials makes the problem of structure search
 %
 More precisely, concerning the first problem, let $\mathcal{D}$ be a dataset with $n$ observations of variables $Y, X_1,\ldots,X_m$ and $\mathcal{Q} = \left\lbrace q_1,\ldots, q_k\right\rbrace$ a set of $k$ monomial expressions over $X_1,\ldots,X_m$. Define the hypothesis\footnote{The expression ``$q|_{X=x}$'' reads ``\emph{$q$ with all instances of $X$ replaced by $x$}.''}
 %
-\begin{eqnarray*}
+\begin{eqnarray}
 h_{\Theta,\mathcal{Q}}\left(x_1,\ldots,x_m\right) &=& \sum_{j = 1}^k \theta_j q_j|_{X_i=x_i,\forall 1 \leq i \leq m}
-\end{eqnarray*}
+\end{eqnarray}
 %
 and let the error (as ``cost'') be
 %
@@ -187,13 +174,13 @@ the usual \acf{rmse} function. Now the first problem can be stated as:
 \emph{Given a dataset $\mathcal{D}$ and a set of monomials $\mathcal{Q}$ find parameters $\Theta$ that minimize the cost $J_{\textrm{fit}}\left(\Theta;\mathcal{Q},\mathcal{D}\right)$.}
 
 %
-This is a simple linear regression problem obtained by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{Q}$. The resulting dataset, $\mathcal{D} \cup \mathcal{Q}\left( \mathcal{D} \right)$, adds the monomial transformations in $\mathcal{Q}$ to the original dataset $\mathcal{D}$. An alternative formulation would just replace $\mathcal{D}$ by $\mathcal{Q}\left( \mathcal{D} \right)$. It turns out that the first formulation is a special case of the second (by including the variables in the monomial set) and has better \ac{rmse} performance --- what is not surprising because it uses more features.
+This is a simple linear regression problem obtained by expanding $\mathcal{D}$ with columns that replicate the monomials in $\mathcal{Q}$. The resulting dataset, $\mathcal{D} \cup \mathcal{Q}\left( \mathcal{D} \right)$, adds the monomial transformations in $\mathcal{Q}$ to the original dataset $\mathcal{D}$. An alternative formulation would just replace $\mathcal{D}$ by $\mathcal{Q}\left( \mathcal{D} \right)$. It turns out that the first formulation is a special case of the second (by including the variables in the monomial set) and has better \ac{rmse} performance --- what is not surprising because it uses more features.\review{How is this known??? Is there a reference or some experimental results backing this claim or is it simply intuition???}
 
-The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{P}$ a set of polynomials. For each polynomial $p\in \mathcal{P}$ let $\mathcal{Q}_p$ be the set of monomials in $p$ (without the coefficients) and define the (anti) fitness
+The second problem is treated in the \ac{GA} setting: Let $\mathcal{D}$ be a dataset as above and $\mathcal{P}$ a set of polynomials. For each polynomial $p\in \mathcal{P}$ let $\mathcal{Q}_p$ be the set of monomials in $p$ (without the coefficients) and define the (anti) fitness\review{say what?  Do you mean something like a minimization based fitness??  Anti fitness seems odd.}
 %
-\begin{eqnarray*}
+\begin{eqnarray}
 \phi_p &=& \min_\Theta J_{\textrm{fit}}\left(\Theta;\mathcal{Q}_p,\mathcal{D}\right)
-\end{eqnarray*}
+\end{eqnarray}
 %
 by solving the first problem. With a fitness of every instance, the \ac{GA} genetic operators (usually mutation and crossover) evolve the population $\mathcal{P}$ until a reasonable approximation of a local minimum is found. 
 %
@@ -212,7 +199,7 @@ by solving the first problem. With a fitness of every instance, the \ac{GA} gene
 \caption{This \ac{EPR} algorithm uses linear regression for the calculation of the \ac{rmse} $J$ and the space of polynomials is searched in the \acp{GA} iteration step. At exit the \ac{rmse} of the fittest instance is bounded by $\epsilon$ or the maximum number of allowed iterations.}\label{alg:gapoly}
 \end{algorithm} 
 %
-The properties of \acp{GA} and linear regression entail that Algorithm \ref{alg:gapoly} converges to a polynomial that is a local minimum of the fitness function, encapsulated in the \ac{rmse} function $J_{\textrm{fit}}$.
+The properties of \acp{GA} and linear regression entail that Algorithm \ref{alg:gapoly} converges to a polynomial that is a local minimum of the fitness function\review{GAs are global optimization techniques (in spite of what wikipedia states!)}, encapsulated in the \ac{rmse} function $J_{\textrm{fit}}$.
 %
 
 %
@@ -221,7 +208,7 @@ Subsection \ref{subs:polynomial.encoding} describes the encoding of individual p
 %
 \subsection{Polynomial Encoding}\label{subs:polynomial.encoding}
 
-The specific encoding (representation) of a set of monomials is an important aspect in the implementation of \ac{EPR}. The choice described below permits active and inactive monomials for regression purposes. The active (or inactive) state of a monomial might change through mutation or crossover. This simple mechanism enhances variation in the complexity of polynomial expressions by evolutionary operations.
+The specific encoding (representation) of a set of monomials is an important aspect in the implementation of \ac{EPR}. The choice described below permits active and inactive monomials for regression purposes\review{is this an original contribution????  Otherwise it needs a reference.}. The active (or inactive) state of a monomial might change through mutation or crossover. This simple mechanism enhances variation in the complexity of polynomial expressions by evolutionary operations.
 
 Let  $\left\lbrace q_1, \ldots, q_k\right\rbrace$ be a set of monomials over the variables $X_1, \ldots, X_m$. The encoding of that set using $d$ bits per exponent is a binary list such that
 \begin{enumerate}
@@ -250,7 +237,7 @@ where the right matrix is in binary form using $d = 3$ bits. An encoding of this
 \end{center}
 where, for reading purposes, semicolons separate segments and commas separate variables. The first $k=4$ bits inform that the first, second and third monomials are active while the fourth is not.
 
-While each valid encoding represents a set of monomials the map is not bijective: each set of monomials has multiple encodings, for example by changing $d$ or the order of monomial segments. However, considering the \ac{EPR} task, this is a minor issue and a bijective map would add computational complexity and negative impact to the algorithm's performance.
+While each valid encoding represents a set of monomials the map is not bijective: each set of monomials has multiple encodings, for example by changing $d$ or the order of monomial segments. However, considering the \ac{EPR} task, this is a minor issue and a bijective map would add computational complexity and negative impact to the algorithm's performance\review{The encoding example should include the inactive term so that both examples are consistent (lines 113-115). Is there a reference some experimentation to back this up?}.
 
 There is one final remark concerning this encoding method. As it is, the activation segment can become all zeros, representing the empty set of monomials. This situation can be avoided with a simple hack: Given an encoding, the first monomial is always considered active, thus restricting the syntactic form of encodings to binary strings starting with $1$. In practice, this means that the implementation of the encoding can omit the first bit.
 
@@ -279,9 +266,15 @@ where $k$ is the number of monomials in the polynomial. When $\lambda > 1$ polyn
 
 \end{center}\end{figure*}
 
-A simple exploration on the effect of the regularization parameter is depicted in Figure~\ref{fig:lambda.error-distribution} where it is possible to observe that the typical inflection point lies around $\lambda = 0.8$. This value, favoring ``larger'' polynomials is justified by the balance of the data's non-linearity and polynomial complexity: below $\lambda = 0.8$, even penalized, larger monomial sets achieve better \ac{rmse} performance than smaller ones while above that value the size of the monomial set is excessive. Within this tension the overall error results reduced when compared to the non-regularized \ac{EPR} version.
+A simple exploration on the effect of the regularization parameter is depicted in Figure~\ref{fig:lambda.error-distribution} where it is possible to observe that the typical inflection point lies around $\lambda = 0.8$. This value, favoring ``larger'' polynomials is justified by the balance of the data's non-linearity and polynomial complexity: below $\lambda = 0.8$, even penalized, larger monomial sets achieve better \ac{rmse} performance than smaller ones while above that value the size of the monomial set is excessive\review{please clarify this paragraph and justify this claim}. Within this tension the overall error results reduced when compared to the non-regularized \ac{EPR} version.
 
 \subsection{Genetic Algorithm Parameterization}
+
+\review{Please indicate all these values in detail}
+
+\review{You should contrast obtained results in a table.  Results are hard to judge from Fig 3 alone.}
+
+\review{The number of 250 for iterations seems premature specially when one looks at Fig 4. Stabilize? Really?  This only seems valid in one case of lambda.}
 
 In general \acp{GA} offer many possibilities with respect to the choice of genetic operators and respective application rates, population evolution, \emph{etc}. The results found here where obtained using the package \texttt{genalg}~\citep{Willighagen:2012aa} with default parameters, standard operators (crossover and mutation) and population evolution with 20\% elitism between generations.
 
