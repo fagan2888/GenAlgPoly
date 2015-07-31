@@ -245,6 +245,9 @@ test.lambda <- function(my.data, lambda.values,
       ga.pred  <- predict(ga.model, test.set[,-ncol(test.set)]) 
 
       errors[i,k] <- rsme(ga.pred,test.set[,ncol(test.set)])
+      
+      if (verbose)
+        print(paste0("#run: ",i))
     }
     if (verbose)
       print(paste0("#lambda: ",k))
@@ -256,7 +259,7 @@ test.lambda <- function(my.data, lambda.values,
 #########################################################################
 # Follow fitness progress of GA
 
-fitness.progress <- c(0)
+fitness.progress <- c()
 
 follow.fitness <- function(my.data,
                            population=100, 
@@ -303,11 +306,12 @@ monitorEvalFactory <- function(train.set, n.vars, max.monoids) {
     # we have the best solution (chromosome), let's eval it and keep it
     eval <- evalFuncFactory(train.set, n.vars, max.monoids) # get eval function
         
-    # fitness.progress <- c(fitness.progress, eval(bestSolution)) #TODO: does not work (?)
+    fitness.progress <<- c(fitness.progress, eval(bestSolution))
     # print(make.formula(bestSolution, n.vars, max.monoids))
-    print(eval(bestSolution))
+    # print(eval(bestSolution))
   }
 }
+
 
 #########################################################################
 # Compare GA.Poly with vs. without normalization

@@ -1,0 +1,5 @@
+On the Abalone dataset errors are improved wrt EPR in a difference in means, resulted in a 95% HDI (Highest Density Interval) equal to [0.011, 0.029] which achieves statistical significance.
+
+On the Auto-MPG dataset the 95% HDI is [-0.007, 0.022] which barely includes zero.
+
+On the Housing dataset the 95% HDI is [-0.025, 0.08] which includes zero. The mean is favorable to EPRR with less 0.026 error on average.
