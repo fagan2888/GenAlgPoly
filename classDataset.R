@@ -135,7 +135,7 @@ df <- data.frame(error  = as.vector(matrix(errors,nrow=1)),
 write.table(df, paste0(dataset,"_lambda.errors.txt"))
 
 # to read the previous table from file:
-# df <- read.table(paste0(dataset,"_lambda.errors.txt"))
+# df <- read.table(paste0("results/", dataset,"_lambda.errors.txt"))
 # df$lambda <- as.factor(df$lambda)
 
 qplot(lambda,error,data=df,geom=c("jitter","boxplot")) + 
