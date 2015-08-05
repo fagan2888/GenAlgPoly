@@ -35,13 +35,13 @@ read_clean <- function(dataset) {
 }
 
 pop  <- 300  # GA population
-reg  <- 0.7  # amount of regularization
+reg  <- 0.9  # amount of regularization
 runs <- 75   # number of simulations
 iter <- 100  # number of interations for each simulation
 
 digits <- 5 # round errors after number of digits
 
-##################
+################## started Monday 13:43 
 
 datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
 
@@ -54,16 +54,16 @@ for (dataset in datasets) {
   report_reg <- make.report(my.data, population=pop, iterations=iter, lambda=reg, runs=runs)
   
   # Apply standard GA polynomial regression
-  report_noreg <- make.report(my.data, population=pop, iterations=iter, lambda=1, runs=runs)
+  # report_noreg <- make.report(my.data, population=pop, iterations=iter, lambda=1, runs=runs)
 
   # build and save table of error results  
   df <- data.frame(ga.eprr = report_reg$ga.error,
-                   ga.epr  = report_noreg$ga.error, 
-                   lin.reg = report_noreg$lm.error,
-                   svm     = report_noreg$svm.error,
-                   rpart   = report_noreg$rpart.error,
-                   rf      = report_noreg$rf.error,
-                   ci.tree = report_noreg$citree.error)
+                   #ga.epr  = report_noreg$ga.error, 
+                   lin.reg = report_reg$lm.error,
+                   svm     = report_reg$svm.error,
+                   rpart   = report_reg$rpart.error,
+                   rf      = report_reg$rf.error,
+                   ci.tree = report_reg$citree.error)
   
   df <- round(df, digits)
   
