@@ -127,12 +127,22 @@ library(plyr)
 lambda.values <- seq(0.7,1.3,by=0.1)
 n.runs <- 50
 
-errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterations=60)
+#datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
+datasets <- c("Housing", "Kinematics")
 
-df <- data.frame(error  = as.vector(matrix(errors,nrow=1)),
-                 lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
+for (dataset in datasets) {
+  # print(paste("### Starting", dataset, "dataset..."))
+  
+  my.data <- read_clean(dataset)
+  
+  errors <- test.lambda(my.data, lambda.values, runs=n.runs, population=50, iterations=60)
+  
+  df <- data.frame(error  = as.vector(matrix(errors,nrow=1)),
+                   lambda = as.factor(rep(round(lambda.values,3), each=n.runs)))
+  
+  write.table(df, paste0(dataset,"_lambda.errors.txt"))
+}
 
-write.table(df, paste0(dataset,"_lambda.errors.txt"))
 
 # to read the previous table from file:
 # df <- read.table(paste0("results/", dataset,"_lambda.errors.txt"))

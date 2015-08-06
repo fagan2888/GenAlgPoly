@@ -35,7 +35,7 @@ read_clean <- function(dataset) {
 }
 
 pop  <- 300  # GA population
-reg  <- 0.9  # amount of regularization
+reg  <- 0.7  # amount of regularization
 runs <- 75   # number of simulations
 iter <- 100  # number of interations for each simulation
 
@@ -43,7 +43,8 @@ digits <- 5 # round errors after number of digits
 
 ################## started Monday 13:43 
 
-datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
+#datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
+datasets <- c("Auto-Mpg", "Abalone")
 
 for (dataset in datasets) {
   # print(paste("### Starting", dataset, "dataset..."))
