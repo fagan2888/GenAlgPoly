@@ -91,6 +91,9 @@ df <- data.frame(ga.poly = report_noreg$ga.error,
 
 write.table(df, paste0(dataset, pop, "_noReg.txt"))
 
+# df <- read.table(paste0("results/", dataset, pop, "_results.txt"), header = TRUE)
+# apply(df, 2, summary)
+
 # show results
 
 size <- length(report$ga.error)
