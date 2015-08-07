@@ -261,7 +261,7 @@ test.lambda <- function(my.data, lambda.values,
 
 fitness.progress <- c()
 
-follow.fitness <- function(my.data,
+follow.fitness <- function(train.set, test.set,
                            population=100, 
                            iterations=20, 
                            mutation.rate=0.05,
@@ -269,14 +269,7 @@ follow.fitness <- function(my.data,
                            verbose=TRUE) {
   
   library(genalg)
-  
-  train.p.size <- 0.7 # percentage of training set
-  n.vars       <- ncol(my.data)-1
-  
-  # make train & test set
-  inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
-  train.set <- my.data[inTrain,]
-  test.set  <- my.data[-inTrain,]
+  n.vars <- ncol(train.set)-1
   
   GAmodel <- rbga.bin(size = max.monoids + max.degree*n.vars*max.monoids, 
                       popSize = population, 
@@ -291,7 +284,7 @@ follow.fitness <- function(my.data,
 
 # the monitor factory
 
-monitorEvalFactory <- function(train.set, n.vars, max.monoids) {
+monitorEvalFactory <- function(dataset, n.vars, max.monoids) {
   
   function(obj) {
     minEval <- min(obj$evaluations)       # get best fitness value
@@ -304,7 +297,7 @@ monitorEvalFactory <- function(train.set, n.vars, max.monoids) {
       bestSolution = obj$population[filter,];
     }
     # we have the best solution (chromosome), let's eval it and keep it
-    eval <- evalFuncFactory(train.set, n.vars, max.monoids) # get eval function
+    eval <- evalFuncFactory(dataset, n.vars, max.monoids) # get eval function
         
     fitness.progress <<- c(fitness.progress, eval(bestSolution))
     # print(make.formula(bestSolution, n.vars, max.monoids))

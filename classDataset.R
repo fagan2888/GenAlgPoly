@@ -63,7 +63,7 @@ head(my.data,8)
 
 pop  <- 300  # GA population
 reg  <- 0.8  # amount of regularization
-runs <- 25   # number of simulations
+runs <- 75   # number of simulations
 iter <- 100  # number of interations for each simulation
 
 # Apply regularization
@@ -167,35 +167,55 @@ qplot(lambda,error,data=df,geom=c("jitter","boxplot")) +
 ### cf. article's figure "Learning curve"
 ###############################
 
-library(ggplot2)
+### make train & test set
+set.seed(101)
+train.p.size <- 0.7 # percentage of training set
+inTrain   <- sample(1:nrow(my.data), train.p.size * nrow(my.data))
+train.set <- my.data[inTrain,]
+test.set  <- my.data[-inTrain,]
+###
+
+fitness.progress <- c() # needed to reset fitness progress
+lambda0.7 <- 
+  follow.fitness(train.set, test.set, population=200,iterations=1500,mutation.rate=0.15,lambda=0.7)
 
 fitness.progress <- c() # needed to reset fitness progress
 lambda0.8 <- 
-  follow.fitness(my.data,population=200,iterations=20,mutation.rate=0.15,lambda=0.8)
+  follow.fitness(train.set, test.set, population=200,iterations=1500,mutation.rate=0.15,lambda=0.8)
 
 fitness.progress <- c()
-lambda0.975 <- 
-  follow.fitness(my.data,population=200,iterations=20,mutation.rate=0.15,lambda=0.975)
+lambda0.9 <- 
+  follow.fitness(train.set, test.set, population=200,iterations=1500,mutation.rate=0.15,lambda=0.9)
 
 fitness.progress <- c()
-lambda1 <- 
-  follow.fitness(my.data,population=200,iterations=20,mutation.rate=0.15,lambda=1)
+lambda1.0 <- 
+  follow.fitness(train.set, test.set, population=200,iterations=1500,mutation.rate=0.15,lambda=1)
 
-lambda_Values = list(lambda0.8=lambda0.8, lambda0.975=lambda0.975, lambda1=lambda1)
+lambda_Values = list(lambda0.7=lambda0.7, 
+                     lambda0.8=lambda0.8, 
+                     lambda0.9=lambda0.9, 
+                     lambda1.0=lambda1.0)
+
 save(lambda_Values, file=paste0(dataset,"_lambdas.Rda")) # recover with load("<name>.Rda") 
 
-df <- data.frame(iteration = 1:length(lambda0.975),
+df <- data.frame(iteration = 1:length(lambda0.7),
+                 lambda0.7 = as.numeric(lambda0.7),
                  lambda0.8 = as.numeric(lambda0.8),
-                 lambda0.975 = as.numeric(lambda0.975),
-                 lambda1 = as.numeric(lambda1))
+                 lambda0.9 = as.numeric(lambda0.9),
+                 lambda1.0 = as.numeric(lambda1.0))
 
 write.table(round(df,5), paste0(dataset,"_lambdas.txt"))
 
+# df <- read.table(paste0(dataset,"_lambdas.txt"))
+
+library(ggplot2)
+
 ggplot(df, aes(iteration)) + 
-  geom_line(aes(y = lambda0.8,   colour = "lambda = 0.8")) + 
-  geom_line(aes(y = lambda0.975, colour = "lambda = 0.975")) + 
-  geom_line(aes(y = lambda1,     colour = "lambda = 1.0")) +
-  #ylim(0.36, 0.5) +
+  geom_line(aes(y = lambda0.7, colour = "lambda = 0.7")) + 
+  geom_line(aes(y = lambda0.8, colour = "lambda = 0.8")) + 
+  geom_line(aes(y = lambda0.9, colour = "lambda = 0.9")) + 
+  geom_line(aes(y = lambda1.0, colour = "lambda = 1.0")) +
+  ylim(0.34, 0.45) +
   ggtitle(paste0(dataset," dataset")) +
   ylab("rmse") + 
   theme(legend.title=element_blank()) # remove legend title
