@@ -44,7 +44,7 @@ digits <- 5 # round errors after number of digits
 ################## started Monday 13:43 
 
 #datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
-datasets <- c("Auto-Mpg", "Abalone")
+datasets <- c("Housing", "Kinematics")
 
 for (dataset in datasets) {
   # print(paste("### Starting", dataset, "dataset..."))
