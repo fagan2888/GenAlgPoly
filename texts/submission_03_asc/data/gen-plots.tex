@@ -301,12 +301,12 @@
 %
 \newcommand{\figFOUR}{
 	\begin{tikzpicture}
-	\begin{semilogxaxis}[
+	\begin{axis}[
 		width=15cm,height=7cm,
 		xmin=1,
 		xmax=1550,
 		%line width=1pt,
-		xlabel={(log) Number of iterations},
+		xlabel={Number of iterations},
 		ylabel={Error},
 		title={Error evolution with number of iterations (Dataset: \textsc{Housing})},
 		]
@@ -323,7 +323,7 @@
 		\addplot[dashdotted,color=black,thick] table [x expr=\coordindex, y index = 5]
 			{Housing_lambdas.txt};
 			\addlegendentry{$\lambda=1.000$};
-	\end{semilogxaxis}
+	\end{axis}
 \end{tikzpicture}
 }
 %
