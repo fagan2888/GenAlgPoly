@@ -301,26 +301,29 @@
 %
 \newcommand{\figFOUR}{
 	\begin{tikzpicture}
-	\begin{axis}[
+	\begin{semilogxaxis}[
 		width=15cm,height=7cm,
-		xmin=-5,
-		xmax=2005,
+		xmin=1,
+		xmax=1550,
 		%line width=1pt,
-		xlabel={Number of iterations},
+		xlabel={(log) Number of iterations},
 		ylabel={Error},
 		title={Error evolution with number of iterations (Dataset: \textsc{Housing})},
 		]
 		
-		\addplot[dotted,color=black] table [x expr=\coordindex, y index = 2]
+		\addplot[dotted,color=black,thick] table [x expr=\coordindex, y index = 2]
+			{Housing_lambdas.txt};
+			\addlegendentry{$\lambda=0.700$};
+		\addplot[solid,color=black,very thick] table [x expr=\coordindex, y index = 3]
 			{Housing_lambdas.txt};
 			\addlegendentry{$\lambda=0.800$};
-		\addplot[dashed,color=black] table [x expr=\coordindex, y index = 3]
+		\addplot[dashed,color=black,thick] table [x expr=\coordindex, y index = 4]
 			{Housing_lambdas.txt};
 			\addlegendentry{$\lambda=0.975$};
-		\addplot[solid,color=black] table [x expr=\coordindex, y index = 4]
+		\addplot[dashdotted,color=black,thick] table [x expr=\coordindex, y index = 5]
 			{Housing_lambdas.txt};
 			\addlegendentry{$\lambda=1.000$};
-	\end{axis}
+	\end{semilogxaxis}
 \end{tikzpicture}
 }
 %
@@ -330,11 +333,11 @@
 	% \figONEa
 	% \figONEb
 	% \figONEc
-	\figONEd
+	% \figONEd
 	% \figTHREEa
 	% \figTHREEb
 	% \figTHREEc
 	% \figTHREEd
-	% \figFOUR
+	\figFOUR
 \end{document}
 

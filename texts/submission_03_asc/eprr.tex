@@ -275,7 +275,7 @@ A simple exploration on the effect of the regularization parameter is depicted i
 
 \revised{Please indicate all these values in detail}{We described the parameterization in more detail.}
 
-\review{You should contrast obtained results in a table.  Results are hard to judge from Fig 3 alone.}
+\revised{You should contrast obtained results in a table.  Results are hard to judge from Fig 3 alone.}{Done that.}
 
 \revised{The number of 250 for iterations seems premature specially when one looks at Fig 4. Stabilize? Really?  This only seems valid in one case of lambda.}{we changed the number of iterations to 2000, way behind stabilization}
 
@@ -283,6 +283,52 @@ In general \acp{GA} offer many possibilities with respect to the choice of genet
 
 \section{Experimental Results}\label{sec:experimental.results}
 
+\begin{table}[t]
+	\footnotesize
+	\renewcommand{\arraystretch}{0.5}
+	\begin{tabular}{ll|ccc}
+		&&& \textbf{error} \\
+		\textbf{dataset} & \textbf{method} & \textbf{quantile 25\%} & \textbf{mean} & \textbf{quantile 75\%} \\
+		\hline
+		Abalone	 & EPRR $\lambda = 0.7$ 	& 0.6392 & 0.6555 & 0.6677 \\
+					 & EPRR $\lambda = 0.8$ 	& 0.6408 & 0.6543 & 0.6636 \\
+					 & EPRR $\lambda = 0.9$ 	& 0.6481 & 0.6581 & 0.6707 \\
+					 & EPRR $\lambda = 1.0$ 	& 0.6542 & 0.6715 & 0.6816 \\
+					 & Linear Regression 	& 0.6803 & 0.6927 & 0.7078 \\
+					 & SVM (linear kernel) 	& 0.6916 & 0.7044 & 0.7205 \\
+					 & Regression Trees 	& 0.7423 & 0.7520 & 0.7621 \\
+					 & Random Forest 	& 0.6585 & 0.6695 & 0.6814 \\
+					 & Cond. Inference Trees 	& 0.7031 & 0.7126 & 0.7264 \\
+		Auto-Mpg	 & EPRR $\lambda = 0.7$ 	& 0.3635 & 0.3916 & 0.4147 \\
+					 & EPRR $\lambda = 0.8$ 	& 0.3629 & 0.3956 & 0.4228 \\
+					 & EPRR $\lambda = 0.9$ 	& 0.3646 & 0.4130 & 0.4215 \\
+					 & EPRR $\lambda = 1.0$ 	& 0.3691 & 0.3999 & 0.4057 \\
+					 & Linear Regression 	& 0.4071 & 0.4284 & 0.4473 \\
+					 & SVM (linear kernel) 	& 0.4116 & 0.4358 & 0.4613 \\
+					 & Regression Trees 	& 0.4216 & 0.4501 & 0.4785 \\
+					 & Random Forest 	& 0.3318 & 0.3624 & 0.3892 \\
+					 & Cond. Inference Trees 	& 0.4063 & 0.4372 & 0.4663 \\
+		Housing	 & EPRR $\lambda = 0.7$ 	& 0.4412 & 0.6650 & 0.5739 \\
+					 & EPRR $\lambda = 0.8$ 	& 0.4241 & 0.5274 & 0.6016 \\
+					 & EPRR $\lambda = 0.9$ 	& 0.4354 & 0.5717 & 0.6462 \\
+					 & EPRR $\lambda = 1.0$ 	& 0.4477 & 0.5417 & 0.5995 \\
+					 & Linear Regression 	& 0.4898 & 0.5313 & 0.5649 \\
+					 & SVM (linear kernel) 	& 0.4831 & 0.5469 & 0.6017 \\
+					 & Regression Trees 	& 0.4845 & 0.5232 & 0.5720 \\
+					 & Random Forest 	& 0.3283 & 0.3679 & 0.4023 \\
+					 & Cond. Inference Trees 	& 0.4676 & 0.5080 & 0.5413 \\
+		Kinematics	 & EPRR $\lambda = 0.7$ 	& 0.6600 & 0.6660 & 0.6720 \\
+					 & EPRR $\lambda = 0.8$ 	& 0.6617 & 0.6694 & 0.6751 \\
+					 & EPRR $\lambda = 0.9$ 	& 0.6636 & 0.6714 & 0.6761 \\
+					 & EPRR $\lambda = 1.0$ 	& 0.7568 & 0.7558 & 0.7739 \\
+					 & Linear Regression 	& 0.7672 & 0.7759 & 0.7849 \\
+					 & SVM (linear kernel) 	& 0.8074 & 0.8136 & 0.8247 \\
+					 & Regression Trees 	& 0.5673 & 0.6021 & 0.5803 \\
+					 & Random Forest 	& 0.7386 & 0.7344 & 0.7645 \\
+					 & Cond. Inference Trees 	& 0.7558 & 0.7620 & 0.7686
+	\end{tabular}
+	\caption{Tabular summary results for different regression methods on common datasets. Although \ac{EPRR} not always achieves the smallest expected error, performance is on-par with more sophisticated methods.}
+\end{table}
 Here is described the experiment setup used to gather and summarize the empirical evidence that supports this comparative study of \ac{EPR} and \ac{EPRR}. Evaluation is focused in \ac{rmse} distribution and, besides \ac{EPR} and \ac{EPRR}, also uses several common regression methods and datasets easily accessible in \texttt{R}, the free software environment for statistical computing and graphics~\citep{R-Core-Team:2013aa}\footnote{The datasets and \texttt{R} code used to produce the results and plots in this paper are available online at \url{https://github.com/jpneto/GenAlgPoly}.}. A small consideration on the convergence speed concludes this section.
 
 \subsection{Regression Methods and Datasets}
@@ -329,7 +375,7 @@ One of the used datasets, \textsc{Artificial}, has a special role: it is used to
 \includegraphics[width=0.48\textwidth]{Fig3d.pdf}
 \end{tabular}
 %
-\caption{Summary results for different regression methods on common datasets. Although \ac{EPRR} not always achieves the smallest expected error, performance is on-par with more sophisticated methods.  The regression methods depicted in these figures are:
+\caption{Graphical summary results for different regression methods on common datasets. Although \ac{EPRR} not always achieves the smallest expected error, performance is on-par with more sophisticated methods.  The regression methods depicted in these figures are:
 1. \ac{EPRR}, $\lambda = 0.7$;
 2. \ac{EPRR}, $\lambda = 0.8$;
 3. \ac{EPRR}, $\lambda = 0.9$;
@@ -349,11 +395,11 @@ One of the used datasets, \textsc{Artificial}, has a special role: it is used to
 \subsection{Convergence speed}
 %
 \begin{figure*}[tb]
-\begin{center}
-\includegraphics[width=0.98\textwidth]{Fig4.pdf}
-\caption{Learning curve: Error progress for the \textsc{Housing} dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for different regularization values. The population for both consists of $200$ polynomials.}
-\label{Abalone_fitnessProgress}
-\end{center}
+	\begin{center}
+		\includegraphics[width=0.98\textwidth]{Fig4xx.pdf}
+		\caption{Learning curve: Error progress for the \textsc{Housing} dataset during a single execution of the genetic algorithm. The figure shows the fitness evolution for different regularization values. The population of each run consists of $200$ polynomials.}
+		\label{Abalone_fitnessProgress}
+	\end{center}
 \end{figure*}
 %
 Since this work is oriented to the \ac{rmse} of the \ac{EPRR} model it is necessary to assess how this depends on the number of generations of the \ac{GA}. As illustrated in Figure~\ref{Abalone_fitnessProgress}, the \ac{rmse} quickly drops during the initial $50$ to $100$ generations. Then, it proceeds slower achieving better solutions only with marginal error reduction.

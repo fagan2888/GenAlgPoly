@@ -56,7 +56,39 @@ def figs_3():
 				print(boxp(ds[col], col))
 		print('')
 
+def tab_3():
+	datasets = [
+		'Abalone',
+		'Auto-Mpg',
+		'Housing',
+		'Kinematics'
+	]
+	colnames = [
+		('ga.eprr.0.7', 'EPRR $\lambda = 0.7$'),
+		('ga.eprr.0.8', 'EPRR $\lambda = 0.8$'),
+		('ga.eprr.0.9', 'EPRR $\lambda = 0.9$'),
+		('ga.epr',	'EPRR $\lambda = 1.0$'),
+		('lin.reg',	'Linear Regression'),
+		('svm',	'SVM (linear kernel)'),
+		('rpart',	'Regression Trees'),
+		('rf',	'Random Forest'),
+		('ci.tree',	'Cond. Inference Trees'),
+	]
+
+	for ds_name in datasets:
+		f_name = "%s300_results.txt"%ds_name
+		ds = pd.read_csv( f_name, sep = ' ')
+		for (col,x) in colnames:
+			if not col == 'id':
+				q25 = ds[col].quantile(0.25)
+				q50 = ds[col].mean()
+				q75 = ds[col].quantile(0.75)
+				if col == 'ga.eprr.0.7':
+					print('%s\t & %s \t& %6.4f & %6.4f & %6.4f \\\\'%(ds_name,x,q25,q50, q75))
+				else:
+					print('\t\t\t & %s \t& %6.4f & %6.4f & %6.4f \\\\'%(x,q25,q50, q75))
+
 
 
 if __name__ == '__main__':
-	figs_3()
+	tab_3()
