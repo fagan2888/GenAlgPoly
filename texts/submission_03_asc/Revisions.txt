@@ -1,0 +1,44 @@
+
+REVIEWER: GAs are repeatedly mentioned as an approach to search for locally optimal parameters, this is simply incorrect and is a very surprising statement.  GAs are NOT a local optimizer in any shape or form.	
+RESPONSE: Our intention was merely to note that GAs give no guarantee of finding a global optimum. We rephrased the mentioned sentences.
+
+REVIEWER: What is the reference for the GA encoding used?	
+RESPONSE: It is ours. We stated our contribution more explicitly.
+
+REVIEWER: The penalty term introduces is the main contribution of this work, this should be clearly stated in the text. It is basically a complexity based penalty which is really not so novel, there are even several cases in literature of penalty based GA functions.  Please dig up further in the state of the art to back up better your claim of novelty.	
+RESPONSE: We included references to previous regularization in GA and better outlined the role and originality of our contribution.
+
+REVIEWER: In some box plots only ten simulations are performed, in others 25.  These numbers are too low.	
+RESPONSE: The number of samples was increased to 75 simulations on all cases.
+
+REVIEWER: How is this known??? Is there a reference or some experimental results backing this claim or is it simply intuition???	
+RESPONSE: We reformulated the sentence. It is simply to mention than a more complex model has the ability to replicate more patterns in the data.
+
+REVIEWER: say what?  Do you mean something like a minimization based fitness??  Anti fitness seems odd.	
+RESPONSE: We adopted the reviewer suggestion.
+
+REVIEWER: is this an original contribution????  Otherwise it needs a reference.	
+RESPONSE: it is our original contribution, and we made it more explicit in the text
+
+REVIEWER: The encoding example should include the inactive term so that both examples are consistent (lines 113-115). Is there a reference some experimentation to back this up?	
+RESPONSE: We changed the text according to the suggestion.
+
+REVIEWER: please clarify this paragraph and justify this claim	
+RESPONSE: We rephrased the statement. Now we just compare lambda values greater than one versus lambda values lesser than one.
+
+REVIEWER: Please indicate all these values in detail	
+RESPONSE: We described the parameterization and methods in more detail.
+
+REVIEWER: You should contrast obtained results in a table.  Results are hard to judge from Fig 3 alone.	
+RESPONSE: We included a table with the simulation results.
+
+REVIEWER: The number of 250 for iterations seems premature specially when one looks at Fig 4. Stabilize? Really?  This only seems valid in one case of lambda.	
+RESPONSE: Indeed. We changed the number of iterations to 1500 where, seemingly, only marginal gains still remain. This is an empirical work; we can't give theoretical support to the convergence behavior of the algorithm.
+
+----
+
+REVIEWER: Give detailed information about the parameters of the SVM and optimization algorithm used.
+RESPONSE: We included in the text several other parameters used in our code.
+
+REVIEWER: Incorporate comparisons with a Polynomial neural network.
+RESPONSE: We didn't found any PNN implementation that would allow us to perform the suggested comparison. We included a reference to PNN since it is good example of a regression method that uses polynomials to extend its original structure.

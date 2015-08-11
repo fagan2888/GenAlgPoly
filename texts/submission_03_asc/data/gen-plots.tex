@@ -235,7 +235,7 @@
 			\boxp{0.6361}{0.6803}{0.6938}{0.7078}{0.7352}{white}; % lin.reg
 			\boxp{0.6392}{0.6916}{0.7051}{0.7205}{0.7429}{white}; % svm
 			\boxp{0.7110}{0.7423}{0.7549}{0.7621}{0.7875}{white}; % rpart
-			\boxp{0.6237}{0.6585}{0.6725}{0.6814}{0.7039}{white}; % rf
+%			\boxp{0.6237}{0.6585}{0.6725}{0.6814}{0.7039}{white}; % rf
 			\boxp{0.6611}{0.7031}{0.7140}{0.7264}{0.7587}{white}; % ci.tree
 		}
 	\end{tikzpicture}
@@ -253,7 +253,7 @@
 			\boxp{0.3629}{0.4071}{0.4259}{0.4473}{0.4999}{white}; % lin.reg
 			\boxp{0.3629}{0.4116}{0.4304}{0.4613}{0.5294}{white}; % svm
 			\boxp{0.3494}{0.4216}{0.4451}{0.4785}{0.5479}{white}; % rpart
-			\boxp{0.2883}{0.3318}{0.3660}{0.3892}{0.4460}{white}; % rf
+%			\boxp{0.2883}{0.3318}{0.3660}{0.3892}{0.4460}{white}; % rf
 			\boxp{0.3479}{0.4063}{0.4428}{0.4663}{0.5362}{white}; % ci.tree
 		}
 	\end{tikzpicture}
@@ -272,7 +272,7 @@
 			\boxp{0.4213}{0.4898}{0.5258}{0.5649}{0.6773}{white}; % lin.reg
 			\boxp{0.3944}{0.4831}{0.5432}{0.6017}{0.7318}{white}; % svm
 			\boxp{0.3877}{0.4845}{0.5176}{0.5720}{0.6790}{white}; % rpart
-			\boxp{0.2445}{0.3283}{0.3494}{0.4023}{0.5318}{white}; % rf
+%			\boxp{0.2445}{0.3283}{0.3494}{0.4023}{0.5318}{white}; % rf
 			\boxp{0.3919}{0.4676}{0.5033}{0.5413}{0.6629}{white}; % ci.tree
 		}
 	\end{tikzpicture}
@@ -290,7 +290,7 @@
 			\boxp{0.7508}{0.7672}{0.7764}{0.7849}{0.7988}{white}; % lin.reg
 			\boxp{0.7647}{0.8074}{0.8166}{0.8247}{0.8428}{white}; % svm
 			\boxp{0.5518}{0.5673}{0.5743}{0.5803}{0.8435}{white}; % rpart
-			\boxp{0.5706}{0.7386}{0.7537}{0.7645}{0.7854}{white}; % rf
+%			\boxp{0.5706}{0.7386}{0.7537}{0.7645}{0.7854}{white}; % rf
 			\boxp{0.7392}{0.7558}{0.7675}{0.7686}{0.7802}{white}; % ci.tree
 		}
 	\end{tikzpicture}
@@ -306,23 +306,24 @@
 		xmin=1,
 		xmax=1550,
 		%line width=1pt,
-		xlabel={Number of iterations},
+		xlabel={Number of generations},
 		ylabel={Error},
-		title={Error evolution with number of iterations (Dataset: \textsc{Housing})},
+		ymax = 0.4,
+		title={Error evolution with number of generations (Dataset: \textsc{Housing})},
 		]
 		
 		\addplot[dotted,color=black,thick] table [x expr=\coordindex, y index = 2]
 			{Housing_lambdas.txt};
-			\addlegendentry{$\lambda=0.700$};
+			\addlegendentry{$\lambda=0.7$};
 		\addplot[solid,color=black,very thick] table [x expr=\coordindex, y index = 3]
 			{Housing_lambdas.txt};
-			\addlegendentry{$\lambda=0.800$};
+			\addlegendentry{$\lambda=0.8$};
 		\addplot[dashed,color=black,thick] table [x expr=\coordindex, y index = 4]
 			{Housing_lambdas.txt};
-			\addlegendentry{$\lambda=0.975$};
+			\addlegendentry{$\lambda=0.9$};
 		\addplot[dashdotted,color=black,thick] table [x expr=\coordindex, y index = 5]
 			{Housing_lambdas.txt};
-			\addlegendentry{$\lambda=1.000$};
+			\addlegendentry{$\lambda=1.0$};
 	\end{axis}
 \end{tikzpicture}
 }
@@ -338,6 +339,6 @@
 	% \figTHREEb
 	% \figTHREEc
 	% \figTHREEd
-	\figFOUR
+	% \figFOUR
 \end{document}
 
