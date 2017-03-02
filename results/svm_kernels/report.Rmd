@@ -1,0 +1,49 @@
+
+```{r}
+library(readr)
+```
+
+
+```{r, message=FALSE}
+dataset <- "Abalone"
+
+df <- read_csv2(paste0(dataset, ".csv"))
+
+df$`polynomial deg=4` <- pmin(df$`polynomial deg=4`, 1.0)
+
+boxplot(df$`polynomial deg=4`, df$linear, df$radial, names=c("poly", "linear", "radial"))
+```
+
+
+```{r, message=FALSE}
+dataset <- "Auto-Mpg"
+
+df <- read_csv2(paste0(dataset, ".csv"))
+
+df$`polynomial deg=4` <- pmin(df$`polynomial deg=4`, 1.0)
+
+boxplot(df$`polynomial deg=4`, df$linear, df$radial, names=c("poly", "linear", "radial"))
+```
+
+
+```{r, message=FALSE}
+dataset <- "Housing"
+
+df <- read_csv2(paste0(dataset, ".csv"))
+
+df$`polynomial deg=4` <- pmin(df$`polynomial deg=4`, 1.0)
+
+boxplot(df$`polynomial deg=4`, df$linear, df$radial, names=c("poly", "linear", "radial"))
+```
+
+
+```{r, message=FALSE}
+dataset <- "Kinematics"
+
+df <- read_csv2(paste0(dataset, ".csv"))
+
+df$`polynomial deg=4` <- pmin(df$`polynomial deg=4`, 1.0)
+
+boxplot(df$`polynomial deg=4`, df$linear, df$radial, names=c("poly", "linear", "radial"))
+
+```

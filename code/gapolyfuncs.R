@@ -1,6 +1,6 @@
 #########################################################################
 # initial values, can be overriden
-max.monoids <- 4  # poly = monoid1 + monoid2 + ...
+max.monoids <- 6  # poly = monoid1 + monoid2 + ...
 max.degree  <- 3  # meaning exponents up to 2^max.degree - 1
 
 #########################################################################
@@ -117,17 +117,16 @@ evalFuncFactory <- function(df, n.vars, max.monoids, lambda=1) {
 
 # pre: my.data must have columns named x1...xn and the last one is y (the output)
 make.report <- function(my.data, 
-                        population=100,     # GA population
-                        iterations=25,      # GA iterations
-                        runs=10,            # number of runs
-                        mutation.rate=0.05, # GA mutation rate
-                        lambda=1.0,         # regularization variable
+                        population=100,      # GA population
+                        iterations=25,       # GA iterations
+                        runs=10,             # number of runs
+                        mutation.rate=0.075, # GA mutation rate
+                        lambda=1.0,          # regularization variable
                         verbose=TRUE) {
   
   library(genalg)
   library(e1071)
   library(rpart)   
-  library(randomForest)
   library(party)
   
   train.p.size <- 0.7 # percentage of training set
@@ -138,7 +137,6 @@ make.report <- function(my.data,
   lm.error     <- rep(0,runs)
   svm.error    <- rep(0,runs)
   rpart.error  <- rep(0,runs)
-  rf.error     <- rep(0,runs)
   citree.error <- rep(0,runs)
   
   best.ga.model <- NULL  # the best GA model 
@@ -173,7 +171,9 @@ make.report <- function(my.data,
     lm.pred  <- predict(lm.model, test.set[,-ncol(test.set)]) 
     lm.error[i] <- rsme(lm.pred,test.set[,ncol(test.set)])
         
-    svm.model <- svm(y ~ ., data=train.set, kernel='linear')
+    #svm.model <- svm(y ~ ., data=train.set, kernel='polynomial', degree=4) # poorer results
+    #svm.model <- svm(y ~ ., data=train.set, kernel='linear')
+    svm.model <- svm(y ~ ., data=train.set, kernel='radial')  # best results
     svm.pred  <- predict(svm.model, test.set[,-ncol(test.set)]) 
     svm.error[i] <- rsme(svm.pred,test.set[,ncol(test.set)])
 
@@ -181,23 +181,18 @@ make.report <- function(my.data,
     rpart.pred  <- predict(rpart.model, test.set[,-ncol(test.set)]) 
     rpart.error[i] <- rsme(rpart.pred,test.set[,ncol(test.set)])
 
-    rf.model <- randomForest(y ~ ., data=train.set, importance=TRUE, do.trace=100, ntree=100)
-    rf.pred  <- predict(rf.model, test.set[,-ncol(test.set)]) 
-    rf.error[i] <- rsme(rf.pred,test.set[,ncol(test.set)])
-
     citree.model <- ctree(y ~ ., data = train.set)
     citree.pred  <- predict(citree.model, test.set[,-ncol(test.set)]) 
     citree.error[i] <- rsme(citree.pred,test.set[,ncol(test.set)])    
     
     if (verbose)
-      cat(paste0(i,": error ga: ",ga.error[i]))
+      print(paste0(i,": error ga: ", ga.error[i], "\\n"))
   }
   
   list(ga.error=ga.error,         # make the errors report into a list
        lm.error=lm.error,
        svm.error=svm.error,
        rpart.error=rpart.error,
-       rf.error=rf.error,
        citree.error=citree.error,
        ga.model = best.ga.model)  # also include the best found ga.model
 }

@@ -21,7 +21,9 @@ read_clean <- function(dataset) {
   names(my.data) <- c(paste0("x",1:(ncol(my.data)-1)),"y") # columns are named as x_i & y
   
   if (dataset=="Abalone") {
-    my.data$x1 <- as.numeric(my.data$x1) # x1 was a factor, make it a numeric value
+    f <- as.factor(my.data$x1)
+    levels(f) <- 1:3
+    my.data$x1 <- as.numeric(levels(f))[f]  # x1 was a factor, make it a numeric value
   }
   
   if (dataset=="Auto-Mpg") {
@@ -35,19 +37,22 @@ read_clean <- function(dataset) {
 }
 
 pop  <- 300  # GA population
-reg  <- 0.7  # amount of regularization
+reg  <- 0.9  # amount of regularization
 runs <- 75   # number of simulations
-iter <- 100  # number of interations for each simulation
+iter <- 150  # number of GA generations per simulation
 
 digits <- 5 # round errors after number of digits
 
 ################## started Monday 13:43 
 
-#datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
-datasets <- c("Housing", "Kinematics")
+datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
+# datasets <- c("Abalone")
+# datasets <- c("Auto-Mpg")
+# datasets <- c("Housing")
+# datasets <- c("Kinematics")
 
 for (dataset in datasets) {
-  # print(paste("### Starting", dataset, "dataset..."))
+  print(paste("\\n### Starting", dataset, "dataset..."))
         
   my.data <- read_clean(dataset)
   
@@ -63,7 +68,6 @@ for (dataset in datasets) {
                    lin.reg = report_reg$lm.error,
                    svm     = report_reg$svm.error,
                    rpart   = report_reg$rpart.error,
-                   rf      = report_reg$rf.error,
                    ci.tree = report_reg$citree.error)
   
   df <- round(df, digits)

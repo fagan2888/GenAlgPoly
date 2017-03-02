@@ -1,0 +1,31 @@
+
+
+```{r}
+compute.box.plot  <- function(dataset) {
+  df <- read.table(paste0("results/", dataset, "300_results_v2.txt"))
+
+  res <- matrix(NA, ncol=5, nrow=ncol(df))
+    
+  for (i in 1:ncol(df))
+    res[i,] <- boxplot.stats(df[,i])$stats 
+  
+  res <- as.data.frame(res)
+  names(res) <- c("min", "25%", "mean", "75%", "max")
+  row.names(res) <- c("eprr.0.7", "eprr.0.8", "eprr.0.9", "epr", "lm", "svr", "rtree", "citree")
+  res
+}
+```
+
+
+
+```{r, fig.height=9}
+datasets <- c("Abalone", "Auto-Mpg", "Housing", "Kinematics")
+
+for(dataset in datasets) {
+  print(dataset)
+  df <- compute.box.plot(dataset)
+  print(df)
+  boxplot(t(df), main=dataset)
+}
+```
+
